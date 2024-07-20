@@ -52,10 +52,10 @@
     <div class="selectContainer">
         <label for="optionSelect">选择表图像素处理方式: </label>
         <select id="optionSelect">
-            <option value="black" selected>黑色处理</option>
+            <option value="black">黑色处理</option>
             <option value="white">白色处理</option>
             <option value="trans">透明处理</option>
-            <option value="neigh">邻近处理</option>
+            <option value="neigh" selected>邻近处理</option>
         </select>
     </div>
 
@@ -79,7 +79,7 @@
     <button id="saveImageButton">保存图像</button>
 
     <script>
-        var coverProcessMethod = "black";
+        var coverProcessMethod = "neigh";
         var threshold = 32;
 
         function processCoverPixel(data, i) {
