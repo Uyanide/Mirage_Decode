@@ -15,6 +15,7 @@
     <title>光棱坦克显形</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
 
     <style>
         body {
@@ -171,84 +172,107 @@
     </div>
 
     <script>
-        var coverProcessMethod = "neigh";
-        var threshold = 32;
-        var reverse = false;
-        // defaultSrc = 'https://s1.imagehub.cc/images/2024/07/21/52ecf6f16a1a259a860b90a1885a7584.png';
-        defaultSrc = 'default.png';
+        class ImageProcessor {
+            constructor() {
+                this.img = null;
+                this.imgData = null;
+                this.coverProcessMethod = "neigh";
+                this.threshold = 32;
+                this.reverse = false;
+            }
 
-        function processCoverPixel(data, i) {
-            switch (coverProcessMethod) {
-                case 'neigh':
-                    if (i > 3) {
-                        for (var j = 0; j < 3; j++) {
-                            data[i + j] = data[i - 4 + j];
+            showImage(imgData) {
+                const canvas = document.getElementById('canvas');
+                const ctx = canvas.getContext('2d');
+                ctx.putImageData(imgData, 0, 0);
+            }
+
+            updateImage(img) {
+                this.img = img;
+                const canvas = document.getElementById('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = this.img.width;
+                canvas.height = this.img.height;
+                ctx.drawImage(this.img, 0, 0, canvas.width, canvas.height);
+                this.imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                this.processImage();
+            }
+
+            processImage() {
+                var imgDataCopy = new ImageData(new Uint8ClampedArray(this.imgData.data), this.imgData.width, this.imgData.height);
+                var data = imgDataCopy.data;
+                if (!this.reverse) {
+                    var ratio = 255 / this.threshold;
+                    for (var i = 0; i < data.length; i += 4) {
+                        var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                        if (avg <= this.threshold) {
+                            data[i] *= ratio;
+                            data[i + 1] *= ratio;
+                            data[i + 2] *= ratio;
+                        } else {
+                            this.processCoverPixel(data, i);
                         }
-                        break;
                     }
-                case 'black':
-                    data[i] = 0;
-                    data[i + 1] = 0;
-                    data[i + 2] = 0;
-                    break;
-                case 'white':
-                    data[i] = 255;
-                    data[i + 1] = 255;
-                    data[i + 2] = 255;
-                    break;
-                case 'trans':
-                    data[i + 3] = 0;
-                    break;
+                }
+                else {
+                    var ratio = 255 / (255 - this.threshold);
+                    for (var i = 0; i < data.length; i += 4) {
+                        var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                        if (avg >= threshold) {
+                            data[i] = (data[i] - this.threshold) * ratio;
+                            data[i + 1] = (data[i + 1] - this.threshold) * ratio;
+                            data[i + 2] = (data[i + 2] - this.threshold) * ratio;
+                        }
+                        else {
+                            this.processCoverPixel(data, i);
+                        }
+                    }
+                }
+                this.showImage(imgDataCopy);
+            }
+
+            processCoverPixel(data, i) {
+                switch (this.coverProcessMethod) {
+                    case 'neigh':
+                        if (i > 3) {
+                            data[i] = data[i - 4];
+                            data[i + 1] = data[i - 3];
+                            data[i + 2] = data[i - 2];
+                            break;
+                        }
+                    case 'black':
+                        data[i] = 0;
+                        data[i + 1] = 0;
+                        data[i + 2] = 0;
+                        break;
+                    case 'white':
+                        data[i] = 255;
+                        data[i + 1] = 255;
+                        data[i + 2] = 255;
+                        break;
+                    case 'trans':
+                        data[i + 3] = 0;
+                        break;
+                }
             }
         }
 
-        function processImage(img, threshold) {
-            var canvas = document.getElementById('canvas');
-            var ctx = canvas.getContext('2d');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0, img.width, img.height);
-            var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            var data = imageData.data;
-            if (!reverse) {
-                var ratio = 255 / threshold;
-                for (var i = 0; i < data.length; i += 4) {
-                    var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    if (avg <= threshold) {
-                        data[i] *= ratio;
-                        data[i + 1] *= ratio;
-                        data[i + 2] *= ratio;
-                    } else {
-                        processCoverPixel(data, i);
-                    }
-                }
-            }
-            else {
-                var ratio = 255 / (255 - threshold);
-                for (var i = 0; i < data.length; i += 4) {
-                    var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    if (avg >= threshold) {
-                        data[i] = (data[i] - threshold) * ratio;
-                        data[i + 1] = (data[i + 1] - threshold) * ratio;
-                        data[i + 2] = (data[i + 2] - threshold) * ratio;
-                    }
-                    else {
-                        processCoverPixel(data, i);
-                    }
-                }
-            }
-            ctx.putImageData(imageData, 0, 0);
-        }
+        const imageProcessor = new ImageProcessor();
 
         window.onload = function () {
             var img = document.getElementById('originalImage');
             var imageInput = document.getElementById('imageInput');
-            img.src = defaultSrc;
-            img.onload = function () {
-                processImage(img, threshold);
-            };
             var thresholdRange = document.getElementById('thresholdRange');
             var optionSelect = document.getElementById('optionSelect');
+
+            var defaultSrc = 'default.png';
+            var defaultImg = new Image();
+            defaultImg.onload = function () {
+                imageProcessor.updateImage(defaultImg);
+            };
+            defaultImg.src = defaultSrc;
+
+            // 加载图像
 
             imageInput.addEventListener('change', function (event) {
                 var file = event.target.files[0];
@@ -256,24 +280,10 @@
                 reader.onload = function (e) {
                     img.src = e.target.result;
                     img.onload = function () {
-                        processImage(img, threshold);
+                        imageProcessor.updateImage(img);
                     };
                 };
                 reader.readAsDataURL(file);
-            });
-
-            thresholdRange.addEventListener('input', function () {
-                threshold = parseInt(this.value, 10);
-                if (img.src) {
-                    processImage(img, threshold);
-                }
-            });
-
-            optionSelect.addEventListener('change', function () {
-                coverProcessMethod = this.value;
-                if (img.src) {
-                    processImage(img, threshold);
-                }
             });
 
             document.getElementById('loadImageButton').addEventListener('click', function () {
@@ -281,31 +291,9 @@
                 if (imageUrl) {
                     img.src = imageUrl;
                     img.onload = function () {
-                        processImage(img, threshold);
+                        imageProcessor.updateImage(img);
                     };
                 }
-            });
-
-            document.getElementById('saveImageButton').addEventListener('click', function () {
-                var canvas = document.getElementById('canvas');
-                var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-                var link = document.createElement('a');
-                link.download = 'processed-image.png';
-                link.href = image;
-                link.click();
-            });
-
-            document.getElementById('reverseCheckbox').addEventListener('change', function () {
-                reverse = this.checked;
-                if (img.src) {
-                    processImage(img, threshold);
-                }
-            });
-
-            img.addEventListener('error', function () {
-                console.error('图像加载失败');
-                alert('无法加载图像, 请确保图像可访问。');
-                img.src = defaultSrc;
             });
 
             document.getElementById('imagePasteButton').addEventListener('click', async function () {
@@ -319,7 +307,7 @@
                                 reader.onload = function (event) {
                                     const img = document.getElementById('originalImage');
                                     img.onload = function () {
-                                        processImage(img, threshold);
+                                        imageProcessor.updateImage(img);
                                     };
                                     img.src = event.target.result;
                                 };
@@ -331,6 +319,47 @@
                 } catch (error) {
                     console.error('无法从剪贴板读取图像:', error);
                 }
+            });
+
+            // 更改参数
+
+            thresholdRange.addEventListener('input', function () {
+                imageProcessor.threshold = parseInt(this.value, 10);
+                if (img.src) {
+                    imageProcessor.processImage(img);
+                }
+            });
+
+            optionSelect.addEventListener('change', function () {
+                imageProcessor.coverProcessMethod = this.value;
+                if (img.src) {
+                    imageProcessor.processImage(img);
+                }
+            });
+
+            document.getElementById('reverseCheckbox').addEventListener('change', function () {
+                imageProcessor.reverse = this.checked;
+                if (img.src) {
+                    imageProcessor.processImage(img);
+                }
+            });
+
+            img.addEventListener('error', function () {
+                console.error('图像加载失败');
+                alert('无法加载图像, 请确保图像可访问。');
+                img.src = defaultSrc;
+                imageProcessor.updateImage(img);
+            });
+
+            // 保存图像
+
+            document.getElementById('saveImageButton').addEventListener('click', function () {
+                var canvas = document.getElementById('canvas');
+                var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+                var link = document.createElement('a');
+                link.download = 'output.png';
+                link.href = image;
+                link.click();
             });
         };
     </script>
