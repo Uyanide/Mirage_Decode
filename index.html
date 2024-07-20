@@ -16,6 +16,8 @@
 
         #canvas {
             border: 1px solid #ddd;
+            max-width: 100%;
+            max-height: 100%;
             margin-top: 20px;
         }
 
@@ -62,7 +64,7 @@
         <input type="text" id="imageUrlInput" placeholder="输入图片URL">
         <button id="loadImageButton">加载图片</button>
     </div>
-    <div><small>(暂时并不支持所有URL, 例如百度贴吧的无效)</small></div>
+    <div><small>(并未支持所有URL, 例如百度贴吧的图片链接无效)</small></div>
     <img id="originalImage" src="" alt="原始图像" crossorigin="anonymous" style="display:none;">
     <canvas id="canvas"></canvas>
 
