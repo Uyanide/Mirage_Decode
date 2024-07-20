@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 
 <head>
     <!-- Google tag (gtag.js) -->
@@ -11,8 +11,11 @@
 
         gtag('config', 'G-43TMHBXPHM');
     </script>
+
     <title>Mirage Image Decode</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <style>
         body {
             display: flex;
@@ -73,6 +76,7 @@
 
 <body>
     <h1>光棱坦克显形</h1>
+
     <div class="selectContainer">
         <label for="optionSelect">选择表图像素处理方式: </label>
         <select id="optionSelect">
@@ -102,7 +106,7 @@
     </div>
 
     <div class="checkbox-container">
-        <input type="checkbox" id="exampleCheckbox">
+        <input type="checkbox" id="reverseCheckbox">
         <label for="reverseCheckbox">是否为反向隐写<small>（如果无论如何都调不出来可以勾上试试）</small></label>
     </div>
 
@@ -231,7 +235,7 @@
                 link.click();
             });
 
-            document.getElementById('exampleCheckbox').addEventListener('change', function () {
+            document.getElementById('reverseCheckbox').addEventListener('change', function () {
                 reverse = this.checked;
                 if (img.src) {
                     processImage(img, threshold);
