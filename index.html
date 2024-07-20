@@ -76,6 +76,16 @@
             margin-right: 5px;
         }
 
+        .pasteInput {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .pasteInput label {
+            margin-right: 5px;
+        }
+
         #canvas {
             border: 1px solid #ddd;
             max-width: min(100%, 600px);
@@ -131,6 +141,10 @@
             <label for="imageUrlInput">或从URL加载图片:</label>
             <input type="text" id="imageUrlInput" placeholder="输入图片URL">
             <button id="loadImageButton">加载图片</button>
+        </div>
+        <div class="pasteInput">
+            <label for="imagePasteButton">或从剪贴板粘贴图像: </label>
+            <button id="imagePasteButton">粘贴图像</button>
         </div>
     </div>
 
@@ -292,6 +306,31 @@
                 console.error('图像加载失败');
                 alert('无法加载图像, 请确保图像可访问。');
                 img.src = defaultSrc;
+            });
+
+            document.getElementById('imagePasteButton').addEventListener('click', async function () {
+                try {
+                    const clipboardItems = await navigator.clipboard.read();
+                    for (const clipboardItem of clipboardItems) {
+                        for (const type of clipboardItem.types) {
+                            if (type.startsWith('image/')) {
+                                const blob = await clipboardItem.getType(type);
+                                const reader = new FileReader();
+                                reader.onload = function (event) {
+                                    const img = document.getElementById('originalImage');
+                                    img.onload = function () {
+                                        processImage(img, threshold);
+                                    };
+                                    img.src = event.target.result;
+                                };
+                                reader.readAsDataURL(blob);
+                                return;
+                            }
+                        }
+                    }
+                } catch (error) {
+                    console.error('无法从剪贴板读取图像:', error);
+                }
             });
         };
     </script>
