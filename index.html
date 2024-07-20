@@ -135,7 +135,6 @@
         </div>
     </div>
 
-    <div><small>(目前暂未支持所有URL, 例如百度贴吧的图片链接无效)</small></div>
     <img id="originalImage" src="" alt="原始图像" crossorigin="anonymous" style="display:none;">
 
     <canvas id="canvas"></canvas>
@@ -162,6 +161,8 @@
         var coverProcessMethod = "neigh";
         var threshold = 32;
         var reverse = false;
+        // defaultSrc = 'https://s1.imagehub.cc/images/2024/07/21/52ecf6f16a1a259a860b90a1885a7584.png';
+        defaultSrc = 'default.png';
 
         function processCoverPixel(data, i) {
             switch (coverProcessMethod) {
@@ -200,7 +201,7 @@
                 var ratio = 255 / threshold;
                 for (var i = 0; i < data.length; i += 4) {
                     var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                    if (avg < threshold) {
+                    if (avg <= threshold) {
                         data[i] *= ratio;
                         data[i + 1] *= ratio;
                         data[i + 2] *= ratio;
@@ -229,6 +230,10 @@
         window.onload = function () {
             var img = document.getElementById('originalImage');
             var imageInput = document.getElementById('imageInput');
+            img.src = defaultSrc;
+            img.onload = function () {
+                processImage(img, threshold);
+            };
             var thresholdRange = document.getElementById('thresholdRange');
             var optionSelect = document.getElementById('optionSelect');
 
@@ -282,6 +287,12 @@
                 if (img.src) {
                     processImage(img, threshold);
                 }
+            });
+
+            img.addEventListener('error', function () {
+                console.error('图像加载失败');
+                alert('无法加载图像, 请确保图像可访问。');
+                img.src = defaultSrc;
             });
         };
     </script>
