@@ -42,6 +42,12 @@
             width: 300px;
         }
 
+        .checkbox-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
         input[type=file] {
             margin-top: 20px;
         }
@@ -85,13 +91,19 @@
         <button id="loadImageButton">加载图片</button>
     </div>
 
-    <div><small>(并未支持所有URL, 例如百度贴吧的图片链接无效)</small></div>
+    <div><small>(目前暂未支持所有URL, 例如百度贴吧的图片链接无效)</small></div>
     <img id="originalImage" src="" alt="原始图像" crossorigin="anonymous" style="display:none;">
+
     <canvas id="canvas"></canvas>
 
     <div class="slider-container">
         <label for="thresholdRange">滑动直至图像清晰: </label>
         <input type="range" id="thresholdRange" min="0" max="255" value="24">
+    </div>
+
+    <div class="checkbox-container">
+        <input type="checkbox" id="exampleCheckbox">
+        <label for="reverseCheckbox">是否为反向隐写<small>（如果无论如何都调不出来可以勾上试试）</small></label>
     </div>
 
     <button id="saveImageButton">保存图像</button>
@@ -103,6 +115,7 @@
     <script>
         var coverProcessMethod = "neigh";
         var threshold = 32;
+        var reverse = false;
 
         function processCoverPixel(data, i) {
             switch (coverProcessMethod) {
@@ -137,15 +150,31 @@
             ctx.drawImage(img, 0, 0, img.width, img.height);
             var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
             var data = imageData.data;
-            var ratio = 255 / threshold;
-            for (var i = 0; i < data.length; i += 4) {
-                var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                if (avg < threshold) {
-                    data[i] *= ratio;
-                    data[i + 1] *= ratio;
-                    data[i + 2] *= ratio;
-                } else {
-                    processCoverPixel(data, i);
+            if (!reverse) {
+                var ratio = 255 / threshold;
+                for (var i = 0; i < data.length; i += 4) {
+                    var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                    if (avg < threshold) {
+                        data[i] *= ratio;
+                        data[i + 1] *= ratio;
+                        data[i + 2] *= ratio;
+                    } else {
+                        processCoverPixel(data, i);
+                    }
+                }
+            }
+            else {
+                var ratio = 255 / (255 - threshold);
+                for (var i = 0; i < data.length; i += 4) {
+                    var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                    if (avg >= threshold) {
+                        data[i] = (data[i] - threshold) * ratio;
+                        data[i + 1] = (data[i + 1] - threshold) * ratio;
+                        data[i + 2] = (data[i + 2] - threshold) * ratio;
+                    }
+                    else {
+                        processCoverPixel(data, i);
+                    }
                 }
             }
             ctx.putImageData(imageData, 0, 0);
@@ -200,6 +229,13 @@
                 link.download = 'processed-image.png';
                 link.href = image;
                 link.click();
+            });
+
+            document.getElementById('exampleCheckbox').addEventListener('change', function () {
+                reverse = this.checked;
+                if (img.src) {
+                    processImage(img, threshold);
+                }
             });
         };
     </script>
