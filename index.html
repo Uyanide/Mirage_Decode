@@ -10,6 +10,8 @@
             align-items: center;
             flex-direction: column;
             margin-top: 50px;
+            background-color: #000;
+            color: #fff;
         }
 
         #canvas {
@@ -30,6 +32,14 @@
 
         input[type=file] {
             margin-top: 20px;
+        }
+
+        input[type=text],
+        button,
+        select {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
         }
     </style>
 </head>
@@ -52,7 +62,7 @@
         <input type="text" id="imageUrlInput" placeholder="输入图片URL">
         <button id="loadImageButton">加载图片</button>
     </div>
-    <div><small>(暂时并不支持所有URL, 例如百度贴吧)</small></div>
+    <div><small>(暂不支持所有URL, 例如百度贴吧的链接无效)</small></div>
     <img id="originalImage" src="" alt="原始图像" crossorigin="anonymous" style="display:none;">
     <canvas id="canvas"></canvas>
 
