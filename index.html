@@ -3,6 +3,7 @@
 
 <head>
     <title>Mirage Image Decode</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         body {
             display: flex;
@@ -58,12 +59,14 @@
         </select>
     </div>
 
-    <input type="file" id="imageInput" accept="image/*">
+    <input type="file" id="imageInput" accept="image/*" title="选择一个图像文件">
+
     <div>
         <label for="imageUrlInput">或从URL加载图片:</label>
         <input type="text" id="imageUrlInput" placeholder="输入图片URL">
         <button id="loadImageButton">加载图片</button>
     </div>
+
     <div><small>(并未支持所有URL, 例如百度贴吧的图片链接无效)</small></div>
     <img id="originalImage" src="" alt="原始图像" crossorigin="anonymous" style="display:none;">
     <canvas id="canvas"></canvas>
