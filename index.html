@@ -47,6 +47,11 @@
     </div>
 
     <input type="file" id="imageInput" accept="image/*">
+    <div>
+        <label for="imageUrlInput">或从URL加载图片:</label>
+        <input type="text" id="imageUrlInput" placeholder="输入图片URL">
+        <button id="loadImageButton">加载图片</button>
+    </div>
     <img id="originalImage" src="" alt="原始图像" crossorigin="anonymous" style="display:none;">
     <canvas id="canvas"></canvas>
 
@@ -131,11 +136,20 @@
                 }
             });
 
-            // 添加下拉选框的事件监听器
             optionSelect.addEventListener('change', function () {
                 coverProcessMethod = this.value;
                 if (img.src) {
                     processImage(img, threshold);
+                }
+            });
+
+            document.getElementById('loadImageButton').addEventListener('click', function () {
+                var imageUrl = document.getElementById('imageUrlInput').value;
+                if (imageUrl) {
+                    img.src = imageUrl;
+                    img.onload = function () {
+                        processImage(img, threshold);
+                    };
                 }
             });
         };
