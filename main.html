@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Mirage Image Decode</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 50px;
+        }
+
+        #canvas {
+            border: 1px solid #ddd;
+            margin-top: 20px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .slider-container input[type=range] {
+            margin-left: 10px;
+            width: 300px;
+        }
+
+        input[type=file] {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>光棱坦克显形</h1>
+    <div class="selectContainer">
+        <label for="optionSelect">选择表图像素处理方式: </label>
+        <select id="optionSelect">
+            <option value="black" selected>黑色处理</option>
+            <option value="white">白色处理</option>
+            <option value="trans">透明处理</option>
+            <option value="neigh">邻近处理</option>
+        </select>
+    </div>
+
+    <input type="file" id="imageInput" accept="image/*">
+    <img id="originalImage" src="" alt="原始图像" crossorigin="anonymous" style="display:none;">
+    <canvas id="canvas"></canvas>
+
+    <div class="slider-container">
+        <label for="thresholdRange">滑动直至图像清晰: </label>
+        <input type="range" id="thresholdRange" min="0" max="255" value="24">
+    </div>
+
+    <script>
+        var coverProcessMethod = "black";
+        var threshold = 24;
+
+        function processCoverPixel(data, i) {
+            switch (coverProcessMethod) {
+                case 'neigh':
+                    if (i > 3) {
+                        for (var j = 0; j < 3; j++) {
+                            data[i + j] = data[i - 4 + j];
+                        }
+                        break;
+                    }
+                case 'black':
+                    data[i] = 0;
+                    data[i + 1] = 0;
+                    data[i + 2] = 0;
+                    break;
+                case 'white':
+                    data[i] = 255;
+                    data[i + 1] = 255;
+                    data[i + 2] = 255;
+                    break;
+                case 'trans':
+                    data[i + 3] = 0;
+                    break;
+            }
+        }
+
+        function processImage(img, threshold) {
+            var canvas = document.getElementById('canvas');
+            var ctx = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+            var imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            var data = imageData.data;
+            var ratio = 255 / threshold;
+            for (var i = 0; i < data.length; i += 4) {
+                var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                if (avg < threshold) {
+                    data[i] *= ratio;
+                    data[i + 1] *= ratio;
+                    data[i + 2] *= ratio;
+                } else {
+                    processCoverPixel(data, i);
+                }
+            }
+            ctx.putImageData(imageData, 0, 0);
+        }
+
+        window.onload = function () {
+            var img = document.getElementById('originalImage');
+            var imageInput = document.getElementById('imageInput');
+            var thresholdRange = document.getElementById('thresholdRange');
+            var optionSelect = document.getElementById('optionSelect');
+
+            imageInput.addEventListener('change', function (event) {
+                var file = event.target.files[0];
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    img.src = e.target.result;
+                    img.onload = function () {
+                        processImage(img, threshold);
+                    };
+                };
+                reader.readAsDataURL(file);
+            });
+
+            thresholdRange.addEventListener('input', function () {
+                threshold = parseInt(this.value, 10);
+                if (img.src) {
+                    processImage(img, threshold);
+                }
+            });
+
+            // 添加下拉选框的事件监听器
+            optionSelect.addEventListener('change', function () {
+                coverProcessMethod = this.value;
+                if (img.src) {
+                    processImage(img, threshold);
+                }
+            });
+        };
+    </script>
+</body>
+
+</html>
