@@ -12,7 +12,7 @@
         gtag('config', 'G-43TMHBXPHM');
     </script>
 
-    <title>Mirage Image Decode</title>
+    <title>光棱坦克显形</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -22,9 +22,58 @@
             justify-content: center;
             align-items: center;
             flex-direction: column;
-            margin-top: 50px;
+            margin-top: 30px;
             background-color: #000;
             color: #fff;
+        }
+
+        input[type=text],
+        input[type=file],
+        button,
+        select {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #555;
+        }
+
+        .selectContainer {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .selectContainer select {
+            margin-left: 10px;
+        }
+
+        .imageSelect {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .fileInput {
+            display: flex;
+            align-items: center;
+        }
+
+        .fileInput label {
+            margin-right: 5px;
+        }
+
+        .urlInput {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .urlInput label {
+            margin-right: 5px;
+        }
+
+        .urlInput input[type=text] {
+            margin-right: 5px;
         }
 
         #canvas {
@@ -34,42 +83,29 @@
             margin-top: 20px;
         }
 
-        .slider-container {
+        .thresSlider {
             display: flex;
             align-items: center;
             margin-top: 20px;
         }
 
-        .slider-container input[type=range] {
+        .thresSlider input[type=range] {
             margin-left: 10px;
             width: 300px;
         }
 
-        .checkbox-container {
+        .reverseCheckbox {
             display: flex;
             align-items: center;
             margin-top: 10px;
         }
 
-        input[type=file] {
-            margin-top: 20px;
-        }
-
-        input[type=text],
-        button,
-        select {
-            background-color: #333;
-            color: #fff;
-            border: 1px solid #555;
-        }
-
-        button {
+        .saveButton {
             margin-top: 20px;
         }
 
         .link-container {
             margin-top: 20px;
-            /* 设置间隔大小 */
         }
     </style>
 </head>
@@ -78,7 +114,7 @@
     <h1>光棱坦克显形</h1>
 
     <div class="selectContainer">
-        <label for="optionSelect">选择表图像素处理方式: </label>
+        <label for="optionSelect">1. 选择表图像素处理方式: </label>
         <select id="optionSelect">
             <option value="black">黑色处理</option>
             <option value="white">白色处理</option>
@@ -87,12 +123,16 @@
         </select>
     </div>
 
-    <input type="file" id="imageInput" accept="image/*" title="选择一个图像文件">
-
-    <div>
-        <label for="imageUrlInput">或从URL加载图片:</label>
-        <input type="text" id="imageUrlInput" placeholder="输入图片URL">
-        <button id="loadImageButton">加载图片</button>
+    <div class="imageSelect">
+        <div class="fileInput">
+            <label for="imageInput">2.</label>
+            <input type="file" id="imageInput" accept="image/*" title="选择一个图像文件">
+        </div>
+        <div class="urlInput">
+            <label for="imageUrlInput">或从URL加载图片:</label>
+            <input type="text" id="imageUrlInput" placeholder="输入图片URL">
+            <button id="loadImageButton">加载图片</button>
+        </div>
     </div>
 
     <div><small>(目前暂未支持所有URL, 例如百度贴吧的图片链接无效)</small></div>
@@ -100,17 +140,19 @@
 
     <canvas id="canvas"></canvas>
 
-    <div class="slider-container">
-        <label for="thresholdRange">滑动直至图像清晰: </label>
+    <div class="thresSlider">
+        <label for="thresholdRange">3. 滑动直至图像清晰: </label>
         <input type="range" id="thresholdRange" min="0" max="255" value="24">
     </div>
 
-    <div class="checkbox-container">
+    <div class="reverseCheckbox">
         <input type="checkbox" id="reverseCheckbox">
         <label for="reverseCheckbox">是否为反向隐写<small>（如果无论如何都调不出来可以勾上试试）</small></label>
     </div>
 
-    <button id="saveImageButton">保存图像</button>
+    <div class="saveButton">
+        <button id="saveImageButton">保存图像</button>
+    </div>
 
     <div class="link-container">
         <small><a href="https://github.com/Uyanide" target="_blank">Github - Uyanide</a></small>
