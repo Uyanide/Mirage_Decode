@@ -60,6 +60,8 @@
         <input type="range" id="thresholdRange" min="0" max="255" value="24">
     </div>
 
+    <button id="saveImageButton">保存图像</button>
+
     <script>
         var coverProcessMethod = "black";
         var threshold = 24;
@@ -151,6 +153,15 @@
                         processImage(img, threshold);
                     };
                 }
+            });
+
+            document.getElementById('saveImageButton').addEventListener('click', function () {
+                var canvas = document.getElementById('canvas');
+                var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+                var link = document.createElement('a');
+                link.download = 'processed-image.png';
+                link.href = image;
+                link.click();
             });
         };
     </script>
