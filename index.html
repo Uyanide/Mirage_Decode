@@ -46,7 +46,7 @@
         }
 
         .selectContainer select {
-            margin-left: 10px;
+            margin-left: 5px;
         }
 
         .imageSelect {
@@ -85,10 +85,6 @@
             margin-top: 10px;
         }
 
-        .pasteInput label {
-            margin-right: 5px;
-        }
-
         .dragInputHint {
             margin-top: 10px;
         }
@@ -120,8 +116,46 @@
             margin-top: 20px;
         }
 
-        .link-container {
-            margin-top: 20px;
+        a {
+            color: #4baeff;
+        }
+
+        .infoLink {
+            margin-top: 50px;
+            font-size: 14px;
+        }
+
+        .profileLink {
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .repoLink {
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        .privacyButton button {
+            margin-top: 5px;
+            background-color: #000000;
+            color: #4baeff;
+            border: 0px solid #555;
+            font-size: 12px;
+        }
+
+        button:hover,
+        .profileLink:hover,
+        .repoLink:hover,
+        .infoLink:hover {
+            transform: scale(1.05);
+            transition: transform 0.2s
+        }
+
+        .privacyPolicy {
+            text-align: center;
+            color: #ccc;
+            max-width: min(100%, 600px);
+            font-size: 12px;
         }
     </style>
 </head>
@@ -145,13 +179,12 @@
             <input type="file" id="imageInput" accept="image/*" title="选择一个图像文件">
         </div>
         <div class="urlInput">
-            <label for="imageUrlInput">或从URL加载图片:</label>
+            <label for="imageUrlInput">或从URL:</label>
             <input type="text" id="imageUrlInput" placeholder="输入图片URL">
             <button id="loadImageButton">加载图片</button>
         </div>
         <div class="pasteInput">
-            <label for="imagePasteButton">或从剪贴板粘贴图片: </label>
-            <button id="imagePasteButton">确认粘贴</button>
+            或从剪贴板粘贴图片 (ctrl+v)，
         </div>
         <div class="dragInputHint">
             或直接将图片拖进窗口。
@@ -176,8 +209,27 @@
         <button id="saveImageButton">保存图像</button>
     </div>
 
-    <div class="link-container">
-        <small><a href="https://github.com/Uyanide" target="_blank">Github - Uyanide</a></small>
+    <div class="infoLink">
+        <small><a href="https://tieba.baidu.com/p/9093709508" target="_blank">什么是光棱坦克？</a></small>
+    </div>
+
+    <div class="profileLink">
+        <small><a href="https://github.com/Uyanide" target="_blank">Github - Uyanide (我)</a></small>
+    </div>
+
+    <div class="repoLink">
+        <small><a href="https://github.com/Uyanide/Mirage_Decode/tree/main" target="_blank">Github -
+                Mirage_Decode (本项目)</a></small>
+    </div>
+
+    <div class="privacyButton">
+        <button id="togglePrivacyPolicy">显示隐私说明</button>
+    </div>
+
+    <div class="privacyPolicy" id="privacyPolicy" style="display: none;">
+        <p>本网站使用Google Analytics记录访问者的行为。通过使用本网站，您同意数据按照Google Analytics的条款和隐私政策进行处理。更多信息，请访问:<a
+                href="https://policies.google.com/privacy" target="_blank">Google
+                Analytics的隐私政策。</a></p>
     </div>
 
     <script>
@@ -197,6 +249,7 @@
             }
 
             updateImage(img) {
+                console.log('updateImage');
                 this.img = img;
                 const canvas = document.getElementById('canvas');
                 const ctx = canvas.getContext('2d');
@@ -208,6 +261,7 @@
             }
 
             processImage() {
+                console.log('processImage');
                 var imgDataCopy = new ImageData(new Uint8ClampedArray(this.imgData.data), this.imgData.width, this.imgData.height);
                 var data = imgDataCopy.data;
                 if (!this.reverse) {
@@ -275,7 +329,7 @@
                 img.onerror = reject;
 
                 if (typeof input === 'string') {
-                    img.crossOrigin = 'anonymous'; // 仅当从URL加载时设置
+                    img.crossOrigin = 'anonymous';
                     img.src = input;
                 } else if (input instanceof File) {
                     const reader = new FileReader();
@@ -309,7 +363,35 @@
             }
         }
 
+        // 禁用滚动
+        function disableScroll() {
+            scrollPosition = window.pageYOffset;
+            window.onscroll = function () {
+                window.scrollTo(0, scrollPosition);
+            };
+        }
+
+        // 恢复滚动
+        function enableScroll() {
+            window.onscroll = null;
+        }
+
+        // 设置事件监听器
         function setupEventListeners() {
+            // 隐私说明按钮事件监听
+            document.getElementById('togglePrivacyPolicy').addEventListener('click', function () {
+                var privacyPolicy = document.getElementById('privacyPolicy');
+                if (privacyPolicy.style.display === 'none') {
+                    privacyPolicy.style.display = 'block';
+                    this.textContent = '隐藏隐私说明';
+                    window.scrollTo(0, document.body.scrollHeight);
+                } else {
+                    privacyPolicy.style.display = 'none';
+                    this.textContent = '显示隐私说明';
+                }
+            });
+
+            // 图像加载事件监听
             document.getElementById('imageInput').addEventListener('change', (event) => {
                 const file = event.target.files[0];
                 try {
@@ -325,6 +407,7 @@
                 }
             });
 
+            // 加载图片按钮事件监听
             document.getElementById('loadImageButton').addEventListener('click', async () => {
                 const imageUrl = document.getElementById('imageUrlInput').value;
                 if (imageUrl) {
@@ -341,8 +424,7 @@
                 }
             });
 
-            document.getElementById('imagePasteButton').addEventListener('click', updateImageFromClipboard);
-
+            // 滑动条事件监听，设置阈值
             document.getElementById('thresholdRange').addEventListener('input', () => {
                 imageProcessor.threshold = parseInt(document.getElementById('thresholdRange').value, 10);
                 if (imageProcessor.img) {
@@ -350,6 +432,7 @@
                 }
             });
 
+            // 选择表图像素处理方式
             document.getElementById('optionSelect').addEventListener('change', () => {
                 imageProcessor.coverProcessMethod = document.getElementById('optionSelect').value;
                 if (imageProcessor.img) {
@@ -357,6 +440,7 @@
                 }
             });
 
+            // 切换反向隐写
             document.getElementById('reverseCheckbox').addEventListener('change', () => {
                 imageProcessor.reverse = document.getElementById('reverseCheckbox').checked;
                 if (imageProcessor.img) {
@@ -364,6 +448,7 @@
                 }
             });
 
+            // 保存图像
             document.getElementById('saveImageButton').addEventListener('click', () => {
                 const canvas = document.getElementById('canvas');
                 const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
@@ -373,6 +458,7 @@
                 link.click();
             });
 
+            // 图像加载失败时，显示默认图像
             document.getElementById('originalImage').addEventListener('error', () => {
                 console.error('图像加载失败');
                 alert('无法加载图像, 请确保图像可访问。');
@@ -380,6 +466,7 @@
                 imageProcessor.updateImage(document.getElementById('originalImage'));
             });
 
+            // 添加粘贴图片加载的事件监听器
             window.addEventListener('paste', (event) => {
                 const items = (event.clipboardData || event.originalEvent.clipboardData).items;
                 for (const item of items) {
@@ -409,14 +496,23 @@
                     }
                 }
             });
+
+            var slider = document.getElementById('thresholdRange');
+            var scrollPosition = 0;
+
+            // 监听滑动条的mousedown事件，禁止滚动
+            slider.addEventListener('mousedown', function () {
+                disableScroll();
+            });
+
+            // 监听全局的mouseup事件，恢复滚动
+            document.addEventListener('mouseup', function () {
+                enableScroll();
+            });
         }
 
         window.onload = function () {
             setupEventListeners();
-
-            var imageInput = document.getElementById('imageInput');
-            var thresholdRange = document.getElementById('thresholdRange');
-            var optionSelect = document.getElementById('optionSelect');
 
             var defaultSrc = 'default.png';
             var defaultImg = new Image();
