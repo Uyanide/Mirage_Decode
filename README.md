@@ -2,8 +2,11 @@
 
 # 光棱坦克显形（静态网页小工具）
 
-## Github Pages链接：
+## Vercel链接：
 [光棱坦克显形](https://mirage-decode.vercel.app)
+
+## Github Pages链接
+[光棱坦克显形](https://uyanide.github.io/Mirage_Decode/)
 
 ## 使用方法
 一看就懂
