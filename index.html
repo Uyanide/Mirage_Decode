@@ -12,6 +12,8 @@
         gtag('config', 'G-43TMHBXPHM');
     </script>
 
+    <link rel="icon" href="neko.ico" type="image/x-icon">
+
     <title>光棱坦克显形</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -87,6 +89,10 @@
             margin-right: 5px;
         }
 
+        .dragInputHint {
+            margin-top: 10px;
+        }
+
         #canvas {
             border: 1px solid #ddd;
             max-width: min(100%, 600px);
@@ -126,10 +132,10 @@
     <div class="selectContainer">
         <label for="optionSelect">1. 选择表图像素处理方式: </label>
         <select id="optionSelect">
-            <option value="black">黑色处理</option>
-            <option value="white">白色处理</option>
-            <option value="trans">透明处理</option>
-            <option value="neigh" selected>邻近处理</option>
+            <option value="black">置为黑色</option>
+            <option value="white">置为白色</option>
+            <option value="trans">置为透明</option>
+            <option value="neigh" selected>邻近生成</option>
         </select>
     </div>
 
@@ -144,8 +150,11 @@
             <button id="loadImageButton">加载图片</button>
         </div>
         <div class="pasteInput">
-            <label for="imagePasteButton">或从剪贴板粘贴图像: </label>
-            <button id="imagePasteButton">粘贴图像</button>
+            <label for="imagePasteButton">或从剪贴板粘贴图片: </label>
+            <button id="imagePasteButton">确认粘贴</button>
+        </div>
+        <div class="dragInputHint">
+            或直接将图片拖进窗口。
         </div>
     </div>
 
@@ -218,7 +227,7 @@
                     var ratio = 255 / (255 - this.threshold);
                     for (var i = 0; i < data.length; i += 4) {
                         var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                        if (avg >= threshold) {
+                        if (avg >= this.threshold) {
                             data[i] = (data[i] - this.threshold) * ratio;
                             data[i + 1] = (data[i + 1] - this.threshold) * ratio;
                             data[i + 2] = (data[i + 2] - this.threshold) * ratio;
@@ -259,108 +268,163 @@
 
         const imageProcessor = new ImageProcessor();
 
+        async function loadImage(input) {
+            return new Promise((resolve, reject) => {
+                const img = new Image();
+                img.onload = () => resolve(img);
+                img.onerror = reject;
+
+                if (typeof input === 'string') {
+                    img.crossOrigin = 'anonymous'; // 仅当从URL加载时设置
+                    img.src = input;
+                } else if (input instanceof File) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        img.src = e.target.result;
+                    };
+                    reader.onerror = reject;
+                    reader.readAsDataURL(input);
+                } else {
+                    reject(new Error('Unsupported input type'));
+                }
+            });
+        }
+
+        async function updateImageFromClipboard() {
+            try {
+                const clipboardItems = await navigator.clipboard.read();
+                for (const clipboardItem of clipboardItems) {
+                    for (const type of clipboardItem.types) {
+                        if (type.startsWith('image/')) {
+                            const blob = await clipboardItem.getType(type);
+                            const src = URL.createObjectURL(blob);
+                            const img = await loadImage(src);
+                            imageProcessor.updateImage(img);
+                            return;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('无法从剪贴板读取图像:', error);
+            }
+        }
+
+        function setupEventListeners() {
+            document.getElementById('imageInput').addEventListener('change', (event) => {
+                const file = event.target.files[0];
+                try {
+                    loadImage(file).then((img) => {
+                        imageProcessor.updateImage(img);
+                    });
+                } catch (error) {
+                    console.error('图像加载失败:', error);
+                    alert('无法加载图像, 请确保图像文件状态。');
+                    loadImage('default.png').then((img) => {
+                        imageProcessor.updateImage(img);
+                    });
+                }
+            });
+
+            document.getElementById('loadImageButton').addEventListener('click', async () => {
+                const imageUrl = document.getElementById('imageUrlInput').value;
+                if (imageUrl) {
+                    try {
+                        const img = await loadImage(imageUrl);
+                        imageProcessor.updateImage(img);
+                    } catch (error) {
+                        console.error('图像加载失败:', error);
+                        alert('无法加载图像, 请确保图像可访问。');
+                        loadImage('default.png').then((img) => {
+                            imageProcessor.updateImage(img);
+                        });
+                    }
+                }
+            });
+
+            document.getElementById('imagePasteButton').addEventListener('click', updateImageFromClipboard);
+
+            document.getElementById('thresholdRange').addEventListener('input', () => {
+                imageProcessor.threshold = parseInt(document.getElementById('thresholdRange').value, 10);
+                if (imageProcessor.img) {
+                    imageProcessor.processImage();
+                }
+            });
+
+            document.getElementById('optionSelect').addEventListener('change', () => {
+                imageProcessor.coverProcessMethod = document.getElementById('optionSelect').value;
+                if (imageProcessor.img) {
+                    imageProcessor.processImage();
+                }
+            });
+
+            document.getElementById('reverseCheckbox').addEventListener('change', () => {
+                imageProcessor.reverse = document.getElementById('reverseCheckbox').checked;
+                if (imageProcessor.img) {
+                    imageProcessor.processImage();
+                }
+            });
+
+            document.getElementById('saveImageButton').addEventListener('click', () => {
+                const canvas = document.getElementById('canvas');
+                const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
+                const link = document.createElement('a');
+                link.download = 'output.png';
+                link.href = image;
+                link.click();
+            });
+
+            document.getElementById('originalImage').addEventListener('error', () => {
+                console.error('图像加载失败');
+                alert('无法加载图像, 请确保图像可访问。');
+                document.getElementById('originalImage').src = 'default.png';
+                imageProcessor.updateImage(document.getElementById('originalImage'));
+            });
+
+            window.addEventListener('paste', (event) => {
+                const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+                for (const item of items) {
+                    if (item.type.indexOf('image') !== -1) {
+                        const blob = item.getAsFile();
+                        const src = URL.createObjectURL(blob);
+                        loadImage(src).then((img) => {
+                            imageProcessor.updateImage(img);
+                        });
+                    }
+                }
+            });
+
+            // 添加拖拽图片加载的事件监听器
+            document.body.addEventListener('dragover', (event) => {
+                event.preventDefault();
+            });
+            document.body.addEventListener('drop', async (event) => {
+                event.preventDefault();
+                if (event.dataTransfer.items) {
+                    for (const item of event.dataTransfer.items) {
+                        if (item.kind === 'file') {
+                            const file = item.getAsFile();
+                            const img = await loadImage(file);
+                            imageProcessor.updateImage(img);
+                        }
+                    }
+                }
+            });
+        }
+
         window.onload = function () {
-            var img = document.getElementById('originalImage');
+            setupEventListeners();
+
             var imageInput = document.getElementById('imageInput');
             var thresholdRange = document.getElementById('thresholdRange');
             var optionSelect = document.getElementById('optionSelect');
 
             var defaultSrc = 'default.png';
             var defaultImg = new Image();
+            defaultImg.crossOrigin = 'anonymous';
             defaultImg.onload = function () {
                 imageProcessor.updateImage(defaultImg);
             };
             defaultImg.src = defaultSrc;
-
-            // 加载图像
-
-            imageInput.addEventListener('change', function (event) {
-                var file = event.target.files[0];
-                var reader = new FileReader();
-                reader.onload = function (e) {
-                    img.src = e.target.result;
-                    img.onload = function () {
-                        imageProcessor.updateImage(img);
-                    };
-                };
-                reader.readAsDataURL(file);
-            });
-
-            document.getElementById('loadImageButton').addEventListener('click', function () {
-                var imageUrl = document.getElementById('imageUrlInput').value;
-                if (imageUrl) {
-                    img.src = imageUrl;
-                    img.onload = function () {
-                        imageProcessor.updateImage(img);
-                    };
-                }
-            });
-
-            document.getElementById('imagePasteButton').addEventListener('click', async function () {
-                try {
-                    const clipboardItems = await navigator.clipboard.read();
-                    for (const clipboardItem of clipboardItems) {
-                        for (const type of clipboardItem.types) {
-                            if (type.startsWith('image/')) {
-                                const blob = await clipboardItem.getType(type);
-                                const reader = new FileReader();
-                                reader.onload = function (event) {
-                                    const img = document.getElementById('originalImage');
-                                    img.onload = function () {
-                                        imageProcessor.updateImage(img);
-                                    };
-                                    img.src = event.target.result;
-                                };
-                                reader.readAsDataURL(blob);
-                                return;
-                            }
-                        }
-                    }
-                } catch (error) {
-                    console.error('无法从剪贴板读取图像:', error);
-                }
-            });
-
-            // 更改参数
-
-            thresholdRange.addEventListener('input', function () {
-                imageProcessor.threshold = parseInt(this.value, 10);
-                if (img.src) {
-                    imageProcessor.processImage(img);
-                }
-            });
-
-            optionSelect.addEventListener('change', function () {
-                imageProcessor.coverProcessMethod = this.value;
-                if (img.src) {
-                    imageProcessor.processImage(img);
-                }
-            });
-
-            document.getElementById('reverseCheckbox').addEventListener('change', function () {
-                imageProcessor.reverse = this.checked;
-                if (img.src) {
-                    imageProcessor.processImage(img);
-                }
-            });
-
-            img.addEventListener('error', function () {
-                console.error('图像加载失败');
-                alert('无法加载图像, 请确保图像可访问。');
-                img.src = defaultSrc;
-                imageProcessor.updateImage(img);
-            });
-
-            // 保存图像
-
-            document.getElementById('saveImageButton').addEventListener('click', function () {
-                var canvas = document.getElementById('canvas');
-                var image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-                var link = document.createElement('a');
-                link.download = 'output.png';
-                link.href = image;
-                link.click();
-            });
         };
     </script>
 </body>
