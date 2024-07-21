@@ -369,7 +369,22 @@
             }
         }
 
+        // 禁用滚动
+        function disableScroll() {
+            scrollPosition = window.pageYOffset;
+            window.onscroll = function () {
+                window.scrollTo(0, scrollPosition);
+            };
+        }
+
+        // 恢复滚动
+        function enableScroll() {
+            window.onscroll = null;
+        }
+
+        // 设置事件监听器
         function setupEventListeners() {
+            // 图像加载事件监听
             document.getElementById('imageInput').addEventListener('change', (event) => {
                 const file = event.target.files[0];
                 try {
@@ -385,6 +400,7 @@
                 }
             });
 
+            // 加载图片按钮事件监听
             document.getElementById('loadImageButton').addEventListener('click', async () => {
                 const imageUrl = document.getElementById('imageUrlInput').value;
                 if (imageUrl) {
@@ -401,8 +417,10 @@
                 }
             });
 
+            // 粘贴图片按钮事件监听
             document.getElementById('imagePasteButton').addEventListener('click', updateImageFromClipboard);
 
+            // 滑动条事件监听，设置阈值
             document.getElementById('thresholdRange').addEventListener('input', () => {
                 imageProcessor.threshold = parseInt(document.getElementById('thresholdRange').value, 10);
                 if (imageProcessor.img) {
@@ -410,6 +428,7 @@
                 }
             });
 
+            // 选择表图像素处理方式
             document.getElementById('optionSelect').addEventListener('change', () => {
                 imageProcessor.coverProcessMethod = document.getElementById('optionSelect').value;
                 if (imageProcessor.img) {
@@ -417,6 +436,7 @@
                 }
             });
 
+            // 切换反向隐写
             document.getElementById('reverseCheckbox').addEventListener('change', () => {
                 imageProcessor.reverse = document.getElementById('reverseCheckbox').checked;
                 if (imageProcessor.img) {
@@ -424,6 +444,7 @@
                 }
             });
 
+            // 保存图像
             document.getElementById('saveImageButton').addEventListener('click', () => {
                 const canvas = document.getElementById('canvas');
                 const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
@@ -433,6 +454,7 @@
                 link.click();
             });
 
+            // 图像加载失败时，显示默认图像
             document.getElementById('originalImage').addEventListener('error', () => {
                 console.error('图像加载失败');
                 alert('无法加载图像, 请确保图像可访问。');
@@ -440,6 +462,7 @@
                 imageProcessor.updateImage(document.getElementById('originalImage'));
             });
 
+            // 添加粘贴图片加载的事件监听器
             window.addEventListener('paste', (event) => {
                 const items = (event.clipboardData || event.originalEvent.clipboardData).items;
                 for (const item of items) {
@@ -469,6 +492,16 @@
                     }
                 }
             });
+
+            // 监听滑动条的mousedown事件，禁止滚动
+            slider.addEventListener('mousedown', function () {
+                disableScroll();
+            });
+
+            // 监听全局的mouseup事件，恢复滚动
+            document.addEventListener('mouseup', function () {
+                enableScroll();
+            });
         }
 
         window.onload = function () {
@@ -477,6 +510,8 @@
             var imageInput = document.getElementById('imageInput');
             var thresholdRange = document.getElementById('thresholdRange');
             var optionSelect = document.getElementById('optionSelect');
+            var slider = document.getElementById('thresholdRange');
+            var scrollPosition = 0;
 
             var defaultSrc = 'default.png';
             var defaultImg = new Image();
