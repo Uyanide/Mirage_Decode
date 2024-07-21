@@ -85,10 +85,6 @@
             margin-top: 10px;
         }
 
-        .pasteInput label {
-            margin-right: 5px;
-        }
-
         .dragInputHint {
             margin-top: 10px;
         }
@@ -178,13 +174,12 @@
             <input type="file" id="imageInput" accept="image/*" title="选择一个图像文件">
         </div>
         <div class="urlInput">
-            <label for="imageUrlInput">或从URL加载图片:</label>
+            <label for="imageUrlInput">或从URL:</label>
             <input type="text" id="imageUrlInput" placeholder="输入图片URL">
             <button id="loadImageButton">加载图片</button>
         </div>
         <div class="pasteInput">
-            <label for="imagePasteButton">或从剪贴板粘贴图片: </label>
-            <button id="imagePasteButton">确认粘贴</button>
+            <label for="imagePasteButton">或从剪贴板粘贴图片 (ctrl+v)，</label>
         </div>
         <div class="dragInputHint">
             或直接将图片拖进窗口。
@@ -416,9 +411,6 @@
                     }
                 }
             });
-
-            // 粘贴图片按钮事件监听
-            document.getElementById('imagePasteButton').addEventListener('click', updateImageFromClipboard);
 
             // 滑动条事件监听，设置阈值
             document.getElementById('thresholdRange').addEventListener('input', () => {
