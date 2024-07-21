@@ -120,12 +120,43 @@
             margin-top: 20px;
         }
 
+        a {
+            color: #4baeff;
+        }
+
         .profileLink {
-            margin-top: 20px;
+            margin-top: 50px;
         }
 
         .repoLink {
-            margin-top: 10px;
+            margin-top: 5px;
+        }
+
+        .privacyNote {
+            text-align: center;
+            margin-top: 5px;
+        }
+
+        .privacyNote button {
+            background-color: #000000;
+            color: #4baeff;
+            border: 0px solid #555;
+            width: 100px;
+            font-size: 12px;
+        }
+
+        button:hover,
+        .profileLink:hover,
+        .repoLink:hover {
+            transform: scale(1.05);
+            transition: transform 0.2s
+        }
+
+        .privacyPolicy {
+            display: none;
+            color: #ccc;
+            max-width: 600px;
+            font-size: 12px;
         }
     </style>
 </head>
@@ -189,7 +220,28 @@
                 Mirage_Decode (本项目)</a></small>
     </div>
 
+    <div class="privacyNote">
+        <button id="togglePrivacyPolicy">显示隐私说明</button>
+        <div class="privacyPolicy" id="privacyPolicy">
+            <p>本网站使用Google Analytics记录访问者的行为。通过使用本网站，您同意数据按照Google Analytics的条款和隐私政策进行处理。更多信息，请访问<a
+                    href="https://policies.google.com/privacy" target="_blank">Google
+                    Analytics的隐私政策。</a></p>
+        </div>
+    </div>
+
     <script>
+        document.getElementById('togglePrivacyPolicy').addEventListener('click', function () {
+            var privacyPolicy = document.getElementById('privacyPolicy');
+            if (privacyPolicy.style.display === 'none') {
+                privacyPolicy.style.display = 'block';
+                this.textContent = '隐藏隐私说明';
+                window.scrollTo(0, document.body.scrollHeight);
+            } else {
+                privacyPolicy.style.display = 'none';
+                this.textContent = '显示隐私说明';
+            }
+        });
+
         class ImageProcessor {
             constructor() {
                 this.img = null;
