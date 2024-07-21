@@ -126,22 +126,19 @@
 
         .profileLink {
             margin-top: 50px;
+            font-size: 14px;
         }
 
         .repoLink {
             margin-top: 5px;
+            font-size: 14px;
         }
 
-        .privacyNote {
-            text-align: center;
+        .privacyButton button {
             margin-top: 5px;
-        }
-
-        .privacyNote button {
             background-color: #000000;
             color: #4baeff;
             border: 0px solid #555;
-            width: 100px;
             font-size: 12px;
         }
 
@@ -153,6 +150,7 @@
         }
 
         .privacyPolicy {
+            text-align: center;
             display: none;
             color: #ccc;
             max-width: min(100%, 600px);
@@ -220,13 +218,14 @@
                 Mirage_Decode (本项目)</a></small>
     </div>
 
-    <div class="privacyNote">
+    <div class="privacyButton">
         <button id="togglePrivacyPolicy">显示隐私说明</button>
-        <div class="privacyPolicy" id="privacyPolicy">
-            <p>本网站使用Google Analytics记录访问者的行为。通过使用本网站，您同意数据按照Google Analytics的条款和隐私政策进行处理。更多信息，请访问<a
-                    href="https://policies.google.com/privacy" target="_blank">Google
-                    Analytics的隐私政策。</a></p>
-        </div>
+    </div>
+
+    <div class="privacyPolicy" id="privacyPolicy">
+        <p>本网站使用Google Analytics记录访问者的行为。通过使用本网站，您同意数据按照Google Analytics的条款和隐私政策进行处理。更多信息，请访问:<a
+                href="https://policies.google.com/privacy" target="_blank">Google
+                Analytics的隐私政策。</a></p>
     </div>
 
     <script>
