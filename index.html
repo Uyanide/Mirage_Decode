@@ -147,7 +147,6 @@
 
         .privacyPolicy {
             text-align: center;
-            display: none;
             color: #ccc;
             max-width: min(100%, 600px);
             font-size: 12px;
@@ -217,25 +216,13 @@
         <button id="togglePrivacyPolicy">显示隐私说明</button>
     </div>
 
-    <div class="privacyPolicy" id="privacyPolicy">
+    <div class="privacyPolicy" id="privacyPolicy" style="display: none;">
         <p>本网站使用Google Analytics记录访问者的行为。通过使用本网站，您同意数据按照Google Analytics的条款和隐私政策进行处理。更多信息，请访问:<a
                 href="https://policies.google.com/privacy" target="_blank">Google
                 Analytics的隐私政策。</a></p>
     </div>
 
     <script>
-        document.getElementById('togglePrivacyPolicy').addEventListener('click', function () {
-            var privacyPolicy = document.getElementById('privacyPolicy');
-            if (privacyPolicy.style.display === 'none') {
-                privacyPolicy.style.display = 'block';
-                this.textContent = '隐藏隐私说明';
-                window.scrollTo(0, document.body.scrollHeight);
-            } else {
-                privacyPolicy.style.display = 'none';
-                this.textContent = '显示隐私说明';
-            }
-        });
-
         class ImageProcessor {
             constructor() {
                 this.img = null;
@@ -330,7 +317,7 @@
                 img.onerror = reject;
 
                 if (typeof input === 'string') {
-                    img.crossOrigin = 'anonymous'; // 仅当从URL加载时设置
+                    img.crossOrigin = 'anonymous';
                     img.src = input;
                 } else if (input instanceof File) {
                     const reader = new FileReader();
@@ -379,6 +366,19 @@
 
         // 设置事件监听器
         function setupEventListeners() {
+            // 隐私说明按钮事件监听
+            document.getElementById('togglePrivacyPolicy').addEventListener('click', function () {
+                var privacyPolicy = document.getElementById('privacyPolicy');
+                if (privacyPolicy.style.display === 'none') {
+                    privacyPolicy.style.display = 'block';
+                    this.textContent = '隐藏隐私说明';
+                    window.scrollTo(0, document.body.scrollHeight);
+                } else {
+                    privacyPolicy.style.display = 'none';
+                    this.textContent = '显示隐私说明';
+                }
+            });
+
             // 图像加载事件监听
             document.getElementById('imageInput').addEventListener('change', (event) => {
                 const file = event.target.files[0];
