@@ -85,6 +85,10 @@
             margin-top: 10px;
         }
 
+        .pasteInput label {
+            margin-right: 5px;
+        }
+
         .dragInputHint {
             margin-top: 10px;
         }
@@ -179,7 +183,8 @@
             <button id="loadImageButton">加载图片</button>
         </div>
         <div class="pasteInput">
-            <label for="imagePasteButton">或从剪贴板粘贴图片 (ctrl+v)， </label>
+            <label for="imagePasteButton">或从剪贴板粘贴图片: </label>
+            <button id="imagePasteButton">确认粘贴</button>
         </div>
         <div class="dragInputHint">
             或直接将图片拖进窗口。
@@ -392,6 +397,23 @@
                     loadImage('default.png').then((img) => {
                         imageProcessor.updateImage(img);
                     });
+                }
+            });
+
+            // 加载图片按钮事件监听
+            document.getElementById('loadImageButton').addEventListener('click', async () => {
+                const imageUrl = document.getElementById('imageUrlInput').value;
+                if (imageUrl) {
+                    try {
+                        const img = await loadImage(imageUrl);
+                        imageProcessor.updateImage(img);
+                    } catch (error) {
+                        console.error('图像加载失败:', error);
+                        alert('无法加载图像, 请确保图像可访问。');
+                        loadImage('default.png').then((img) => {
+                            imageProcessor.updateImage(img);
+                        });
+                    }
                 }
             });
 
