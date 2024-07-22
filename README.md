@@ -1,15 +1,15 @@
 <small> 第一次写前端…… </samll>
 
-# 光棱坦克工厂（静态网页小工具）
+# 基于色阶分离以及像素交错的隐写图显形与制作工具
 
 ## Vercel链接
-[光棱坦克显形](https://mirage-decode.vercel.app)
+[光棱坦克工厂](https://mirage-decode.vercel.app)
 
 ## Github Pages链接
-[光棱坦克显形](https://uyanide.github.io/Mirage_Decode/)
+[光棱坦克工厂](https://uyanide.github.io/Mirage_Decode/)
 
 ## 使用方法
 一看就懂
 
 ## 技术原理及思路来源
-[利用色阶分离和像素交错实现新世代幻影坦克](https://github.com/Uyanide/Mirage_Image)
+[Uyanide/Mirage_Image](https://github.com/Uyanide/Mirage_Image)
