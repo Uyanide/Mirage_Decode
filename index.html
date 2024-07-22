@@ -392,7 +392,7 @@
                     <button id="decodeLoadImageButton">加载图片</button>
                 </div>
                 <div id="decodePasteInput">
-                    或从剪贴板粘贴图片 (ctrl+v)，
+                    或从剪贴板粘贴图片 (ctrl+v),
                 </div>
                 <div id="decodeDragInputHint">
                     或直接将图片拖进窗口。
@@ -525,7 +525,7 @@
             var isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 800);
             var currCanvasId = 0;
 
-            class ImageProcessor {
+            class MirageDecoder {
                 constructor() {
                     this.img = null;
                     this.imgData = null;
@@ -541,7 +541,6 @@
                 }
 
                 updateImage(img) {
-                    console.log('updateImage:', img.src);
                     this.img = img;
                     const canvas = document.getElementById('decodeCanvas');
                     const ctx = canvas.getContext('2d');
@@ -611,7 +610,7 @@
                 }
             }
 
-            const imageProcessor = new ImageProcessor();
+            const imageProcessor = new MirageDecoder();
 
             /************************通用事件监听************************/
 
@@ -876,7 +875,7 @@
         </script>
 
         <script>
-            class mirageImage {
+            class MirageImage {
                 constructor() {
                     this.innerImg = null;
                     this.coverImg = null;
@@ -893,7 +892,6 @@
                 }
 
                 updateInnerImage(img) {
-                    console.log('updateInnerImage:', img.src);
                     this.innerImg = img;
                     const canvas = document.getElementById('innerCanvas');
                     const ctx = canvas.getContext('2d');
@@ -1050,7 +1048,7 @@
 
             }
 
-            const mirage = new mirageImage();
+            const mirage = new MirageImage();
 
             /********************编码事件监听*********************/
 
@@ -1294,7 +1292,6 @@
             window.onload = function () {
                 universalSetupEventListeners();
                 decodeSetupEventListeners();
-                console.log(window.innerWidth);
 
                 var defaultImg = new Image();
                 defaultImg.crossOrigin = 'anonymous';
