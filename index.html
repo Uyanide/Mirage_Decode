@@ -14,7 +14,7 @@
 
     <link rel="icon" href="neko.ico" type="image/x-icon">
 
-    <title>光棱坦克显形</title>
+    <title>光棱坦克工厂</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
@@ -27,77 +27,166 @@
             flex-direction: column;
             margin-top: 30px;
             background-color: #000;
-            color: #fff;
+            color: #dfdfdf;
         }
 
         input[type=text],
         input[type=file],
+        input[type=number],
         button,
+        .fileInputLabel,
         select {
             background-color: #333;
-            color: #fff;
+            color: #dfdfdf;
+            padding: 5px;
             border: 1px solid #555;
+            border-radius: 5px;
+            font-size: 15px;
         }
 
-        .selectContainer {
+        button:hover,
+        .link:hover,
+        .fileInputLabel:hover,
+        input[type="checkbox"]:hover {
+            transform: scale(1.05);
+            transition: transform 0.2s
+        }
+
+        button:hover,
+        .fileInputLabel:hover {
+            background-color: #444;
+        }
+
+        .title {
+            font-size: clamp(30px, 5vw, 50px);
+        }
+
+        .PageContainer {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 20px;
+            width: 90%;
+            max-width: 1000px;
+            min-width: 320px;
+        }
+
+        .TitleContainer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-direction: row;
+            gap: 5px;
+            width: 100%
+        }
+
+        .PageSwitchButton {
+            background-color: #242424;
+            color: #dfdfdf;
+            padding: 15px;
+            width: 100%;
+            border: none;
+            border-radius: 10px 10px 0 0;
+            font-size: 15px;
+        }
+
+        .PageSwitchButton:hover {
+            transform: none;
+        }
+
+        #decodeButton {
+            background-color: #242424;
+        }
+
+        #encodeButton {
+            background-color: #121212;
+        }
+
+        .DisplayArea {
+            background-color: #242424;
+            color: #dfdfdf;
+            border-radius: 0 0 15px 15px;
+            margin-top: 0px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: 100%;
+            position: relative;
+        }
+
+        #decodePage {
+            display: flex;
+        }
+
+        #encodePage {
+            display: none;
+        }
+
+        #decodeMethodSelect {
+            margin-top: 20px;
             display: flex;
             align-items: center;
-            margin-top: 20px;
         }
 
-        .selectContainer select {
-            margin-left: 10px;
+        #decodeMethodSelect select {
+            margin-left: 5px;
         }
 
-        .imageSelect {
+        #decodeImageSelect {
             display: flex;
             flex-direction: column;
             align-items: center;
             margin-top: 20px;
         }
 
-        .fileInput {
+        #decodeFileInput {
             display: flex;
             align-items: center;
         }
 
-        .fileInput label {
-            margin-right: 5px;
+        #decodeFileInput label {
+            margin-left: 5px;
         }
 
-        .urlInput {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        .urlInput label {
-            margin-right: 5px;
-        }
-
-        .urlInput input[type=text] {
-            margin-right: 5px;
-        }
-
-        .pasteInput {
+        #decodeUrlInput {
             display: flex;
             align-items: center;
             margin-top: 10px;
         }
 
-        .dragInputHint {
+        #decodeUrlInput label {
+            margin-right: 5px;
+        }
+
+        #decodeUrlInput input[type=text] {
+            margin-right: 5px;
+            width: 100px;
+        }
+
+        #decodePasteInput {
+            display: flex;
+            align-items: center;
             margin-top: 10px;
         }
 
-        #canvas {
-            border: 1px solid #ddd;
-            max-width: min(100%, 600px);
+        #decodeDragInputHint {
+            margin-top: 10px;
+        }
+
+        #decodeCanvas {
+            max-width: min(90%, 600px);
             margin-top: 20px;
+        }
+
+        Canvas {
+            border: 1px solid #dfdfdf;
         }
 
         .thresSlider {
             display: flex;
-            align-items: center;
+            max-width: 90%;
             margin-top: 20px;
         }
 
@@ -106,43 +195,155 @@
             width: 300px;
         }
 
-        .reverseCheckbox {
+        .checkbox {
             display: flex;
-            align-items: center;
+            max-width: 90%;
+        }
+
+        #decodeReverseCheckbox {
             margin-top: 10px;
         }
 
-        .saveButton {
+        #saveButton {
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        /**********************************************/
+
+        #encodeSourceInput {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+            margin-top: 20px;
+            width: 90%;
+        }
+
+        .encodeFileInput {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 50%;
+        }
+
+        .fileInputLabel {
+            background-color: #333;
+            color: #dfdfdf;
+            border: 1px solid #555;
+            border-radius: 5px;
+            padding: 5px;
+            cursor: pointer;
+        }
+
+        .encodeDrag {
+            margin-top: 10px;
+        }
+
+        #innerCanvas,
+        #coverCanvas {
+            max-width: min(90%, 400px);
             margin-top: 20px;
         }
+
+        .encodeSlider {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .encodeSlider input[type=range] {
+            width: 90%;
+        }
+
+        .thresInput {
+            display: flex;
+            align-items: center;
+            margin-top: 5px;
+        }
+
+        .thresInput input {
+            width: 50px;
+            margin-left: 5px;
+        }
+
+        #isCoverGray,
+        #isEncodeReverse,
+        #isPng {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        #encodeOutputSizeLimit {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        #encodeOutputSizeLimit input[type=number] {
+            width: 60px;
+            margin-left: 5px;
+        }
+
+        #encodeMethod {
+            display: flex;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        #encodeMethod select {
+            margin-left: 5px;
+        }
+
+        #encodeSizeRange {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        #encodeSizeRange input[type=range] {
+            width: 200px;
+        }
+
+        #outputCanvas {
+            max-width: min(90%, 800px);
+            margin-top: 20px;
+        }
+
+        #jumpButton {
+            margin-top: 20px;
+        }
+
+        /**********************************************/
 
         a {
             color: #4baeff;
         }
 
-        .profileLink {
-            margin-top: 50px;
-            font-size: 14px;
-        }
-
-        .repoLink {
+        .link {
             margin-top: 5px;
-            font-size: 14px;
+            font-size: 18px;
         }
 
-        .privacyButton button {
+        #infoLink {
+            margin-top: 0px;
+        }
+
+        #profileLink {
+            margin-top: 30px;
+        }
+
+        #privacyButton button {
             margin-top: 5px;
             background-color: #000000;
             color: #4baeff;
             border: 0px solid #555;
-            font-size: 12px;
-        }
-
-        button:hover,
-        .profileLink:hover,
-        .repoLink:hover {
-            transform: scale(1.05);
-            transition: transform 0.2s
+            font-size: 14px;
         }
 
         .privacyPolicy {
@@ -155,362 +356,970 @@
 </head>
 
 <body>
-    <h1>光棱坦克显形</h1>
+    <h1 class="title">光棱坦克工厂</h1>
 
-    <div class="selectContainer">
-        <label for="optionSelect">1. 选择表图像素处理方式: </label>
-        <select id="optionSelect">
-            <option value="black">置为黑色</option>
-            <option value="white">置为白色</option>
-            <option value="trans">置为透明</option>
-            <option value="neigh" selected>邻近生成</option>
-        </select>
+    <div class="link" , id="infoLink">
+        <small><a href="https://tieba.baidu.com/p/9093709508" target="_blank">什么是光棱坦克？</a></small>
     </div>
 
-    <div class="imageSelect">
-        <div class="fileInput">
-            <label for="imageInput">2.</label>
-            <input type="file" id="imageInput" accept="image/*" title="选择一个图像文件">
+    <div class="PageContainer">
+
+        <div class="TitleContainer">
+            <button class="PageSwitchButton" id="decodeButton">显形</button>
+            <button class="PageSwitchButton" id="encodeButton">制作</button>
         </div>
-        <div class="urlInput">
-            <label for="imageUrlInput">或从URL:</label>
-            <input type="text" id="imageUrlInput" placeholder="输入图片URL">
-            <button id="loadImageButton">加载图片</button>
+
+        <div class="DisplayArea" id="decodePage">
+            <div id="decodeMethodSelect">
+                <label for="optionSelect">1. 选择表图像素处理方式: </label>
+                <select id="optionSelect">
+                    <option value="black">置为黑色</option>
+                    <option value="white">置为白色</option>
+                    <option value="trans">置为透明</option>
+                    <option value="lcopy" selected>邻近生成</option>
+                </select>
+            </div>
+
+            <div id="decodeImageSelect">
+                <div id="decodeFileInput">
+                    <div>2.</div>
+                    <label for="decodeImageFileInput" class="fileInputLabel">选择图片文件</label>
+                    <input type="file" id="decodeImageFileInput" accept="image/*" style="display: none;">
+                </div>
+                <div id="decodeUrlInput">
+                    <label for="decodeImageUrlInput">或从URL:</label>
+                    <input type="text" id="decodeImageUrlInput" placeholder="输入图片URL">
+                    <button id="decodeLoadImageButton">加载图片</button>
+                </div>
+                <div id="decodePasteInput">
+                    或从剪贴板粘贴图片 (ctrl+v)，
+                </div>
+                <div id="decodeDragInputHint">
+                    或直接将图片拖进窗口。
+                </div>
+            </div>
+
+            <img id="originalImage" src="" alt="原始图像" crossorigin="anonymous" style="display:none;">
+            <canvas id="decodeCanvas"></canvas>
+
+            <div class="thresSlider">
+                <label for="decodeThresholdRange">3. 滑动直至图像清晰: </label>
+                <input type="range" id="decodeThresholdRange" min="0" max="255" value="24">
+            </div>
+
+            <div class="checkbox" id="decodeReverseCheckbox">
+                <input type="checkbox" id="decodeReverseInput">
+                <label for="decodeReverseInput">是否为反向隐写<small>（如果无论如何都调不出来可以勾上试试）</small></label>
+            </div>
+
+            <div id="saveButton">
+                <button id="decodeSaveImageButton">保存当前显示图像</button>
+            </div>
         </div>
-        <div class="pasteInput">
-            或从剪贴板粘贴图片 (ctrl+v)，
+
+        <div class="DisplayArea" id="encodePage">
+            <div id="encodeSourceInput">
+                <div class="encodeFileInput" , id="innerFileInput">
+                    <label for="innerSourceFileInput" class="fileInputLabel">选择里图</label>
+                    <input type="file" id="innerSourceFileInput" accept="image/*" style="display: none;">
+                    <lable for="innerCanvas" class="encodeDrag">或直接拖动至下方画布</lable>
+                    <lable for="innerCanvas" class="encodeDrag">或在下方画布处ctrl+v</lable>
+                    <canvas id="innerCanvas"></canvas>
+                    <slider class="encodeSlider">
+                        <label for="innerThresholdRange">里图色阶端点: </label>
+                        <label for="innerThresholdRange"><small>(越小隐写效果越好)</small></label>
+                        <input id="innerThresholdRange" type="range" min="0" max="128" value="32">
+                        <label for="innerThresholdRange"><small>(不应高于右侧值)</small></label>
+                    </slider>
+                    <div class="thresInput">
+                        <label for="innerThresholdInput">当前值: </label>
+                        <input type="number" id="innerThresholdInput" value="32">
+                    </div>
+                </div>
+
+                <div class="encodeFileInput" , id="coverFileInput">
+                    <label for="coverSourceFileInput" class="fileInputLabel">选择表图</label>
+                    <input type="file" id="coverSourceFileInput" accept="image/*" style="display: none;">
+                    <lable for="coverCanvas" class="encodeDrag">或直接拖动至下方画布</lable>
+                    <lable for="coverCanvas" class="encodeDrag">或在下方画布处ctrl+v</lable>
+                    <canvas id="coverCanvas"></canvas>
+                    <slider class="encodeSlider">
+                        <label for="coverThresholdRange">表图色阶端点: </label>
+                        <label for="coverThresholdRange"><small>(越大显形效果越好)</small></label>
+                        <input type="range" id="coverThresholdRange" min="0" max="128" value="48">
+                        <label for="coverThresholdRange"><small>(不应低于左侧值)</small></label>
+                    </slider>
+                    <div class="thresInput">
+                        <label for="coverThresholdInput">当前值: </label>
+                        <input type="number" id="coverThresholdInput" value="48">
+                    </div>
+                </div>
+            </div>
+
+            <checkbox id="isCoverGray">
+                <input type="checkbox" id="isCoverGrayCheckBox">
+                <label for="isCoverGrayCheckBox">表图是否取灰度</label>
+            </checkbox>
+
+            <checkbox id="isEncodeReverse">
+                <input type="checkbox" id="isEncodeReverseCheckBox">
+                <label for="isEncodeReverseCheckBox">是否反向隐写</label>
+            </checkbox>
+
+            <div id="encodeMethod">
+                <label for="encodeMethodSelect">选择像素混合方式: </label>
+                <select id="encodeMethodSelect">
+                    <option value="chess" selected>棋盘布局</option>
+                    <option value="gap_2">间隔2斜线</option>
+                    <option value="gap_3">间隔3斜线</option>
+                    <option value="gap_5">间隔5斜线</option>
+                </select>
+            </div>
+
+            <dev id="encodeOutputSizeLimit">
+                <label for="encodeSizeInput">输出图像最大长或宽 <small>(并非越大越好):</small> </label>
+                <input id="encodeSizeInput" type="number" value="1200">
+            </dev>
+
+            <canvas id="outputCanvas"></canvas>
+
+            <checkbox id="isPng">
+                <input type="checkbox" id="isPngCheckBox" checked>
+                <label for="isPngCheckBox">存为PNG <small>(否则为JPEG有损压缩)</small></label>
+            </checkbox>
+
+            <div id="jumpButton">
+                <button id="jumpToDecodeButton">以当前结果跳转显形界面</button>
+            </div>
+
+            <div id="saveButton">
+                <button id="encodeSaveImageButton">保存结果</button>
+            </div>
         </div>
-        <div class="dragInputHint">
-            或直接将图片拖进窗口。
+
+        <div class="link" , id="profileLink">
+            <small><a href="https://github.com/Uyanide" target="_blank">Github - Uyanide (我)</a></small>
         </div>
-    </div>
 
-    <img id="originalImage" src="" alt="原始图像" crossorigin="anonymous" style="display:none;">
+        <div class="link" , id="repoLink">
+            <small><a href="https://github.com/Uyanide/Mirage_Decode/tree/main" target="_blank">Github -
+                    Mirage_Decode (本项目)</a></small>
+        </div>
 
-    <canvas id="canvas"></canvas>
+        <div id="privacyButton">
+            <button id="togglePrivacyPolicy">显示隐私说明</button>
+        </div>
 
-    <div class="thresSlider">
-        <label for="thresholdRange">3. 滑动直至图像清晰: </label>
-        <input type="range" id="thresholdRange" min="0" max="255" value="24">
-    </div>
+        <div class="privacyPolicy" id="privacyPolicy" style="display: none;">
+            <p>本网站使用Google Analytics记录访问者的行为。通过使用本网站，您同意数据按照Google Analytics的条款和隐私政策进行处理。更多信息，请访问:<a
+                    href="https://policies.google.com/privacy" target="_blank">Google
+                    Analytics的隐私政策。</a></p>
+        </div>
 
-    <div class="reverseCheckbox">
-        <input type="checkbox" id="reverseCheckbox">
-        <label for="reverseCheckbox">是否为反向隐写<small>（如果无论如何都调不出来可以勾上试试）</small></label>
-    </div>
+        <script>
+            const defaultSrc = [
+                'default.png',
+                'neko.png',
+                'buta.png',
+            ];
+            var isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 800);
+            var currCanvasId = 0;
 
-    <div class="saveButton">
-        <button id="saveImageButton">保存图像</button>
-    </div>
+            class ImageProcessor {
+                constructor() {
+                    this.img = null;
+                    this.imgData = null;
+                    this.coverProcessMethod = "lcopy";
+                    this.threshold = 32;
+                    this.reverse = false;
+                }
 
-    <div class="profileLink">
-        <small><a href="https://github.com/Uyanide" target="_blank">Github - Uyanide (我)</a></small>
-    </div>
+                showImage(imgData) {
+                    const canvas = document.getElementById('decodeCanvas');
+                    const ctx = canvas.getContext('2d');
+                    ctx.putImageData(imgData, 0, 0);
+                }
 
-    <div class="repoLink">
-        <small><a href="https://github.com/Uyanide/Mirage_Decode/tree/main" target="_blank">Github -
-                Mirage_Decode (本项目)</a></small>
-    </div>
+                updateImage(img) {
+                    console.log('updateImage:', img.src);
+                    this.img = img;
+                    const canvas = document.getElementById('decodeCanvas');
+                    const ctx = canvas.getContext('2d');
+                    canvas.width = this.img.width;
+                    canvas.height = this.img.height;
+                    ctx.drawImage(this.img, 0, 0, canvas.width, canvas.height);
+                    this.imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    this.processImage();
+                }
 
-    <div class="privacyButton">
-        <button id="togglePrivacyPolicy">显示隐私说明</button>
-    </div>
-
-    <div class="privacyPolicy" id="privacyPolicy" style="display: none;">
-        <p>本网站使用Google Analytics记录访问者的行为。通过使用本网站，您同意数据按照Google Analytics的条款和隐私政策进行处理。更多信息，请访问:<a
-                href="https://policies.google.com/privacy" target="_blank">Google
-                Analytics的隐私政策。</a></p>
-    </div>
-
-    <script>
-        class ImageProcessor {
-            constructor() {
-                this.img = null;
-                this.imgData = null;
-                this.coverProcessMethod = "neigh";
-                this.threshold = 32;
-                this.reverse = false;
-            }
-
-            showImage(imgData) {
-                const canvas = document.getElementById('canvas');
-                const ctx = canvas.getContext('2d');
-                ctx.putImageData(imgData, 0, 0);
-            }
-
-            updateImage(img) {
-                this.img = img;
-                const canvas = document.getElementById('canvas');
-                const ctx = canvas.getContext('2d');
-                canvas.width = this.img.width;
-                canvas.height = this.img.height;
-                ctx.drawImage(this.img, 0, 0, canvas.width, canvas.height);
-                this.imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                this.processImage();
-            }
-
-            processImage() {
-                var imgDataCopy = new ImageData(new Uint8ClampedArray(this.imgData.data), this.imgData.width, this.imgData.height);
-                var data = imgDataCopy.data;
-                if (!this.reverse) {
-                    var ratio = 255 / this.threshold;
-                    for (var i = 0; i < data.length; i += 4) {
-                        var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                        if (avg <= this.threshold) {
-                            data[i] *= ratio;
-                            data[i + 1] *= ratio;
-                            data[i + 2] *= ratio;
-                        } else {
-                            this.processCoverPixel(data, i);
+                processImage() {
+                    var imgDataCopy = new ImageData(new Uint8ClampedArray(this.imgData.data), this.imgData.width, this.imgData.height);
+                    var data = imgDataCopy.data;
+                    if (!this.reverse) {
+                        var ratio = 255 / this.threshold;
+                        for (var i = 0; i < data.length; i += 4) {
+                            var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                            if (avg <= this.threshold) {
+                                data[i] *= ratio;
+                                data[i + 1] *= ratio;
+                                data[i + 2] *= ratio;
+                            } else {
+                                this.processCoverPixel(data, i);
+                            }
                         }
                     }
-                }
-                else {
-                    var ratio = 255 / (255 - this.threshold);
-                    for (var i = 0; i < data.length; i += 4) {
-                        var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                        if (avg >= this.threshold) {
-                            data[i] = (data[i] - this.threshold) * ratio;
-                            data[i + 1] = (data[i + 1] - this.threshold) * ratio;
-                            data[i + 2] = (data[i + 2] - this.threshold) * ratio;
-                        }
-                        else {
-                            this.processCoverPixel(data, i);
+                    else {
+                        var ratio = 255 / (255 - this.threshold);
+                        for (var i = 0; i < data.length; i += 4) {
+                            var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
+                            if (avg >= this.threshold) {
+                                data[i] = (data[i] - this.threshold) * ratio;
+                                data[i + 1] = (data[i + 1] - this.threshold) * ratio;
+                                data[i + 2] = (data[i + 2] - this.threshold) * ratio;
+                            }
+                            else {
+                                this.processCoverPixel(data, i);
+                            }
                         }
                     }
+                    this.showImage(imgDataCopy);
                 }
-                this.showImage(imgDataCopy);
-            }
 
-            processCoverPixel(data, i) {
-                switch (this.coverProcessMethod) {
-                    case 'neigh':
-                        if (i > 3) {
-                            data[i] = data[i - 4];
-                            data[i + 1] = data[i - 3];
-                            data[i + 2] = data[i - 2];
+                processCoverPixel(data, i) {
+                    switch (this.coverProcessMethod) {
+                        case 'lcopy':
+                            if (i) {
+                                data[i] = data[i - 4];
+                                data[i + 1] = data[i - 3];
+                                data[i + 2] = data[i - 2];
+                                break;
+                            } else { /*fallthrough*/ }
+                        case 'black':
+                            data[i] = 0;
+                            data[i + 1] = 0;
+                            data[i + 2] = 0;
                             break;
-                        }
-                    case 'black':
-                        data[i] = 0;
-                        data[i + 1] = 0;
-                        data[i + 2] = 0;
-                        break;
-                    case 'white':
-                        data[i] = 255;
-                        data[i + 1] = 255;
-                        data[i + 2] = 255;
-                        break;
-                    case 'trans':
-                        data[i + 3] = 0;
-                        break;
-                }
-            }
-        }
-
-        const imageProcessor = new ImageProcessor();
-
-        async function loadImage(input) {
-            return new Promise((resolve, reject) => {
-                const img = new Image();
-                img.onload = () => resolve(img);
-                img.onerror = reject;
-
-                if (typeof input === 'string') {
-                    img.crossOrigin = 'anonymous';
-                    img.src = input;
-                } else if (input instanceof File) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        img.src = e.target.result;
-                    };
-                    reader.onerror = reject;
-                    reader.readAsDataURL(input);
-                } else {
-                    reject(new Error('Unsupported input type'));
-                }
-            });
-        }
-
-        async function updateImageFromClipboard() {
-            try {
-                const clipboardItems = await navigator.clipboard.read();
-                for (const clipboardItem of clipboardItems) {
-                    for (const type of clipboardItem.types) {
-                        if (type.startsWith('image/')) {
-                            const blob = await clipboardItem.getType(type);
-                            const src = URL.createObjectURL(blob);
-                            const img = await loadImage(src);
-                            imageProcessor.updateImage(img);
-                            return;
-                        }
+                        case 'white':
+                            data[i] = 255;
+                            data[i + 1] = 255;
+                            data[i + 2] = 255;
+                            break;
+                        case 'trans':
+                            data[i + 3] = 0;
+                            break;
                     }
                 }
-            } catch (error) {
-                console.error('无法从剪贴板读取图像:', error);
             }
-        }
 
-        // 禁用滚动
-        function disableScroll() {
-            scrollPosition = window.pageYOffset;
-            window.onscroll = function () {
-                window.scrollTo(0, scrollPosition);
-            };
-        }
+            const imageProcessor = new ImageProcessor();
 
-        // 恢复滚动
-        function enableScroll() {
-            window.onscroll = null;
-        }
+            /************************通用事件监听************************/
 
-        // 设置事件监听器
-        function setupEventListeners() {
-            // 隐私说明按钮事件监听
-            document.getElementById('togglePrivacyPolicy').addEventListener('click', function () {
-                var privacyPolicy = document.getElementById('privacyPolicy');
-                if (privacyPolicy.style.display === 'none') {
-                    privacyPolicy.style.display = 'block';
-                    this.textContent = '隐藏隐私说明';
-                    window.scrollTo(0, document.body.scrollHeight);
-                } else {
-                    privacyPolicy.style.display = 'none';
-                    this.textContent = '显示隐私说明';
-                }
-            });
+            // 从源加载图像并返回
+            async function loadImage(input) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    img.onload = () => resolve(img);
+                    img.onerror = reject;
 
-            // 图像加载事件监听
-            document.getElementById('imageInput').addEventListener('change', (event) => {
-                const file = event.target.files[0];
-                try {
-                    loadImage(file).then((img) => {
-                        imageProcessor.updateImage(img);
-                    });
-                } catch (error) {
+                    if (typeof input === 'string') {
+                        img.crossOrigin = 'anonymous';
+                        img.src = input;
+                    } else if (input instanceof File) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            img.src = e.target.result;
+                        };
+                        reader.onerror = reject;
+                        reader.readAsDataURL(input);
+                    } else {
+                        reject(new Error('不支持的输入类型'));
+                    }
+                });
+            }
+
+            // 从文件加载图像，调用callback
+            async function updateImageFromFile(file, callback) {
+                loadImage(file).then((img) => {
+                    callback(img);
+                }).catch((error) => {
                     console.error('图像加载失败:', error);
                     alert('无法加载图像, 请确保图像文件状态。');
-                    loadImage('default.png').then((img) => {
-                        imageProcessor.updateImage(img);
+                    loadImage(defaultSrc[currCanvasId]).then((img) => {
+                        callback(img);
                     });
-                }
-            });
+                });
+            }
 
-            // 加载图片按钮事件监听
-            document.getElementById('loadImageButton').addEventListener('click', async () => {
-                const imageUrl = document.getElementById('imageUrlInput').value;
-                if (imageUrl) {
-                    try {
-                        const img = await loadImage(imageUrl);
-                        imageProcessor.updateImage(img);
-                    } catch (error) {
-                        console.error('图像加载失败:', error);
-                        alert('无法加载图像, 请确保图像可访问。');
-                        loadImage('default.png').then((img) => {
-                            imageProcessor.updateImage(img);
-                        });
-                    }
-                }
-            });
+            // 从URL加载图像，调用callback
+            async function updateImageFromURL(callback) {
+                const imageUrl = document.getElementById('decodeImageUrlInput').value;
+                loadImage(imageUrl).then((img) => {
+                    callback(img);
+                }).catch((error) => {
+                    console.error('图像加载失败:', error);
+                    alert('无法加载图像, 请确保图像可访问。');
+                    loadImage(defaultSrc[currCanvasId]).then((img) => {
+                        callback(img);
+                    });
+                });
+            }
 
-            // 滑动条事件监听，设置阈值
-            document.getElementById('thresholdRange').addEventListener('input', () => {
-                imageProcessor.threshold = parseInt(document.getElementById('thresholdRange').value, 10);
-                if (imageProcessor.img) {
-                    imageProcessor.processImage();
-                }
-            });
-
-            // 选择表图像素处理方式
-            document.getElementById('optionSelect').addEventListener('change', () => {
-                imageProcessor.coverProcessMethod = document.getElementById('optionSelect').value;
-                if (imageProcessor.img) {
-                    imageProcessor.processImage();
-                }
-            });
-
-            // 切换反向隐写
-            document.getElementById('reverseCheckbox').addEventListener('change', () => {
-                imageProcessor.reverse = document.getElementById('reverseCheckbox').checked;
-                if (imageProcessor.img) {
-                    imageProcessor.processImage();
-                }
-            });
-
-            // 保存图像
-            document.getElementById('saveImageButton').addEventListener('click', () => {
-                const canvas = document.getElementById('canvas');
-                const image = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream");
-                const link = document.createElement('a');
-                link.download = 'output.png';
-                link.href = image;
-                link.click();
-            });
-
-            // 图像加载失败时，显示默认图像
-            document.getElementById('originalImage').addEventListener('error', () => {
-                console.error('图像加载失败');
-                alert('无法加载图像, 请确保图像可访问。');
-                document.getElementById('originalImage').src = 'default.png';
-                imageProcessor.updateImage(document.getElementById('originalImage'));
-            });
-
-            // 添加粘贴图片加载的事件监听器
-            window.addEventListener('paste', (event) => {
+            // 从剪贴板更新图像，调用callback
+            async function updateImageFromClipboard(event, callback) {
                 const items = (event.clipboardData || event.originalEvent.clipboardData).items;
                 for (const item of items) {
                     if (item.type.indexOf('image') !== -1) {
                         const blob = item.getAsFile();
-                        const src = URL.createObjectURL(blob);
-                        loadImage(src).then((img) => {
-                            imageProcessor.updateImage(img);
+                        loadImage(blob).then((img) => {
+                            callback(img);
+                        }).catch((error) => {
+                            console.error('图像加载失败:', error);
+                            alert('无法加载图像, 请确保剪贴板图像文件状态。');
+                            loadImage(defaultSrc[currCanvasId]).then((img) => {
+                                callback(img);
+                            });
                         });
                     }
                 }
-            });
+            }
 
-            // 添加拖拽图片加载的事件监听器
-            document.body.addEventListener('dragover', (event) => {
-                event.preventDefault();
-            });
-            document.body.addEventListener('drop', async (event) => {
+            // 拖动文件加载图像
+            async function dragDropLoadImage(event, callback) {
                 event.preventDefault();
                 if (event.dataTransfer.items) {
                     for (const item of event.dataTransfer.items) {
                         if (item.kind === 'file') {
                             const file = item.getAsFile();
-                            const img = await loadImage(file);
-                            imageProcessor.updateImage(img);
+                            loadImage(file).then((img) => {
+                                callback(img);
+                            }).catch((error) => {
+                                console.error('图像加载失败:', error);
+                                alert('无法加载图像, 请确保拖动文件状态。');
+                                loadImage(defaultSrc[currCanvasId]).then((img) => {
+                                    callback(img);
+                                });
+                            });
                         }
                     }
                 }
-            });
+            }
 
-            var slider = document.getElementById('thresholdRange');
-            var scrollPosition = 0;
+            // 禁用滚动
+            function disableScroll() {
+                scrollPosition = window.pageYOffset;
+                window.onscroll = function () {
+                    window.scrollTo(0, scrollPosition);
+                };
+            }
 
-            // 监听滑动条的mousedown事件，禁止滚动
-            slider.addEventListener('mousedown', function () {
-                disableScroll();
-            });
+            // 恢复滚动
+            function enableScroll() {
+                window.onscroll = null;
+            }
 
-            // 监听全局的mouseup事件，恢复滚动
-            document.addEventListener('mouseup', function () {
-                enableScroll();
-            });
-        }
+            // 保存图像
+            function saveIamgeFromCanvas(canvasId) {
+                const canvas = document.getElementById(canvasId);
+                const link = document.createElement('a');
+                link.href = canvas.toDataURL('image/png');
+                link.download = 'output.png';
+                link.click();
+            }
 
-        window.onload = function () {
-            setupEventListeners();
+            var curPageId = 'decodePage';
+            // 切换页面显示
+            function switchPage() {
+                var decodePage = document.getElementById('decodePage');
+                var encodePage = document.getElementById('encodePage');
+                var decodeButton = document.getElementById('decodeButton');
+                var encodeButton = document.getElementById('encodeButton');
+                if (curPageId === 'decodePage') {
+                    decodePage.style.display = 'none';
+                    encodePage.style.display = 'flex';
+                    decodeButton.style.backgroundColor = '#121212';
+                    encodeButton.style.backgroundColor = '#242424';
+                    decodeRemoveEventListeners();
+                    encodeSetUpEventListeners();
+                    curPageId = 'encodePage';
+                } else {
+                    decodePage.style.display = 'flex';
+                    encodePage.style.display = 'none';
+                    decodeButton.style.backgroundColor = '#242424';
+                    encodeButton.style.backgroundColor = '#121212';
+                    decodeSetupEventListeners();
+                    encodeRemoveEventListeners();
+                    curPageId = 'decodePage';
+                }
+            }
 
-            var defaultSrc = 'default.png';
-            var defaultImg = new Image();
-            defaultImg.crossOrigin = 'anonymous';
-            defaultImg.onload = function () {
-                imageProcessor.updateImage(defaultImg);
+            function universalSetupEventListeners() {
+                // 隐私政策按钮事件监听
+                document.getElementById('togglePrivacyPolicy').addEventListener('click', () => {
+                    var privacyPolicy = document.getElementById('privacyPolicy');
+                    if (privacyPolicy.style.display === 'none') {
+                        privacyPolicy.style.display = 'block';
+                        this.textContent = '隐藏隐私说明';
+                        window.scrollTo(0, document.body.scrollHeight);
+                    } else {
+                        privacyPolicy.style.display = 'none';
+                        this.textContent = '显示隐私说明';
+                    }
+                });
+
+                // 禁用拖动默认事件
+                document.addEventListener('dragover', (event) => {
+                    event.preventDefault();
+                });
+            }
+
+            /************************解码事件监听************************/
+
+            // 从文件加载图像
+            function decodeLoadImageFile(event) {
+                const file = event.target.files[0];
+                updateImageFromFile(file, (img) => {
+                    imageProcessor.updateImage(img);
+                });
+            }
+
+            // 从URL加载图像
+            function decodeLoadImageURL() {
+                updateImageFromURL((img) => {
+                    imageProcessor.updateImage(img);
+                });
+            }
+
+            // 从剪贴板加载图像
+            function decodeLoadImageFromClipboard(event) {
+                updateImageFromClipboard(event, (img) => {
+                    imageProcessor.updateImage(img);
+                });
+            }
+
+            // 从拖动加载图像
+            function decodeLoadImageFromDrag(event) {
+                dragDropLoadImage(event, (img) => {
+                    imageProcessor.updateImage(img);
+                });
+            }
+
+            // 设置阈值
+            function decodeSetThreshold() {
+                imageProcessor.threshold = parseInt(document.getElementById('decodeThresholdRange').value, 10);
+                if (imageProcessor.img) {
+                    imageProcessor.processImage();
+                }
+            }
+
+            // 设置表图像素处理方式
+            function decodeSetCoverMethod() {
+                imageProcessor.coverProcessMethod = document.getElementById('optionSelect').value;
+                if (imageProcessor.img) {
+                    imageProcessor.processImage();
+                }
+            }
+
+            // 设置反向隐写
+            function decodeSetReverse() {
+                imageProcessor.reverse = document.getElementById('decodeReverseInput').checked;
+                if (imageProcessor.img) {
+                    imageProcessor.processImage();
+                }
+            }
+
+            // 保存图像
+            function decodeSaveImage() {
+                saveIamgeFromCanvas('decodeCanvas');
+            }
+
+            // 设置事件监听器
+            function decodeSetupEventListeners() {
+                // 图像加载事件监听
+                document.getElementById('decodeImageFileInput').addEventListener('change', decodeLoadImageFile);
+                document.getElementById('decodeLoadImageButton').addEventListener('click', decodeLoadImageURL);
+                if (!isOnPhone) {
+                    window.addEventListener('paste', decodeLoadImageFromClipboard);
+                    document.body.addEventListener('drop', decodeLoadImageFromDrag);
+                }
+                // 参数调整事件监听
+                document.getElementById('decodeThresholdRange').addEventListener('input', decodeSetThreshold);
+                document.getElementById('decodeMethodSelect').addEventListener('change', decodeSetCoverMethod);
+                document.getElementById('decodeReverseInput').addEventListener('change', decodeSetReverse);
+
+                // 保存图像
+                document.getElementById('decodeSaveImageButton').addEventListener('click', decodeSaveImage);
+
+                var slider = document.getElementById('decodeThresholdRange');
+                var scrollPosition = 0;
+                slider.addEventListener('mousedown', disableScroll);
+                document.addEventListener('mouseup', enableScroll);
+
+                // 切换页面
+                document.getElementById('encodeButton').addEventListener('click', switchPage);
+            }
+
+            // 移除事件监听器
+            function decodeRemoveEventListeners() {
+                document.getElementById('decodeImageFileInput').removeEventListener('change', decodeLoadImageFile);
+                document.getElementById('decodeLoadImageButton').removeEventListener('click', decodeLoadImageURL);
+                if (!isOnPhone) {
+                    window.removeEventListener('paste', decodeLoadImageFromClipboard);
+                    document.body.removeEventListener('drop', decodeLoadImageFromDrag);
+                }
+                document.getElementById('decodeThresholdRange').removeEventListener('input', decodeSetThreshold);
+                document.getElementById('decodeMethodSelect').removeEventListener('change', decodeSetCoverMethod);
+                document.getElementById('decodeReverseInput').removeEventListener('change', decodeSetReverse);
+                document.getElementById('decodeSaveImageButton').removeEventListener('click', decodeSaveImage);
+                document.getElementById('encodeButton').removeEventListener('click', switchPage);
+            }
+        </script>
+
+        <script>
+            class mirageImage {
+                constructor() {
+                    this.innerImg = null;
+                    this.coverImg = null;
+                    this.innerImgdata = null;
+                    this.coverImgdata = null;
+                    this.innerThreshold = 32;
+                    this.coverThreshold = 48;
+                    this.width = 0;
+                    this.heigt = 0;
+                    this.isCoverGray = false;
+                    this.isEncodeReverse = false;
+                    this.method = 2;
+                    this.size = 1200;
+                }
+
+                updateInnerImage(img) {
+                    console.log('updateInnerImage:', img.src);
+                    this.innerImg = img;
+                    const canvas = document.getElementById('innerCanvas');
+                    const ctx = canvas.getContext('2d');
+
+                    if (img.width > img.height) {
+                        if (img.width > this.size) {
+                            const ratio = this.size / img.width;
+                            canvas.width = this.size;
+                            canvas.height = img.height * ratio;
+                        } else {
+                            canvas.width = this.size;
+                            canvas.height = img.height * this.size / img.width;
+                        }
+                    } else {
+                        if (img.height > this.size) {
+                            const ratio = this.size / img.height;
+                            canvas.width = img.width * ratio;
+                            canvas.height = this.size;
+                        } else {
+                            canvas.width = img.width * this.size / img.height;
+                            canvas.height = this.size;
+                        }
+                    }
+
+                    this.width = canvas.width;
+                    this.height = canvas.height;
+
+                    ctx.drawImage(this.innerImg, 0, 0, canvas.width, canvas.height);
+                    this.innerImgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    if (this.coverImgdata) {
+                        this.updateCoverImage(this.coverImg);
+                    }
+                }
+
+                updateCoverImage(img) {
+                    this.coverImg = img;
+                    if (this.innerImgdata) {
+                        const imgRatio = img.width / img.height;
+                        const targetRatio = this.width / this.height;
+                        let cropArea;
+
+                        if (targetRatio > imgRatio) {
+                            const newHeight = img.width / targetRatio;
+                            cropArea = {
+                                x: 0,
+                                y: (img.height - newHeight) / 2,
+                                width: img.width,
+                                height: newHeight,
+                            };
+                        } else {
+                            const newWidth = img.height * targetRatio;
+                            cropArea = {
+                                x: (img.width - newWidth) / 2,
+                                y: 0,
+                                width: newWidth,
+                                height: img.height,
+                            };
+                        }
+
+                        const canvas = document.getElementById('coverCanvas');
+                        canvas.width = this.width;
+                        canvas.height = this.height;
+                        const ctx = canvas.getContext('2d');
+
+                        ctx.drawImage(
+                            img,
+                            cropArea.x,
+                            cropArea.y,
+                            cropArea.width,
+                            cropArea.height,
+                            0,
+                            0,
+                            this.width,
+                            this.height
+                        );
+
+                        this.coverImgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                        if (this.isCoverGray) {
+                            this.processCoverGray();
+                            ctx.putImageData(this.coverImgdata, 0, 0);
+                        }
+                        this.processImage();
+                    } else {
+                        const canvas = document.getElementById('coverCanvas');
+                        const ctx = canvas.getContext('2d');
+                        canvas.width = img.width;
+                        canvas.height = img.height;
+                        ctx.drawImage(this.coverImg, 0, 0, canvas.width, canvas.height);
+                        this.coverImgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                    }
+                }
+
+                processCoverGray() {
+                    var coverData = this.coverImgdata.data;
+                    for (let i = 0; i < coverData.length; i += 4) {
+                        const avg = (coverData[i] + coverData[i + 1] + coverData[i + 2]) / 3;
+                        coverData[i] = avg;
+                        coverData[i + 1] = avg;
+                        coverData[i + 2] = avg;
+                    }
+                }
+
+                compressLow(targ, data, i, rate, limit) {
+                    targ[i] = Math.floor(data[i] * rate);
+                    targ[i + 1] = Math.floor(data[i + 1] * rate);
+                    targ[i + 2] = Math.floor(data[i + 1] * rate);
+                }
+
+                compressHigh(targ, data, i, rate, limit) {
+                    targ[i] = Math.floor(data[i] * rate + limit);
+                    targ[i + 1] = Math.floor(data[i + 1] * rate + limit);
+                    targ[i + 2] = Math.floor(data[i + 1] * rate + limit);
+                }
+
+                processImage() {
+                    var innerData = this.innerImgdata.data;
+                    var coverData = this.coverImgdata.data;
+                    var outputData = new Uint8ClampedArray(innerData.length);
+
+                    const innerRate = this.innerThreshold / 255;
+                    const coverRate = 1 - this.coverThreshold / 255;
+                    let innerCompress, coverCompress, innerLimit, coverLimit;
+                    if (this.isEncodeReverse === false) {
+                        innerCompress = this.compressLow;
+                        coverCompress = this.compressHigh;
+                        innerLimit = 0;
+                        coverLimit = this.coverThreshold;
+                    } else {
+                        innerCompress = this.compressHigh;
+                        coverCompress = this.compressLow;
+                        innerLimit = 255 - this.innerThreshold;
+                        coverLimit = 0;
+                    }
+
+                    for (let i = 0, j = 0; i < innerData.length; i += 4, j++) {
+                        const col = j % this.width;
+                        const row = Math.floor(j / this.width);
+                        if ((col + row) % this.method === 0) {
+                            innerCompress(outputData, innerData, i, innerRate, innerLimit);
+                        } else {
+                            coverCompress(outputData, coverData, i, coverRate, coverLimit);
+                        }
+                        outputData[i + 3] = 255;
+                    }
+
+                    const canvas = document.getElementById('outputCanvas');
+                    canvas.width = this.width;
+                    canvas.height = this.height;
+                    const ctx = canvas.getContext('2d');
+                    const outputImgData = new ImageData(outputData, this.width, this.height);
+                    ctx.putImageData(outputImgData, 0, 0);
+
+                }
+
+            }
+
+            const mirage = new mirageImage();
+
+            /********************编码事件监听*********************/
+
+            // 从文件加载里图
+            function encodeLoadInnerImageFile(event) {
+                const file = event.target.files[0];
+                updateImageFromFile(file, (img) => {
+                    mirage.updateInnerImage(img);
+                });
+            }
+
+            // 从文件加载表图
+            function encodeLoadCoverImageFile(event) {
+                const file = event.target.files[0];
+                updateImageFromFile(file, (img) => {
+                    mirage.updateCoverImage(img);
+                });
+            }
+
+            // 从剪贴板加载表图
+            var mouseX = 0;
+            function updateMousePosition(event) {
+                mouseX = event.clientX;
+            }
+
+            // 从剪贴板加载里图
+            function encodeLoadImageFromClipboard(event) {
+                if (mouseX < window.innerWidth / 2) {
+                    updateImageFromClipboard(event, (img) => {
+                        mirage.updateInnerImage(img);
+                    });
+                } else {
+                    updateImageFromClipboard(event, (img) => {
+                        mirage.updateCoverImage(img);
+                    });
+                }
+            }
+
+            // 从拖动加载里图
+            function encodeLoadInnerImageFromDrag(event) {
+                dragDropLoadImage(event, (img) => {
+                    mirage.updateInnerImage(img);
+                });
+            }
+
+            // 从拖动加载表图
+            function encodeLoadCoverImageFromDrag(event) {
+                dragDropLoadImage(event, (img) => {
+                    mirage.updateCoverImage(img);
+                });
+            }
+
+            // 设置里图色阶
+            function encodeSetInnerThreshold() {
+                const slider = document.getElementById('innerThresholdRange');
+                const text = document.getElementById('innerThresholdInput');
+                mirage.innerThreshold = parseInt(slider.value, 10);
+                text.value = mirage.innerThreshold;
+                if (mirage.innerThreshold > mirage.coverThreshold) {
+                    mirage.innerThreshold = mirage.coverThreshold;
+                    slider.value = mirage.coverThreshold;
+                    text.value = mirage.coverThreshold;
+                    text.style.color = '#ff5e5e';
+                } else {
+                    text.style.color = '#dfdfdf';
+                }
+                if (mirage.innerImg && mirage.coverImg) {
+                    mirage.processImage();
+                }
+            }
+
+            // 设置表图色阶
+            function encodeSetCoverThreshold() {
+                const slider = document.getElementById('coverThresholdRange');
+                const text = document.getElementById('coverThresholdInput');
+                mirage.coverThreshold = parseInt(slider.value, 10);
+                text.value = mirage.coverThreshold;
+                if (mirage.innerThreshold > mirage.coverThreshold) {
+                    mirage.coverThreshold = mirage.innerThreshold;
+                    slider.value = mirage.innerThreshold;
+                    text.value = mirage.innerThreshold;
+                    text.style.color = '#ff5e5e';
+                } else {
+                    text.style.color = '#dfdfdf';
+                }
+                if (mirage.innerImg && mirage.coverImg) {
+                    mirage.processImage();
+                }
+            }
+
+            // 设置表图是否取灰度
+            function encodeSetCoverGray() {
+                mirage.isCoverGray = document.getElementById('isCoverGrayCheckBox').checked;
+                if (mirage.coverImg && mirage.innerImg) {
+                    mirage.updateCoverImage(mirage.coverImg);
+                }
+            }
+
+            // 设置是否反向隐写
+            function encodeSetEncodeReverse() {
+                mirage.isEncodeReverse = document.getElementById('isEncodeReverseCheckBox').checked;
+                if (mirage.innerImg && mirage.coverImg) {
+                    mirage.processImage();
+                }
+            }
+
+            // 设置像素混合方式
+            function encodeSetMethod() {
+                const method = document.getElementById('encodeMethodSelect').value;
+                switch (method) {
+                    case 'chess':
+                        mirage.method = 2;
+                        break;
+                    case 'gap_2':
+                        mirage.method = 3;
+                        break;
+                    case 'gap_3':
+                        mirage.method = 4;
+                        break;
+                    case 'gap_5':
+                        mirage.method = 6;
+                        break;
+                }
+                if (mirage.innerImg && mirage.coverImg) {
+                    mirage.updateInnerImage(mirage.innerImg);
+                }
+            }
+
+            // 设置输出图像大小
+            let sizeInputTimeout;
+            function encodeSetSize() {
+                clearTimeout(sizeInputTimeout);
+
+                sizeInputTimeout = setTimeout(function () {
+                    mirage.size = parseInt(document.getElementById('encodeSizeInput').value, 10);
+                    if (mirage.size > 4000) {
+                        mirage.size = 4000;
+                        document.getElementById('encodeSizeInput').value = 4000;
+                    } else if (mirage.size < 100) {
+                        mirage.size = 100;
+                        document.getElementById('encodeSizeInput').value = 100;
+                    }
+                    if (mirage.innerImg) {
+                        mirage.updateInnerImage(mirage.innerImg);
+                    }
+                }, 500);
+            }
+
+            // 设置保存类型
+            var isPng = false;
+            function setSaveType() {
+                isPng = document.getElementById('isPngCheckBox').checked;
+            }
+
+            // 以当前结果跳转显形界面
+            function jumpToDecode() {
+                if (mirage.innerImg && mirage.coverImg) {
+                    document.getElementById('decodeReverseInput').checked = mirage.isEncodeReverse;
+                    imageProcessor.reverse = mirage.isEncodeReverse;
+                    if (imageProcessor.reverse) {
+                        document.getElementById('decodeThresholdRange').value = 255 - mirage.innerThreshold;
+                        imageProcessor.threshold = 255 - mirage.innerThreshold;
+                    } else {
+                        document.getElementById('decodeThresholdRange').value = mirage.innerThreshold;
+                        imageProcessor.threshold = mirage.innerThreshold;
+                    }
+                    const canvas = document.getElementById('outputCanvas');
+                    const img = new Image();
+                    img.src = canvas.toDataURL('image/png');
+                    img.onload = function () {
+                        imageProcessor.updateImage(img);
+                        switchPage();
+                    };
+                }
+            }
+
+            // 保存图像
+            function encodeSaveImage() {
+                if (isPng) {
+                    saveIamgeFromCanvas('outputCanvas');
+                } else {
+                    const canvas = document.getElementById('outputCanvas');
+                    const link = document.createElement('a');
+                    link.href = canvas.toDataURL('image/jpeg', 1);
+                    link.download = 'output.jpg';
+                    link.click();
+                }
+            }
+
+            // 设置事件监听器
+            function encodeSetUpEventListeners() {
+
+                document.getElementById('decodeButton').addEventListener('click', switchPage);
+
+                document.getElementById('innerSourceFileInput').addEventListener('change', encodeLoadInnerImageFile);
+                document.getElementById('coverSourceFileInput').addEventListener('change', encodeLoadCoverImageFile);
+                if (!isOnPhone) {
+                    window.addEventListener('mousemove', updateMousePosition);
+                    window.addEventListener('paste', encodeLoadImageFromClipboard);
+
+                    document.getElementById('innerCanvas').addEventListener('drop', encodeLoadInnerImageFromDrag);
+                    document.getElementById('coverCanvas').addEventListener('drop', encodeLoadCoverImageFromDrag);
+                }
+
+                document.getElementById('innerThresholdRange').addEventListener('input', encodeSetInnerThreshold);
+                document.getElementById('coverThresholdRange').addEventListener('input', encodeSetCoverThreshold);
+
+                document.getElementById('isCoverGrayCheckBox').addEventListener('change', encodeSetCoverGray);
+                document.getElementById('isEncodeReverseCheckBox').addEventListener('change', encodeSetEncodeReverse);
+
+                document.getElementById('encodeMethodSelect').addEventListener('change', encodeSetMethod);
+                document.getElementById('encodeSizeInput').addEventListener('input', encodeSetSize);
+
+                document.getElementById('isPngCheckBox').addEventListener('change', setSaveType);
+                document.getElementById('jumpToDecodeButton').addEventListener('click', jumpToDecode);
+                document.getElementById('encodeSaveImageButton').addEventListener('click', encodeSaveImage);
+            }
+
+            function encodeRemoveEventListeners() {
+                document.getElementById('decodeButton').removeEventListener('click', switchPage);
+
+                document.getElementById('innerSourceFileInput').removeEventListener('change', encodeLoadInnerImageFile);
+                document.getElementById('coverSourceFileInput').removeEventListener('change', encodeLoadCoverImageFile);
+                if (!isOnPhone) {
+                    window.removeEventListener('mousemove', updateMousePosition);
+                    window.removeEventListener('paste', encodeLoadImageFromClipboard);
+                    document.getElementById('innerCanvas').removeEventListener('drop', encodeLoadInnerImageFromDrag);
+                    document.getElementById('coverCanvas').removeEventListener('drop', encodeLoadCoverImageFromDrag);
+                }
+                document.getElementById('innerThresholdRange').removeEventListener('input', encodeSetInnerThreshold);
+                document.getElementById('coverThresholdRange').removeEventListener('input', encodeSetCoverThreshold);
+                document.getElementById('isCoverGrayCheckBox').removeEventListener('change', encodeSetCoverGray);
+                document.getElementById('isEncodeReverseCheckBox').removeEventListener('change', encodeSetEncodeReverse);
+                document.getElementById('encodeMethodSelect').removeEventListener('change', encodeSetMethod);
+                document.getElementById('encodeSizeInput').removeEventListener('input', encodeSetSize);
+                document.getElementById('jumpToDecodeButton').removeEventListener('click', jumpToDecode);
+                document.getElementById('encodeSaveImageButton').removeEventListener('click', encodeSaveImage);
+            }
+        </script>
+        <script>
+            window.onload = function () {
+                universalSetupEventListeners();
+                decodeSetupEventListeners();
+                console.log(window.innerWidth);
+
+                var defaultImg = new Image();
+                defaultImg.crossOrigin = 'anonymous';
+                defaultImg.alt = 'default image';
+                updateImageFromFile(defaultSrc[currCanvasId], (img) => {
+                    imageProcessor.updateImage(img);
+                });
+
+                updateImageFromFile(defaultSrc[1], (img) => {
+                    mirage.updateInnerImage(img);
+                });
+
+                updateImageFromFile(defaultSrc[2], (img) => {
+                    mirage.updateCoverImage(img);
+                });
+
+                if (isOnPhone) {
+                    document.getElementById('decodePasteInput').style.display = 'none';
+                    document.getElementById('decodeDragInputHint').style.display = 'none';
+                    var elements = document.getElementsByClassName('encodeDrag');
+                    for (var i = 0; i < elements.length; i++) {
+                        elements[i].style.display = 'none';
+                    }
+                }
             };
-            defaultImg.src = defaultSrc;
-        };
-    </script>
+        </script>
+    </div>
 </body>
-
-</html>
