@@ -1,0 +1,372 @@
+:root {
+    --background-color: #fff;
+    --secondary-background-color: #ececec;
+    --secondary-notselected-background-color: #f6f6f6;
+    --element-backgound-color: #f6f6f6;
+    --front-color: #000;
+    --element-border-color: #ccc;
+    --link-color: #2285d5;
+}
+
+[data-theme="light"] {
+    --background-color: #fff;
+    --secondary-background-color: #ececec;
+    --secondary-notselected-background-color: #f6f6f6;
+    --element-backgound-color: #f6f6f6;
+    --front-color: #000;
+    --element-border-color: #ccc;
+    --link-color: #2285d5;
+}
+
+[data-theme="dark"] {
+    --background-color: #000;
+    --secondary-background-color: #161616;
+    --secondary-notselected-background-color: #090909;
+    --element-backgound-color: #444;
+    --front-color: #dfdfdf;
+    --element-border-color: #555;
+    --link-color: #4baeff;
+}
+
+/**********************************************/
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 30px;
+    background-color: var(--background-color);
+    color: var(--front-color);
+}
+
+input[type=text],
+input[type=number],
+button,
+.fileInputLabel,
+select {
+    background-color: var(--element-backgound-color);
+    color: var(--front-color);
+    padding: 5px;
+    border: 1px solid var(--element-border-color);
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+input[type=file] {
+    display: none;
+}
+
+button:hover,
+.link:hover,
+.fileInputLabel:hover,
+input[type="checkbox"]:hover {
+    transform: scale(1.05);
+    transition: transform 0.2s;
+}
+
+button:hover,
+.fileInputLabel:hover {
+    background-color: var(--element-backgound-color);
+}
+
+/**********************************************/
+
+.title {
+    font-size: clamp(30px, 5vw, 50px);
+}
+
+.PageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 20px;
+    width: 90%;
+    max-width: 1000px;
+    min-width: 320px;
+    padding: 20px;
+}
+
+.TitleContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: row;
+    gap: 5px;
+    width: 100%;
+}
+
+.PageSwitchButtonUnselected,
+.PageSwitchButtonSelected {
+    padding: 15px;
+    width: 100%;
+    border: none;
+    border-radius: 10px 10px 0 0;
+    font-size: 15px;
+}
+
+.PageSwitchButtonUnselected {
+    background-color: var(--secondary-notselected-background-color);
+}
+
+.PageSwitchButtonSelected {
+    background-color: var(--secondary-background-color);
+}
+
+.PageSwitchButtonUnselected:hover,
+.PageSwitchButtonSelected:hover {
+    transform: none;
+    background-color: var(--secondary-background-color);
+}
+
+.DisplayArea {
+    background-color: var(--secondary-background-color);
+    color: var(--front-color);
+    border-radius: 0 0 15px 15px;
+    margin-top: 0px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    position: relative;
+}
+
+#decodePage {
+    display: flex;
+}
+
+#encodePage {
+    display: none;
+}
+
+/**********************************************/
+
+#decodeMethodSelect {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+}
+
+#decodeMethodSelect select {
+    margin-left: 5px;
+}
+
+#decodeImageSelect {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#decodeFileInput {
+    display: flex;
+    align-items: center;
+}
+
+#decodeFileInput label {
+    margin-left: 5px;
+}
+
+#decodeUrlInput {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+#decodeUrlInput label {
+    margin-right: 5px;
+}
+
+#decodeUrlInput input[type=text] {
+    margin-right: 5px;
+    width: 100px;
+}
+
+#decodePasteInput {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+#decodeDragInputHint {
+    margin-top: 10px;
+}
+
+#decodeCanvas {
+    max-width: min(90%, 600px);
+    margin-top: 20px;
+}
+
+Canvas {
+    border: 1px solid var(--element-border-color);
+}
+
+.thresSlider {
+    display: flex;
+    max-width: 90%;
+    margin-top: 20px;
+}
+
+.thresSlider input[type=range] {
+    margin-left: 10px;
+    width: 300px;
+}
+
+.checkbox {
+    display: flex;
+    max-width: 90%;
+}
+
+#decodeReverseCheckbox {
+    margin-top: 10px;
+}
+
+#saveButton {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/**********************************************/
+
+#encodeSourceInput {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+    width: 90%;
+}
+
+.encodeFileInput {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 50%;
+}
+
+.fileInputLabel {
+    background-color: var(--element-backgound-color);
+    color: var(--front-color);
+    border: 1px solid var(--element-border-color);
+    border-radius: 5px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.encodeDrag {
+    margin-top: 10px;
+}
+
+#innerCanvas,
+#coverCanvas {
+    max-width: min(90%, 400px);
+    margin-top: 20px;
+}
+
+.encodeSlider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    width: 90%;
+}
+
+.encodeSlider input[type=range] {
+    width: 90%;
+    max-width: 200px;
+}
+
+.thresInput {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.thresInput input {
+    width: 50px;
+    margin-left: 5px;
+}
+
+#isCoverGray,
+#isEncodeReverse,
+#isPng {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#encodeOutputSizeLimit {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#encodeOutputSizeLimit input[type=number] {
+    width: 60px;
+    margin-left: 5px;
+}
+
+#encodeMethod {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#encodeMethod select {
+    margin-left: 5px;
+}
+
+#encodeSizeRange {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+}
+
+#encodeSizeRange input[type=range] {
+    width: 200px;
+}
+
+#outputCanvas {
+    max-width: min(90%, 800px);
+    margin-top: 20px;
+}
+
+#jumpButton {
+    margin-top: 20px;
+}
+
+/**********************************************/
+
+a {
+    color: var(--link-color);
+}
+
+.link {
+    margin-top: 5px;
+    font-size: 18px;
+}
+
+#hintLink {
+    margin-top: 30px;
+}
+
+#privacyButton button {
+    margin-top: 5px;
+    background-color: var(--background-color);
+    color: var(--link-color);
+    border: 0px;
+    font-size: 14px;
+}
+
+#privacyPolicy {
+    text-align: center;
+    color: var(--front-color);
+    max-width: min(100%, 600px);
+    font-size: 12px;
+    display: none;
+}

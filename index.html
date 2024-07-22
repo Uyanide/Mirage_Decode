@@ -376,7 +376,7 @@
                     <option value="black">置为黑色</option>
                     <option value="white">置为白色</option>
                     <option value="trans">置为透明</option>
-                    <option value="lcopy" selected>邻近生成</option>
+                    <option value="lcopy">邻近生成</option>
                 </select>
             </div>
 
@@ -404,7 +404,7 @@
 
             <div class="thresSlider">
                 <label for="decodeThresholdRange">3. 滑动直至图像清晰: </label>
-                <input type="range" id="decodeThresholdRange" min="0" max="255" value="24">
+                <input type="range" id="decodeThresholdRange" min="0" max="255">
             </div>
 
             <div class="checkbox" id="decodeReverseCheckbox">
@@ -428,12 +428,13 @@
                     <slider class="encodeSlider">
                         <label for="innerThresholdRange">里图色阶端点: </label>
                         <label for="innerThresholdRange"><small>(越小隐写效果越好)</small></label>
-                        <input id="innerThresholdRange" type="range" min="0" max="128" value="32">
+                        <label for="innerThresholdRange"><small>(但越小里图质量越差)</small></label>
+                        <input id="innerThresholdRange" type="range" min="0" max="128">
                         <label for="innerThresholdRange"><small>(不应高于右侧值)</small></label>
                     </slider>
                     <div class="thresInput">
                         <label for="innerThresholdInput">当前值: </label>
-                        <input type="number" id="innerThresholdInput" value="32">
+                        <input type="number" id="innerThresholdInput">
                     </div>
                 </div>
 
@@ -446,12 +447,13 @@
                     <slider class="encodeSlider">
                         <label for="coverThresholdRange">表图色阶端点: </label>
                         <label for="coverThresholdRange"><small>(越大显形效果越好)</small></label>
-                        <input type="range" id="coverThresholdRange" min="0" max="128" value="48">
+                        <label for="coverThresholdRange"><small>(但越大表图质量越差)</small></label>
+                        <input type="range" id="coverThresholdRange" min="0" max="128">
                         <label for="coverThresholdRange"><small>(不应低于左侧值)</small></label>
                     </slider>
                     <div class="thresInput">
                         <label for="coverThresholdInput">当前值: </label>
-                        <input type="number" id="coverThresholdInput" value="48">
+                        <input type="number" id="coverThresholdInput">
                     </div>
                 </div>
             </div>
@@ -469,10 +471,12 @@
             <div id="encodeMethod">
                 <label for="encodeMethodSelect">选择像素混合方式: </label>
                 <select id="encodeMethodSelect">
-                    <option value="chess" selected>棋盘布局</option>
-                    <option value="gap_2">间隔2斜线</option>
-                    <option value="gap_3">间隔3斜线</option>
-                    <option value="gap_5">间隔5斜线</option>
+                    <option value="chess">棋盘布局(推荐)</option>
+                    <option value="gap_2">2像素间隔斜线</option>
+                    <option value="gap_3">3像素间隔斜线</option>
+                    <option value="gap_5">5像素间隔斜线</option>
+                    <option value="col_1">1像素间隔竖线</option>
+                    <option value="row_1">1像素间隔横线</option>
                 </select>
             </div>
 
@@ -484,8 +488,8 @@
             <canvas id="outputCanvas"></canvas>
 
             <checkbox id="isPng">
-                <input type="checkbox" id="isPngCheckBox" checked>
-                <label for="isPngCheckBox">存为PNG <small>(否则为JPEG有损压缩)</small></label>
+                <input type="checkbox" id="isPngCheckBox">
+                <label for="isPngCheckBox">存为PNG <small>(否则为JPEG, 但被平台强制压缩几率更低)</small></label>
             </checkbox>
 
             <div id="jumpButton">
@@ -1158,24 +1162,10 @@
             }
 
             // 设置像素混合方式
-            function encodeSetMethod() {
-                const method = document.getElementById('encodeMethodSelect').value;
-                switch (method) {
-                    case 'chess':
-                        mirage.method = 2;
-                        break;
-                    case 'gap_2':
-                        mirage.method = 3;
-                        break;
-                    case 'gap_3':
-                        mirage.method = 4;
-                        break;
-                    case 'gap_5':
-                        mirage.method = 6;
-                        break;
-                }
-                if (mirage.innerImg && mirage.coverImg) {
-                    mirage.updateInnerImage(mirage.innerImg);
+            function encodeSetMethod(event) {
+                mirageEncoder.method = event.target.value;
+                if (mirageEncoder.innerImg && mirageEncoder.coverImg) {
+                    mirageEncoder.updateInnerImage(mirageEncoder.innerImg);
                 }
             }
 
