@@ -404,7 +404,7 @@
 
             <div class="thresSlider">
                 <label for="decodeThresholdRange">3. 滑动直至图像清晰: </label>
-                <input type="range" id="decodeThresholdRange" min="0" max="255" value="24">
+                <input type="range" id="decodeThresholdRange" min="0" max="255" value="32">
             </div>
 
             <div class="checkbox" id="decodeReverseCheckbox">
@@ -428,12 +428,12 @@
                     <slider class="encodeSlider">
                         <label for="innerThresholdRange">里图色阶端点: </label>
                         <label for="innerThresholdRange"><small>(越小隐写效果越好)</small></label>
-                        <input id="innerThresholdRange" type="range" min="0" max="128" value="32">
+                        <input id="innerThresholdRange" type="range" min="0" max="128" value="24">
                         <label for="innerThresholdRange"><small>(不应高于右侧值)</small></label>
                     </slider>
                     <div class="thresInput">
                         <label for="innerThresholdInput">当前值: </label>
-                        <input type="number" id="innerThresholdInput" value="32">
+                        <input type="number" id="innerThresholdInput" value="24">
                     </div>
                 </div>
 
@@ -446,12 +446,12 @@
                     <slider class="encodeSlider">
                         <label for="coverThresholdRange">表图色阶端点: </label>
                         <label for="coverThresholdRange"><small>(越大显形效果越好)</small></label>
-                        <input type="range" id="coverThresholdRange" min="0" max="128" value="48">
+                        <input type="range" id="coverThresholdRange" min="0" max="128" value="42">
                         <label for="coverThresholdRange"><small>(不应低于左侧值)</small></label>
                     </slider>
                     <div class="thresInput">
                         <label for="coverThresholdInput">当前值: </label>
-                        <input type="number" id="coverThresholdInput" value="48">
+                        <input type="number" id="coverThresholdInput" value="42">
                     </div>
                 </div>
             </div>
@@ -882,8 +882,8 @@
                     this.coverImg = null;
                     this.innerImgdata = null;
                     this.coverImgdata = null;
-                    this.innerThreshold = 32;
-                    this.coverThreshold = 48;
+                    this.innerThreshold = 24;
+                    this.coverThreshold = 42;
                     this.width = 0;
                     this.heigt = 0;
                     this.isCoverGray = false;
