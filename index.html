@@ -17,343 +17,11 @@
     <title>光棱坦克工厂</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            margin-top: 30px;
-            background-color: #000;
-            color: #dfdfdf;
-        }
-
-        input[type=text],
-        input[type=file],
-        input[type=number],
-        button,
-        .fileInputLabel,
-        select {
-            background-color: #333;
-            color: #dfdfdf;
-            padding: 5px;
-            border: 1px solid #555;
-            border-radius: 5px;
-            font-size: 15px;
-        }
-
-        button:hover,
-        .link:hover,
-        .fileInputLabel:hover,
-        input[type="checkbox"]:hover {
-            transform: scale(1.05);
-            transition: transform 0.2s
-        }
-
-        button:hover,
-        .fileInputLabel:hover {
-            background-color: #444;
-        }
-
-        .title {
-            font-size: clamp(30px, 5vw, 50px);
-        }
-
-        .PageContainer {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            margin-top: 20px;
-            width: 90%;
-            max-width: 1000px;
-            min-width: 320px;
-        }
-
-        .TitleContainer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-direction: row;
-            gap: 5px;
-            width: 100%
-        }
-
-        .PageSwitchButton {
-            background-color: #242424;
-            color: #dfdfdf;
-            padding: 15px;
-            width: 100%;
-            border: none;
-            border-radius: 10px 10px 0 0;
-            font-size: 15px;
-        }
-
-        .PageSwitchButton:hover {
-            transform: none;
-        }
-
-        #decodeButton {
-            background-color: #242424;
-        }
-
-        #encodeButton {
-            background-color: #121212;
-        }
-
-        .DisplayArea {
-            background-color: #242424;
-            color: #dfdfdf;
-            border-radius: 0 0 15px 15px;
-            margin-top: 0px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            width: 100%;
-            position: relative;
-        }
-
-        #decodePage {
-            display: flex;
-        }
-
-        #encodePage {
-            display: none;
-        }
-
-        #decodeMethodSelect {
-            margin-top: 20px;
-            display: flex;
-            align-items: center;
-        }
-
-        #decodeMethodSelect select {
-            margin-left: 5px;
-        }
-
-        #decodeImageSelect {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        #decodeFileInput {
-            display: flex;
-            align-items: center;
-        }
-
-        #decodeFileInput label {
-            margin-left: 5px;
-        }
-
-        #decodeUrlInput {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        #decodeUrlInput label {
-            margin-right: 5px;
-        }
-
-        #decodeUrlInput input[type=text] {
-            margin-right: 5px;
-            width: 100px;
-        }
-
-        #decodePasteInput {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-        }
-
-        #decodeDragInputHint {
-            margin-top: 10px;
-        }
-
-        #decodeCanvas {
-            max-width: min(90%, 600px);
-            margin-top: 20px;
-        }
-
-        Canvas {
-            border: 1px solid #dfdfdf;
-        }
-
-        .thresSlider {
-            display: flex;
-            max-width: 90%;
-            margin-top: 20px;
-        }
-
-        .thresSlider input[type=range] {
-            margin-left: 10px;
-            width: 300px;
-        }
-
-        .checkbox {
-            display: flex;
-            max-width: 90%;
-        }
-
-        #decodeReverseCheckbox {
-            margin-top: 10px;
-        }
-
-        #saveButton {
-            margin-top: 20px;
-            margin-bottom: 20px;
-        }
-
-        /**********************************************/
-
-        #encodeSourceInput {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            justify-content: center;
-            margin-top: 20px;
-            width: 90%;
-        }
-
-        .encodeFileInput {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 50%;
-        }
-
-        .fileInputLabel {
-            background-color: #333;
-            color: #dfdfdf;
-            border: 1px solid #555;
-            border-radius: 5px;
-            padding: 5px;
-            cursor: pointer;
-        }
-
-        .encodeDrag {
-            margin-top: 10px;
-        }
-
-        #innerCanvas,
-        #coverCanvas {
-            max-width: min(90%, 400px);
-            margin-top: 20px;
-        }
-
-        .encodeSlider {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        .encodeSlider input[type=range] {
-            width: 90%;
-        }
-
-        .thresInput {
-            display: flex;
-            align-items: center;
-            margin-top: 5px;
-        }
-
-        .thresInput input {
-            width: 50px;
-            margin-left: 5px;
-        }
-
-        #isCoverGray,
-        #isEncodeReverse,
-        #isPng {
-            display: flex;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        #encodeOutputSizeLimit {
-            display: flex;
-            flex-direction: row;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        #encodeOutputSizeLimit input[type=number] {
-            width: 60px;
-            margin-left: 5px;
-        }
-
-        #encodeMethod {
-            display: flex;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        #encodeMethod select {
-            margin-left: 5px;
-        }
-
-        #encodeSizeRange {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 20px;
-        }
-
-        #encodeSizeRange input[type=range] {
-            width: 200px;
-        }
-
-        #outputCanvas {
-            max-width: min(90%, 800px);
-            margin-top: 20px;
-        }
-
-        #jumpButton {
-            margin-top: 20px;
-        }
-
-        /**********************************************/
-
-        a {
-            color: #4baeff;
-        }
-
-        .link {
-            margin-top: 5px;
-            font-size: 18px;
-        }
-
-        #infoLink,
-        #profileLink {
-            margin-top: 0px;
-        }
-
-        #hintLink {
-            margin-top: 30px;
-        }
-
-        #privacyButton button {
-            margin-top: 5px;
-            background-color: #000000;
-            color: #4baeff;
-            border: 0px solid #555;
-            font-size: 14px;
-        }
-
-        .privacyPolicy {
-            text-align: center;
-            color: #ccc;
-            max-width: min(100%, 600px);
-            font-size: 12px;
-        }
-    </style>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="styles/style.css">
+    <script src="scripts/MirageDecoder.js"></script>
+    <script src="scripts/MirageEncoder.js"></script>
+    <script src="scripts/DefaultArguments.js"></script>
 </head>
 
 <body>
@@ -385,7 +53,7 @@
                 <div id="decodeFileInput">
                     <div>2.</div>
                     <label for="decodeImageFileInput" class="fileInputLabel">选择图片文件</label>
-                    <input type="file" id="decodeImageFileInput" accept="image/*" style="display: none;">
+                    <input type="file" id="decodeImageFileInput" accept="image/*">
                 </div>
                 <div id="decodeUrlInput">
                     <label for="decodeImageUrlInput">或从URL:</label>
@@ -400,7 +68,6 @@
                 </div>
             </div>
 
-            <img id="originalImage" src="" alt="原始图像" crossorigin="anonymous" style="display:none;">
             <canvas id="decodeCanvas"></canvas>
 
             <div class="thresSlider">
@@ -422,7 +89,7 @@
             <div id="encodeSourceInput">
                 <div class="encodeFileInput" , id="innerFileInput">
                     <label for="innerSourceFileInput" class="fileInputLabel">选择里图文件</label>
-                    <input type="file" id="innerSourceFileInput" accept="image/*" style="display: none;">
+                    <input type="file" id="innerSourceFileInput" accept="image/*">
                     <lable for="innerCanvas" class="encodeDrag">或直接拖动至下方画布</lable>
                     <lable for="innerCanvas" class="encodeDrag">或在下方画布处ctrl+v</lable>
                     <canvas id="innerCanvas"></canvas>
@@ -441,7 +108,7 @@
 
                 <div class="encodeFileInput" , id="coverFileInput">
                     <label for="coverSourceFileInput" class="fileInputLabel">选择表图文件</label>
-                    <input type="file" id="coverSourceFileInput" accept="image/*" style="display: none;">
+                    <input type="file" id="coverSourceFileInput" accept="image/*">
                     <lable for="coverCanvas" class="encodeDrag">或直接拖动至下方画布</lable>
                     <lable for="coverCanvas" class="encodeDrag">或在下方画布处ctrl+v</lable>
                     <canvas id="coverCanvas"></canvas>
@@ -492,7 +159,7 @@
             </checkbox>
 
             <div id="jumpButton">
-                <button id="jumpToDecodeButton">以当前结果跳转显形界面</button>
+                <button id="jumpToDecodeButton">以当前结果跳转显形测试</button>
             </div>
 
             <div id="saveButton">
@@ -501,7 +168,7 @@
         </div>
 
         <div class="link" , id="hintLink">
-            <small>如果遇到Bug可在Github页面提交Issue</small>
+            <small><a href="https://github.com/Uyanide/Mirage_Decode/issues/new" target="_blank">Bug反馈</a></small>
         </div>
 
         <div class="link" , id="profileLink">
@@ -517,7 +184,7 @@
             <button id="togglePrivacyPolicy">显示隐私说明</button>
         </div>
 
-        <div class="privacyPolicy" id="privacyPolicy" style="display: none;">
+        <div id="privacyPolicy">
             <p>本网站使用Google Analytics记录访问者的行为。通过使用本网站，您同意数据按照Google Analytics的条款和隐私政策进行处理。更多信息，请访问:<a
                     href="https://policies.google.com/privacy" target="_blank">Google
                     Analytics的隐私政策。</a></p>
@@ -525,138 +192,21 @@
 
         <script>
             const defaultSrc = [
-                'default.png',
-                'neko.png',
-                'buta.png',
+                'resources/default.png',
+                'resources/neko.png',
+                'resources/buta.png',
             ];
             var isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 800);
             var currCanvasId = 0;
-
-            class DefaultArguments {
-                constructor() {
-                    this.decodeThreshold = 32;
-                    this.isDecodeReverse = false;
-                    this.decodeMethod = 'lcopy';
-
-                    this.innerThreshold = 24;
-                    this.coverThreshold = 42;
-                    this.isCoverGray = false;
-                    this.isEncodeReverse = false;
-                    this.isPng = false;
-                    this.method = 2;
-                    this.methodDisplay = 'chess'
-                    this.size = 1200;
-                }
-
-                setDefaultValues() {
-                    document.getElementById('decodeThresholdRange').value = this.decodeThreshold;
-                    document.getElementById('decodeReverseInput').checked = this.isDecodeReverse;
-                    document.getElementById('optionSelect').value = this.decodeMethod;
-
-                    document.getElementById('innerThresholdRange').value = this.innerThreshold;
-                    document.getElementById('innerThresholdInput').value = this.innerThreshold;
-                    document.getElementById('coverThresholdRange').value = this.coverThreshold;
-                    document.getElementById('coverThresholdInput').value = this.coverThreshold;
-
-                    document.getElementById('isCoverGrayCheckBox').checked = this.isCoverGray;
-                    document.getElementById('isEncodeReverseCheckBox').checked = this.isEncodeReverse;
-                    document.getElementById('isPngCheckBox').checked = this.isPng;
-                    document.getElementById('encodeMethodSelect').value = this.methodDisplay;
-                    document.getElementById('encodeSizeInput').value = this.size;
-                }
-            }
         </script>
         <script>
+            /**************************实例化**************************/
+
             const defaultArguments = new DefaultArguments();
+            const mirageDecoder = new MirageDecoder('decodeCanvas', defaultArguments);
+            const mirageEncoder = new MirageEncoder('innerCanvas', 'coverCanvas', 'outputCanvas', defaultArguments);
 
-            class MirageDecoder {
-                constructor() {
-                    this.img = null;
-                    this.imgData = null;
-                    this.coverProcessMethod = defaultArguments.decodeMethod;
-                    this.threshold = defaultArguments.decodeThreshold;
-                    this.reverse = defaultArguments.isDecodeReverse;
-                }
-
-                showImage(imgData) {
-                    const canvas = document.getElementById('decodeCanvas');
-                    const ctx = canvas.getContext('2d');
-                    ctx.putImageData(imgData, 0, 0);
-                }
-
-                updateImage(img) {
-                    this.img = img;
-                    const canvas = document.getElementById('decodeCanvas');
-                    const ctx = canvas.getContext('2d');
-                    canvas.width = this.img.width;
-                    canvas.height = this.img.height;
-                    ctx.drawImage(this.img, 0, 0, canvas.width, canvas.height);
-                    this.imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    this.processImage();
-                }
-
-                processImage() {
-                    var imgDataCopy = new ImageData(new Uint8ClampedArray(this.imgData.data), this.imgData.width, this.imgData.height);
-                    var data = imgDataCopy.data;
-                    if (!this.reverse) {
-                        var ratio = 255 / this.threshold;
-                        for (var i = 0; i < data.length; i += 4) {
-                            var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                            if (avg <= this.threshold) {
-                                data[i] *= ratio;
-                                data[i + 1] *= ratio;
-                                data[i + 2] *= ratio;
-                            } else {
-                                this.processCoverPixel(data, i);
-                            }
-                        }
-                    }
-                    else {
-                        var ratio = 255 / (255 - this.threshold);
-                        for (var i = 0; i < data.length; i += 4) {
-                            var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
-                            if (avg >= this.threshold) {
-                                data[i] = (data[i] - this.threshold) * ratio;
-                                data[i + 1] = (data[i + 1] - this.threshold) * ratio;
-                                data[i + 2] = (data[i + 2] - this.threshold) * ratio;
-                            }
-                            else {
-                                this.processCoverPixel(data, i);
-                            }
-                        }
-                    }
-                    this.showImage(imgDataCopy);
-                }
-
-                processCoverPixel(data, i) {
-                    switch (this.coverProcessMethod) {
-                        case 'lcopy':
-                            if (i) {
-                                data[i] = data[i - 4];
-                                data[i + 1] = data[i - 3];
-                                data[i + 2] = data[i - 2];
-                                break;
-                            } else { /*fallthrough*/ }
-                        case 'black':
-                            data[i] = 0;
-                            data[i + 1] = 0;
-                            data[i + 2] = 0;
-                            break;
-                        case 'white':
-                            data[i] = 255;
-                            data[i + 1] = 255;
-                            data[i + 2] = 255;
-                            break;
-                        case 'trans':
-                            data[i + 3] = 0;
-                            break;
-                    }
-                }
-            }
-
-            const imageProcessor = new MirageDecoder();
-
-            /************************通用事件监听************************/
+            /************************通用功能函数***********************/
 
             // 从源加载图像并返回
             async function loadImage(input) {
@@ -695,8 +245,8 @@
             }
 
             // 从URL加载图像，调用callback
-            async function updateImageFromURL(callback) {
-                const imageUrl = document.getElementById('decodeImageUrlInput').value;
+            async function updateImageFromURL(event, callback) {
+                const imageUrl = event.target.previousElementSibling.value;
                 loadImage(imageUrl).then((img) => {
                     callback(img);
                 }).catch((error) => {
@@ -762,11 +312,17 @@
             }
 
             // 保存图像
-            function saveIamgeFromCanvas(canvasId) {
+            function saveImageFromCanvas(canvasId, isPng = true) {
                 const canvas = document.getElementById(canvasId);
                 const link = document.createElement('a');
-                link.href = canvas.toDataURL('image/png');
-                link.download = 'output.png';
+                if (isPng) {
+                    link.href = canvas.toDataURL('image/png');
+                    link.download = 'output.png';
+                }
+                else {
+                    link.href = canvas.toDataURL('image/jpeg', 1);
+                    link.download = 'output.jpg';
+                }
                 link.click();
             }
 
@@ -799,15 +355,16 @@
 
             function universalSetupEventListeners() {
                 // 隐私政策按钮事件监听
-                document.getElementById('togglePrivacyPolicy').addEventListener('click', () => {
-                    var privacyPolicy = document.getElementById('privacyPolicy');
-                    if (privacyPolicy.style.display === 'none') {
+                document.getElementById('togglePrivacyPolicy').addEventListener('click', (event) => {
+                    const privacyPolicy = document.getElementById('privacyPolicy');
+                    const state = window.getComputedStyle(privacyPolicy).display;
+                    if (state === 'none') {
                         privacyPolicy.style.display = 'block';
-                        this.text = '隐藏隐私说明';
+                        event.target.textContent = '隐藏隐私说明';
                         window.scrollTo(0, document.body.scrollHeight);
                     } else {
                         privacyPolicy.style.display = 'none';
-                        this.text = '显示隐私说明';
+                        event.target.textContent = '显示隐私说明';
                     }
                 });
 
@@ -823,61 +380,61 @@
             function decodeLoadImageFile(event) {
                 const file = event.target.files[0];
                 updateImageFromFile(file, (img) => {
-                    imageProcessor.updateImage(img);
+                    mirageDecoder.updateImage(img);
                 });
             }
 
             // 从URL加载图像
-            function decodeLoadImageURL() {
-                updateImageFromURL((img) => {
-                    imageProcessor.updateImage(img);
+            function decodeLoadImageURL(event) {
+                updateImageFromURL(event, (img) => {
+                    mirageDecoder.updateImage(img);
                 });
             }
 
             // 从剪贴板加载图像
             function decodeLoadImageFromClipboard(event) {
                 updateImageFromClipboard(event, (img) => {
-                    imageProcessor.updateImage(img);
+                    mirageDecoder.updateImage(img);
                 });
             }
 
             // 从拖动加载图像
             function decodeLoadImageFromDrag(event) {
                 dragDropLoadImage(event, (img) => {
-                    imageProcessor.updateImage(img);
+                    mirageDecoder.updateImage(img);
                 });
             }
 
             // 设置阈值
-            function decodeSetThreshold() {
-                imageProcessor.threshold = parseInt(document.getElementById('decodeThresholdRange').value, 10);
-                if (imageProcessor.img) {
-                    imageProcessor.processImage();
+            function decodeSetThreshold(event) {
+                mirageDecoder.threshold = parseInt(event.target.value, 10);
+                if (mirageDecoder.img) {
+                    mirageDecoder.processImage();
                 }
             }
 
             // 设置表图像素处理方式
-            function decodeSetCoverMethod() {
-                imageProcessor.coverProcessMethod = document.getElementById('optionSelect').value;
-                if (imageProcessor.img) {
-                    imageProcessor.processImage();
+            function decodeSetCoverMethod(event) {
+                mirageDecoder.coverProcessMethod = event.target.value;
+                if (mirageDecoder.img) {
+                    mirageDecoder.processImage();
                 }
             }
 
             // 设置反向隐写
-            function decodeSetReverse() {
-                imageProcessor.reverse = document.getElementById('decodeReverseInput').checked;
-                if (imageProcessor.img) {
-                    imageProcessor.processImage();
+            function decodeSetReverse(event) {
+                mirageDecoder.reverse = event.target.checked;
+                if (mirageDecoder.img) {
+                    mirageDecoder.processImage();
                 }
             }
 
             // 保存图像
             function decodeSaveImage() {
-                saveIamgeFromCanvas('decodeCanvas');
+                saveImageFromCanvas('decodeCanvas');
             }
 
-            // 设置事件监听器
+            // 设置解码事件监听器
             function decodeSetupEventListeners() {
                 // 图像加载事件监听
                 document.getElementById('decodeImageFileInput').addEventListener('change', decodeLoadImageFile);
@@ -903,7 +460,7 @@
                 document.getElementById('encodeButton').addEventListener('click', switchPage);
             }
 
-            // 移除事件监听器
+            // 移除解码事件监听器
             function decodeRemoveEventListeners() {
                 document.getElementById('decodeImageFileInput').removeEventListener('change', decodeLoadImageFile);
                 document.getElementById('decodeLoadImageButton').removeEventListener('click', decodeLoadImageURL);
@@ -920,180 +477,6 @@
         </script>
 
         <script>
-            class MirageImage {
-                constructor() {
-                    this.innerImg = null;
-                    this.coverImg = null;
-                    this.innerImgdata = null;
-                    this.coverImgdata = null;
-                    this.innerThreshold = defaultArguments.innerThreshold;
-                    this.coverThreshold = defaultArguments.coverThreshold;
-                    this.width = 0;
-                    this.heigt = 0;
-                    this.isCoverGray = defaultArguments.isCoverGray;
-                    this.isEncodeReverse = defaultArguments.isEncodeReverse;
-                    this.method = defaultArguments.method;
-                    this.size = defaultArguments.size;
-                }
-
-                updateInnerImage(img) {
-                    this.innerImg = img;
-                    const canvas = document.getElementById('innerCanvas');
-                    const ctx = canvas.getContext('2d');
-
-                    if (img.width > img.height) {
-                        if (img.width > this.size) {
-                            const ratio = this.size / img.width;
-                            canvas.width = this.size;
-                            canvas.height = img.height * ratio;
-                        } else {
-                            canvas.width = this.size;
-                            canvas.height = img.height * this.size / img.width;
-                        }
-                    } else {
-                        if (img.height > this.size) {
-                            const ratio = this.size / img.height;
-                            canvas.width = img.width * ratio;
-                            canvas.height = this.size;
-                        } else {
-                            canvas.width = img.width * this.size / img.height;
-                            canvas.height = this.size;
-                        }
-                    }
-
-                    this.width = canvas.width;
-                    this.height = canvas.height;
-
-                    ctx.drawImage(this.innerImg, 0, 0, canvas.width, canvas.height);
-                    this.innerImgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    if (this.coverImgdata) {
-                        this.updateCoverImage(this.coverImg);
-                    }
-                }
-
-                updateCoverImage(img) {
-                    this.coverImg = img;
-                    if (this.innerImgdata) {
-                        const imgRatio = img.width / img.height;
-                        const targetRatio = this.width / this.height;
-                        let cropArea;
-
-                        if (targetRatio > imgRatio) {
-                            const newHeight = img.width / targetRatio;
-                            cropArea = {
-                                x: 0,
-                                y: (img.height - newHeight) / 2,
-                                width: img.width,
-                                height: newHeight,
-                            };
-                        } else {
-                            const newWidth = img.height * targetRatio;
-                            cropArea = {
-                                x: (img.width - newWidth) / 2,
-                                y: 0,
-                                width: newWidth,
-                                height: img.height,
-                            };
-                        }
-
-                        const canvas = document.getElementById('coverCanvas');
-                        canvas.width = this.width;
-                        canvas.height = this.height;
-                        const ctx = canvas.getContext('2d');
-
-                        ctx.drawImage(
-                            img,
-                            cropArea.x,
-                            cropArea.y,
-                            cropArea.width,
-                            cropArea.height,
-                            0,
-                            0,
-                            this.width,
-                            this.height
-                        );
-
-                        this.coverImgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                        if (this.isCoverGray) {
-                            this.processCoverGray();
-                            ctx.putImageData(this.coverImgdata, 0, 0);
-                        }
-                        this.processImage();
-                    } else {
-                        const canvas = document.getElementById('coverCanvas');
-                        const ctx = canvas.getContext('2d');
-                        canvas.width = img.width;
-                        canvas.height = img.height;
-                        ctx.drawImage(this.coverImg, 0, 0, canvas.width, canvas.height);
-                        this.coverImgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
-                    }
-                }
-
-                processCoverGray() {
-                    var coverData = this.coverImgdata.data;
-                    for (let i = 0; i < coverData.length; i += 4) {
-                        const avg = (coverData[i] + coverData[i + 1] + coverData[i + 2]) / 3;
-                        coverData[i] = avg;
-                        coverData[i + 1] = avg;
-                        coverData[i + 2] = avg;
-                    }
-                }
-
-                compressLow(targ, data, i, rate, limit) {
-                    targ[i] = Math.floor(data[i] * rate);
-                    targ[i + 1] = Math.floor(data[i + 1] * rate);
-                    targ[i + 2] = Math.floor(data[i + 2] * rate);
-                }
-
-                compressHigh(targ, data, i, rate, limit) {
-                    targ[i] = Math.floor(data[i] * rate + limit);
-                    targ[i + 1] = Math.floor(data[i + 1] * rate + limit);
-                    targ[i + 2] = Math.floor(data[i + 2] * rate + limit);
-                }
-
-                processImage() {
-                    var innerData = this.innerImgdata.data;
-                    var coverData = this.coverImgdata.data;
-                    var outputData = new Uint8ClampedArray(innerData.length);
-
-                    const innerRate = this.innerThreshold / 255;
-                    const coverRate = 1 - this.coverThreshold / 255;
-                    let innerCompress, coverCompress, innerLimit, coverLimit;
-                    if (this.isEncodeReverse === false) {
-                        innerCompress = this.compressLow;
-                        coverCompress = this.compressHigh;
-                        innerLimit = 0;
-                        coverLimit = this.coverThreshold;
-                    } else {
-                        innerCompress = this.compressHigh;
-                        coverCompress = this.compressLow;
-                        innerLimit = 255 - this.innerThreshold;
-                        coverLimit = 0;
-                    }
-
-                    for (let i = 0, j = 0; i < innerData.length; i += 4, j++) {
-                        const col = j % this.width;
-                        const row = Math.floor(j / this.width);
-                        if ((col + row) % this.method === 0) {
-                            innerCompress(outputData, innerData, i, innerRate, innerLimit);
-                        } else {
-                            coverCompress(outputData, coverData, i, coverRate, coverLimit);
-                        }
-                        outputData[i + 3] = 255;
-                    }
-
-                    const canvas = document.getElementById('outputCanvas');
-                    canvas.width = this.width;
-                    canvas.height = this.height;
-                    const ctx = canvas.getContext('2d');
-                    const outputImgData = new ImageData(outputData, this.width, this.height);
-                    ctx.putImageData(outputImgData, 0, 0);
-
-                }
-
-            }
-
-            const mirage = new MirageImage();
 
             /********************编码事件监听*********************/
 
@@ -1102,7 +485,7 @@
                 currCanvasId = 1;
                 const file = event.target.files[0];
                 updateImageFromFile(file, (img) => {
-                    mirage.updateInnerImage(img);
+                    mirageEncoder.updateInnerImage(img);
                 });
             }
 
@@ -1111,7 +494,7 @@
                 currCanvasId = 2;
                 const file = event.target.files[0];
                 updateImageFromFile(file, (img) => {
-                    mirage.updateCoverImage(img);
+                    mirageEncoder.updateCoverImage(img);
                 });
             }
 
@@ -1124,12 +507,12 @@
                 if (mouseX < window.innerWidth / 2) {
                     currCanvasId = 1;
                     updateImageFromClipboard(event, (img) => {
-                        mirage.updateInnerImage(img);
+                        mirageEncoder.updateInnerImage(img);
                     });
                 } else {
                     currCanvasId = 2;
                     updateImageFromClipboard(event, (img) => {
-                        mirage.updateCoverImage(img);
+                        mirageEncoder.updateCoverImage(img);
                     });
                 }
             }
@@ -1138,7 +521,7 @@
             function encodeLoadInnerImageFromDrag(event) {
                 currCanvasId = 1;
                 dragDropLoadImage(event, (img) => {
-                    mirage.updateInnerImage(img);
+                    mirageEncoder.updateInnerImage(img);
                 });
             }
 
@@ -1146,7 +529,7 @@
             function encodeLoadCoverImageFromDrag(event) {
                 currCanvasId = 2;
                 dragDropLoadImage(event, (img) => {
-                    mirage.updateCoverImage(img);
+                    mirageEncoder.updateCoverImage(img);
                 });
             }
 
@@ -1154,18 +537,18 @@
             function encodeSetInnerThreshold() {
                 const slider = document.getElementById('innerThresholdRange');
                 const text = document.getElementById('innerThresholdInput');
-                mirage.innerThreshold = parseInt(slider.value, 10);
-                text.value = mirage.innerThreshold;
-                if (mirage.innerThreshold > mirage.coverThreshold) {
-                    mirage.innerThreshold = mirage.coverThreshold;
-                    slider.value = mirage.coverThreshold;
-                    text.value = mirage.coverThreshold;
+                mirageEncoder.innerThreshold = parseInt(slider.value, 10);
+                text.value = mirageEncoder.innerThreshold;
+                if (mirageEncoder.innerThreshold > mirageEncoder.coverThreshold) {
+                    mirageEncoder.innerThreshold = mirageEncoder.coverThreshold;
+                    slider.value = mirageEncoder.coverThreshold;
+                    text.value = mirageEncoder.coverThreshold;
                     text.style.color = '#ff5e5e';
                 } else {
                     text.style.color = '#dfdfdf';
                 }
-                if (mirage.innerImg && mirage.coverImg) {
-                    mirage.processImage();
+                if (mirageEncoder.innerImg && mirageEncoder.coverImg) {
+                    mirageEncoder.processImage();
                 }
             }
 
@@ -1173,18 +556,18 @@
             function encodeSetCoverThreshold() {
                 const slider = document.getElementById('coverThresholdRange');
                 const text = document.getElementById('coverThresholdInput');
-                mirage.coverThreshold = parseInt(slider.value, 10);
-                text.value = mirage.coverThreshold;
-                if (mirage.innerThreshold > mirage.coverThreshold) {
-                    mirage.coverThreshold = mirage.innerThreshold;
-                    slider.value = mirage.innerThreshold;
-                    text.value = mirage.innerThreshold;
+                mirageEncoder.coverThreshold = parseInt(slider.value, 10);
+                text.value = mirageEncoder.coverThreshold;
+                if (mirageEncoder.innerThreshold > mirageEncoder.coverThreshold) {
+                    mirageEncoder.coverThreshold = mirageEncoder.innerThreshold;
+                    slider.value = mirageEncoder.innerThreshold;
+                    text.value = mirageEncoder.innerThreshold;
                     text.style.color = '#ff5e5e';
                 } else {
                     text.style.color = '#dfdfdf';
                 }
-                if (mirage.innerImg && mirage.coverImg) {
-                    mirage.processImage();
+                if (mirageEncoder.innerImg && mirageEncoder.coverImg) {
+                    mirageEncoder.processImage();
                 }
             }
 
@@ -1196,22 +579,22 @@
                     const input = document.getElementById('innerThresholdInput');
                     const slider = document.getElementById('innerThresholdRange');
                     input.style.color = '#dfdfdf';
-                    mirage.innerThreshold = parseInt(input.value, 10);
-                    if (mirage.innerThreshold > 128) {
-                        mirage.innerThreshold = 128;
+                    mirageEncoder.innerThreshold = parseInt(input.value, 10);
+                    if (mirageEncoder.innerThreshold > 128) {
+                        mirageEncoder.innerThreshold = 128;
                         input.value = 128;
-                    } else if (mirage.innerThreshold < 0) {
-                        mirage.innerThreshold = 0;
+                    } else if (mirageEncoder.innerThreshold < 0) {
+                        mirageEncoder.innerThreshold = 0;
                         input.value = 0;
                     }
-                    slider.value = mirage.innerThreshold;
-                    if (mirage.innerThreshold > mirage.coverThreshold) {
-                        mirage.innerThreshold = mirage.coverThreshold;
-                        slider.value = mirage.coverThreshold;
-                        input.value = mirage.coverThreshold;
+                    slider.value = mirageEncoder.innerThreshold;
+                    if (mirageEncoder.innerThreshold > mirageEncoder.coverThreshold) {
+                        mirageEncoder.innerThreshold = mirageEncoder.coverThreshold;
+                        slider.value = mirageEncoder.coverThreshold;
+                        input.value = mirageEncoder.coverThreshold;
                     }
-                    if (mirage.innerImg && mirage.coverImg) {
-                        mirage.processImage();
+                    if (mirageEncoder.innerImg && mirageEncoder.coverImg) {
+                        mirageEncoder.processImage();
                     }
                 }, 500);
             }
@@ -1224,126 +607,118 @@
                     const input = document.getElementById('coverThresholdInput');
                     const slider = document.getElementById('coverThresholdRange');
                     input.style.color = '#dfdfdf';
-                    mirage.coverThreshold = parseInt(input.value, 10);
-                    if (mirage.coverThreshold > 128) {
-                        mirage.coverThreshold = 128;
+                    mirageEncoder.coverThreshold = parseInt(input.value, 10);
+                    if (mirageEncoder.coverThreshold > 128) {
+                        mirageEncoder.coverThreshold = 128;
                         input.value = 128;
-                    } else if (mirage.coverThreshold < 0) {
-                        mirage.coverrThreshold = 0;
+                    } else if (mirageEncoder.coverThreshold < 0) {
+                        mirageEncoder.coverrThreshold = 0;
                         input.value = 0;
                     }
-                    slider.value = mirage.innerThreshold;
-                    if (mirage.innerThreshold > mirage.coverThreshold) {
-                        mirage.coverThreshold = mirage.innerThreshold;
-                        slider.value = mirage.coverThreshold;
-                        input.value = mirage.coverThreshold;
+                    slider.value = mirageEncoder.coverThreshold;
+                    if (mirageEncoder.innerThreshold > mirageEncoder.coverThreshold) {
+                        mirageEncoder.coverThreshold = mirageEncoder.innerThreshold;
+                        slider.value = mirageEncoder.coverThreshold;
+                        input.value = mirageEncoder.coverThreshold;
                     }
-                    if (mirage.innerImg && mirage.coverImg) {
-                        mirage.processImage();
+                    if (mirageEncoder.innerImg && mirageEncoder.coverImg) {
+                        mirageEncoder.processImage();
                     }
                 }, 500);
             }
 
             // 设置表图是否取灰度
-            function encodeSetCoverGray() {
-                mirage.isCoverGray = document.getElementById('isCoverGrayCheckBox').checked;
-                if (mirage.coverImg && mirage.innerImg) {
-                    mirage.updateCoverImage(mirage.coverImg);
+            function encodeSetCoverGray(event) {
+                mirageEncoder.isCoverGray = event.target.checked;
+                if (mirageEncoder.coverImg && mirageEncoder.innerImg) {
+                    mirageEncoder.updateCoverImage(mirageEncoder.coverImg);
                 }
             }
 
             // 设置是否反向隐写
-            function encodeSetEncodeReverse() {
-                mirage.isEncodeReverse = document.getElementById('isEncodeReverseCheckBox').checked;
-                if (mirage.innerImg && mirage.coverImg) {
-                    mirage.processImage();
+            function encodeSetEncodeReverse(event) {
+                mirageEncoder.isEncodeReverse = event.target.checked;
+                if (mirageEncoder.innerImg && mirageEncoder.coverImg) {
+                    mirageEncoder.processImage();
                 }
             }
 
             // 设置像素混合方式
-            function encodeSetMethod() {
-                const method = document.getElementById('encodeMethodSelect').value;
+            function encodeSetMethod(event) {
+                const method = event.target.value;
                 switch (method) {
                     case 'chess':
-                        mirage.method = 2;
+                        mirageEncoder.method = 2;
                         break;
                     case 'gap_2':
-                        mirage.method = 3;
+                        mirageEncoder.method = 3;
                         break;
                     case 'gap_3':
-                        mirage.method = 4;
+                        mirageEncoder.method = 4;
                         break;
                     case 'gap_5':
-                        mirage.method = 6;
+                        mirageEncoder.method = 6;
                         break;
                 }
-                if (mirage.innerImg && mirage.coverImg) {
-                    mirage.updateInnerImage(mirage.innerImg);
+                if (mirageEncoder.innerImg && mirageEncoder.coverImg) {
+                    mirageEncoder.updateInnerImage(mirageEncoder.innerImg);
                 }
             }
 
             // 设置输出图像大小
             let sizeInputTimeout;
-            function encodeSetSize() {
+            function encodeSetSize(event) {
                 clearTimeout(sizeInputTimeout);
 
                 sizeInputTimeout = setTimeout(function () {
-                    mirage.size = parseInt(document.getElementById('encodeSizeInput').value, 10);
-                    if (mirage.size > 4000) {
-                        mirage.size = 4000;
-                        document.getElementById('encodeSizeInput').value = 4000;
-                    } else if (mirage.size < 100) {
-                        mirage.size = 100;
-                        document.getElementById('encodeSizeInput').value = 100;
+                    mirageEncoder.size = parseInt(event.target.value, 10);
+                    if (mirageEncoder.size > 4000) {
+                        mirageEncoder.size = 4000;
+                        event.target.value = 4000;
+                    } else if (mirageEncoder.size < 100) {
+                        mirageEncoder.size = 100;
+                        event.target.value = 100;
                     }
-                    if (mirage.innerImg) {
-                        mirage.updateInnerImage(mirage.innerImg);
+                    if (mirageEncoder.innerImg) {
+                        mirageEncoder.updateInnerImage(mirageEncoder.innerImg);
                     }
                 }, 500);
             }
 
             // 设置保存类型
             var isPng = defaultArguments.isPng;
-            function setSaveType() {
-                isPng = document.getElementById('isPngCheckBox').checked;
+            function setSaveType(event) {
+                isPng = event.target.checked;
             }
 
             // 保存图像
             function encodeSaveImage() {
-                if (isPng) {
-                    saveIamgeFromCanvas('outputCanvas');
-                } else {
-                    const canvas = document.getElementById('outputCanvas');
-                    const link = document.createElement('a');
-                    link.href = canvas.toDataURL('image/jpeg', 1);
-                    link.download = 'output.jpg';
-                    link.click();
-                }
+                saveImageFromCanvas('outputCanvas', isPng);
             }
 
             // 以当前结果跳转显形界面
             function jumpToDecode() {
-                if (mirage.innerImg && mirage.coverImg) {
-                    document.getElementById('decodeReverseInput').checked = mirage.isEncodeReverse;
-                    imageProcessor.reverse = mirage.isEncodeReverse;
-                    if (imageProcessor.reverse) {
-                        document.getElementById('decodeThresholdRange').value = 255 - mirage.innerThreshold;
-                        imageProcessor.threshold = 255 - mirage.innerThreshold;
+                if (mirageEncoder.innerImg && mirageEncoder.coverImg) {
+                    document.getElementById('decodeReverseInput').checked = mirageEncoder.isEncodeReverse;
+                    mirageDecoder.reverse = mirageEncoder.isEncodeReverse;
+                    if (mirageDecoder.reverse) {
+                        document.getElementById('decodeThresholdRange').value = 255 - mirageEncoder.innerThreshold;
+                        mirageDecoder.threshold = 255 - mirageEncoder.innerThreshold;
                     } else {
-                        document.getElementById('decodeThresholdRange').value = mirage.innerThreshold;
-                        imageProcessor.threshold = mirage.innerThreshold;
+                        document.getElementById('decodeThresholdRange').value = mirageEncoder.innerThreshold;
+                        mirageDecoder.threshold = mirageEncoder.innerThreshold;
                     }
                     const canvas = document.getElementById('outputCanvas');
                     const img = new Image();
                     img.src = canvas.toDataURL('image/png');
                     img.onload = function () {
-                        imageProcessor.updateImage(img);
+                        mirageDecoder.updateImage(img);
                         switchPage();
                     };
                 }
             }
 
-            // 设置事件监听器
+            // 设置编码事件监听器
             function encodeSetUpEventListeners() {
 
                 document.getElementById('decodeButton').addEventListener('click', switchPage);
@@ -1374,6 +749,7 @@
                 document.getElementById('encodeSaveImageButton').addEventListener('click', encodeSaveImage);
             }
 
+            // 移除编码事件监听器
             function encodeRemoveEventListeners() {
                 document.getElementById('decodeButton').removeEventListener('click', switchPage);
 
@@ -1401,21 +777,24 @@
             window.onload = function () {
                 universalSetupEventListeners();
                 decodeSetupEventListeners();
+                if (defaultArguments.defaultPageId != 'decodePage') {
+                    switchPage();
+                }
                 defaultArguments.setDefaultValues();
 
                 var defaultImg = new Image();
                 defaultImg.crossOrigin = 'anonymous';
                 defaultImg.alt = 'default image';
                 updateImageFromFile(defaultSrc[currCanvasId], (img) => {
-                    imageProcessor.updateImage(img);
+                    mirageDecoder.updateImage(img);
                 });
 
                 updateImageFromFile(defaultSrc[1], (img) => {
-                    mirage.updateInnerImage(img);
+                    mirageEncoder.updateInnerImage(img);
                 });
 
                 updateImageFromFile(defaultSrc[2], (img) => {
-                    mirage.updateCoverImage(img);
+                    mirageEncoder.updateCoverImage(img);
                 });
 
                 if (isOnPhone) {
