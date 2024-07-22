@@ -2,8 +2,23 @@
 <html lang="zh-CN">
 
 <head>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-43TMHBXPHM"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-43TMHBXPHM');
+    </script>
+
+    <link rel="icon" href="neko.ico" type="image/x-icon">
+
+    <title>光棱坦克工厂</title>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="UTF-8">
+
     <style>
         body {
             display: flex;
@@ -432,7 +447,7 @@
                         <label for="coverThresholdRange">表图色阶端点: </label>
                         <label for="coverThresholdRange"><small>(越大显形效果越好)</small></label>
                         <input type="range" id="coverThresholdRange" min="0" max="128" value="48">
-                        <label for="coverThresholdRange"><small>(不应高于左侧值)</small></label>
+                        <label for="coverThresholdRange"><small>(不应低于左侧值)</small></label>
                     </slider>
                     <div class="thresInput">
                         <label for="coverThresholdInput">当前值: </label>
