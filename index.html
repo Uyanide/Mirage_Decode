@@ -485,7 +485,7 @@
 
             <checkbox id="isPng">
                 <input type="checkbox" id="isPngCheckBox" checked>
-                <label for="isPngCheckBox">存为PNG <small>(否则为JPEG, 但被平台强制压缩几率更小)</small></label>
+                <label for="isPngCheckBox">存为PNG <small>(否则为JPEG, 但被平台强制压缩几率更低)</small></label>
             </checkbox>
 
             <div id="jumpButton">
@@ -998,13 +998,13 @@
                 compressLow(targ, data, i, rate, limit) {
                     targ[i] = Math.floor(data[i] * rate);
                     targ[i + 1] = Math.floor(data[i + 1] * rate);
-                    targ[i + 2] = Math.floor(data[i + 1] * rate);
+                    targ[i + 2] = Math.floor(data[i + 2] * rate);
                 }
 
                 compressHigh(targ, data, i, rate, limit) {
                     targ[i] = Math.floor(data[i] * rate + limit);
                     targ[i + 1] = Math.floor(data[i + 1] * rate + limit);
-                    targ[i + 2] = Math.floor(data[i + 1] * rate + limit);
+                    targ[i + 2] = Math.floor(data[i + 2] * rate + limit);
                 }
 
                 processImage() {
