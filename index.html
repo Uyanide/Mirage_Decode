@@ -1144,6 +1144,58 @@
                 }
             }
 
+            // 设置里图色阶输入
+            function encodeSetInnerThresholdInput() {
+                const input = document.getElementById('innerThresholdInput');
+                const slider = document.getElementById('innerThresholdRange');
+                mirage.innerThreshold = parseInt(input.value, 10);
+                if (mirage.innerThreshold > 128) {
+                    mirage.innerThreshold = 128;
+                    input.value = 128;
+                } else if (mirage.innerThreshold < 0) {
+                    mirage.innerThreshold = 0;
+                    input.value = 0;
+                }
+                slider.value = mirage.innerThreshold;
+                if (mirage.innerThreshold > mirage.coverThreshold) {
+                    mirage.innerThreshold = mirage.coverThreshold;
+                    slider.value = mirage.coverThreshold;
+                    input.value = mirage.coverThreshold;
+                    input.style.color = '#ff5e5e';
+                } else {
+                    input.style.color = '#dfdfdf';
+                }
+                if (mirage.innerImg && mirage.coverImg) {
+                    mirage.processImage();
+                }
+            }
+
+            // 设置表图色阶输入
+            function encodeSetCoverThresholdInput() {
+                const input = document.getElementById('coverThresholdInput');
+                const slider = document.getElementById('coverThresholdRange');
+                mirage.coverThreshold = parseInt(input.value, 10);
+                if (mirage.coverThreshold > 128) {
+                    mirage.coverThreshold = 128;
+                    input.value = 128;
+                } else if (mirage.coverThreshold < 0) {
+                    mirage.coverrThreshold = 0;
+                    input.value = 0;
+                }
+                slider.value = mirage.innerThreshold;
+                if (mirage.innerThreshold > mirage.coverThreshold) {
+                    mirage.coverThreshold = mirage.innerThreshold;
+                    slider.value = mirage.coverThreshold;
+                    input.value = mirage.coverThreshold;
+                    input.style.color = '#ff5e5e';
+                } else {
+                    input.style.color = '#dfdfdf';
+                }
+                if (mirage.innerImg && mirage.coverImg) {
+                    mirage.processImage();
+                }
+            }
+
             // 设置表图是否取灰度
             function encodeSetCoverGray() {
                 mirage.isCoverGray = document.getElementById('isCoverGrayCheckBox').checked;
@@ -1260,6 +1312,8 @@
 
                 document.getElementById('innerThresholdRange').addEventListener('input', encodeSetInnerThreshold);
                 document.getElementById('coverThresholdRange').addEventListener('input', encodeSetCoverThreshold);
+                document.getElementById('innerThresholdInput').addEventListener('input', encodeSetInnerThresholdInput);
+                document.getElementById('coverThresholdInput').addEventListener('input', encodeSetCoverThresholdInput);
 
                 document.getElementById('isCoverGrayCheckBox').addEventListener('change', encodeSetCoverGray);
                 document.getElementById('isEncodeReverseCheckBox').addEventListener('change', encodeSetEncodeReverse);
@@ -1285,6 +1339,8 @@
                 }
                 document.getElementById('innerThresholdRange').removeEventListener('input', encodeSetInnerThreshold);
                 document.getElementById('coverThresholdRange').removeEventListener('input', encodeSetCoverThreshold);
+                document.getElementById('innerThresholdInput').removeEventListener('input', encodeSetInnerThresholdInput);
+                document.getElementById('coverThresholdInput').removeEventListener('input', encodeSetCoverThresholdInput);
                 document.getElementById('isCoverGrayCheckBox').removeEventListener('change', encodeSetCoverGray);
                 document.getElementById('isEncodeReverseCheckBox').removeEventListener('change', encodeSetEncodeReverse);
                 document.getElementById('encodeMethodSelect').removeEventListener('change', encodeSetMethod);
