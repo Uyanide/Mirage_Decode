@@ -532,13 +532,50 @@
             var isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 800);
             var currCanvasId = 0;
 
+            class DefaultArguments {
+                constructor() {
+                    this.decodeThreshold = 32;
+                    this.isDecodeReverse = false;
+                    this.decodeMethod = 'lcopy';
+
+                    this.innerThreshold = 24;
+                    this.coverThreshold = 42;
+                    this.isCoverGray = false;
+                    this.isEncodeReverse = false;
+                    this.isPng = false;
+                    this.method = 2;
+                    this.methodDisplay = 'chess'
+                    this.size = 1200;
+                }
+
+                setDefaultValues() {
+                    document.getElementById('decodeThresholdRange').value = this.decodeThreshold;
+                    document.getElementById('decodeReverseInput').checked = this.isDecodeReverse;
+                    document.getElementById('optionSelect').value = this.decodeMethod;
+
+                    document.getElementById('innerThresholdRange').value = this.innerThreshold;
+                    document.getElementById('innerThresholdInput').value = this.innerThreshold;
+                    document.getElementById('coverThresholdRange').value = this.coverThreshold;
+                    document.getElementById('coverThresholdInput').value = this.coverThreshold;
+
+                    document.getElementById('isCoverGrayCheckBox').checked = this.isCoverGray;
+                    document.getElementById('isEncodeReverseCheckBox').checked = this.isEncodeReverse;
+                    document.getElementById('isPngCheckBox').checked = this.isPng;
+                    document.getElementById('encodeMethodSelect').value = this.methodDisplay;
+                    document.getElementById('encodeSizeInput').value = this.size;
+                }
+            }
+        </script>
+        <script>
+            const defaultArguments = new DefaultArguments();
+
             class MirageDecoder {
                 constructor() {
                     this.img = null;
                     this.imgData = null;
-                    this.coverProcessMethod = "lcopy";
-                    this.threshold = 32;
-                    this.reverse = false;
+                    this.coverProcessMethod = defaultArguments.decodeMethod;
+                    this.threshold = defaultArguments.decodeThreshold;
+                    this.reverse = defaultArguments.isDecodeReverse;
                 }
 
                 showImage(imgData) {
@@ -766,11 +803,11 @@
                     var privacyPolicy = document.getElementById('privacyPolicy');
                     if (privacyPolicy.style.display === 'none') {
                         privacyPolicy.style.display = 'block';
-                        this.textContent = '隐藏隐私说明';
+                        this.text = '隐藏隐私说明';
                         window.scrollTo(0, document.body.scrollHeight);
                     } else {
                         privacyPolicy.style.display = 'none';
-                        this.textContent = '显示隐私说明';
+                        this.text = '显示隐私说明';
                     }
                 });
 
@@ -889,14 +926,14 @@
                     this.coverImg = null;
                     this.innerImgdata = null;
                     this.coverImgdata = null;
-                    this.innerThreshold = 24;
-                    this.coverThreshold = 42;
+                    this.innerThreshold = defaultArguments.innerThreshold;
+                    this.coverThreshold = defaultArguments.coverThreshold;
                     this.width = 0;
                     this.heigt = 0;
-                    this.isCoverGray = false;
-                    this.isEncodeReverse = false;
-                    this.method = 2;
-                    this.size = 1200;
+                    this.isCoverGray = defaultArguments.isCoverGray;
+                    this.isEncodeReverse = defaultArguments.isEncodeReverse;
+                    this.method = defaultArguments.method;
+                    this.size = defaultArguments.size;
                 }
 
                 updateInnerImage(img) {
@@ -1266,7 +1303,7 @@
             }
 
             // 设置保存类型
-            var isPng = true;
+            var isPng = defaultArguments.isPng;
             function setSaveType() {
                 isPng = document.getElementById('isPngCheckBox').checked;
             }
@@ -1364,6 +1401,7 @@
             window.onload = function () {
                 universalSetupEventListeners();
                 decodeSetupEventListeners();
+                defaultArguments.setDefaultValues();
 
                 var defaultImg = new Image();
                 defaultImg.crossOrigin = 'anonymous';
