@@ -330,11 +330,12 @@
             font-size: 18px;
         }
 
-        #infoLink {
+        #infoLink,
+        #profileLink {
             margin-top: 0px;
         }
 
-        #profileLink {
+        #hintLink {
             margin-top: 30px;
         }
 
@@ -428,6 +429,7 @@
                     <slider class="encodeSlider">
                         <label for="innerThresholdRange">里图色阶端点: </label>
                         <label for="innerThresholdRange"><small>(越小隐写效果越好)</small></label>
+                        <label for="innerThresholdRange"><small>(但越小里图质量越差)</small></label>
                         <input id="innerThresholdRange" type="range" min="0" max="128" value="24">
                         <label for="innerThresholdRange"><small>(不应高于右侧值)</small></label>
                     </slider>
@@ -446,6 +448,7 @@
                     <slider class="encodeSlider">
                         <label for="coverThresholdRange">表图色阶端点: </label>
                         <label for="coverThresholdRange"><small>(越大显形效果越好)</small></label>
+                        <label for="coverThresholdRange"><small>(但越大表图质量越差)</small></label>
                         <input type="range" id="coverThresholdRange" min="0" max="128" value="42">
                         <label for="coverThresholdRange"><small>(不应低于左侧值)</small></label>
                     </slider>
@@ -469,7 +472,7 @@
             <div id="encodeMethod">
                 <label for="encodeMethodSelect">选择像素混合方式: </label>
                 <select id="encodeMethodSelect">
-                    <option value="chess" selected>棋盘布局</option>
+                    <option value="chess" selected>棋盘布局(推荐)</option>
                     <option value="gap_2">2像素间隔斜线</option>
                     <option value="gap_3">3像素间隔斜线</option>
                     <option value="gap_5">5像素间隔斜线</option>
@@ -495,6 +498,10 @@
             <div id="saveButton">
                 <button id="encodeSaveImageButton">保存结果</button>
             </div>
+        </div>
+
+        <div class="link" , id="hintLink">
+            <small>如果遇到Bug可在Github页面提交Issue</small>
         </div>
 
         <div class="link" , id="profileLink">
@@ -1151,6 +1158,7 @@
                 setTimeout(function () {
                     const input = document.getElementById('innerThresholdInput');
                     const slider = document.getElementById('innerThresholdRange');
+                    input.style.color = '#dfdfdf';
                     mirage.innerThreshold = parseInt(input.value, 10);
                     if (mirage.innerThreshold > 128) {
                         mirage.innerThreshold = 128;
@@ -1178,6 +1186,7 @@
                 setTimeout(function () {
                     const input = document.getElementById('coverThresholdInput');
                     const slider = document.getElementById('coverThresholdRange');
+                    input.style.color = '#dfdfdf';
                     mirage.coverThreshold = parseInt(input.value, 10);
                     if (mirage.coverThreshold > 128) {
                         mirage.coverThreshold = 128;
