@@ -420,7 +420,7 @@
         <div class="DisplayArea" id="encodePage">
             <div id="encodeSourceInput">
                 <div class="encodeFileInput" , id="innerFileInput">
-                    <label for="innerSourceFileInput" class="fileInputLabel">选择里图</label>
+                    <label for="innerSourceFileInput" class="fileInputLabel">选择里图文件</label>
                     <input type="file" id="innerSourceFileInput" accept="image/*" style="display: none;">
                     <lable for="innerCanvas" class="encodeDrag">或直接拖动至下方画布</lable>
                     <lable for="innerCanvas" class="encodeDrag">或在下方画布处ctrl+v</lable>
@@ -438,7 +438,7 @@
                 </div>
 
                 <div class="encodeFileInput" , id="coverFileInput">
-                    <label for="coverSourceFileInput" class="fileInputLabel">选择表图</label>
+                    <label for="coverSourceFileInput" class="fileInputLabel">选择表图文件</label>
                     <input type="file" id="coverSourceFileInput" accept="image/*" style="display: none;">
                     <lable for="coverCanvas" class="encodeDrag">或直接拖动至下方画布</lable>
                     <lable for="coverCanvas" class="encodeDrag">或在下方画布处ctrl+v</lable>
@@ -463,16 +463,16 @@
 
             <checkbox id="isEncodeReverse">
                 <input type="checkbox" id="isEncodeReverseCheckBox">
-                <label for="isEncodeReverseCheckBox">是否反向隐写</label>
+                <label for="isEncodeReverseCheckBox">是否色阶反向隐写</label>
             </checkbox>
 
             <div id="encodeMethod">
                 <label for="encodeMethodSelect">选择像素混合方式: </label>
                 <select id="encodeMethodSelect">
                     <option value="chess" selected>棋盘布局</option>
-                    <option value="gap_2">间隔2斜线</option>
-                    <option value="gap_3">间隔3斜线</option>
-                    <option value="gap_5">间隔5斜线</option>
+                    <option value="gap_2">2像素间隔斜线</option>
+                    <option value="gap_3">3像素间隔斜线</option>
+                    <option value="gap_5">5像素间隔斜线</option>
                 </select>
             </div>
 
@@ -485,7 +485,7 @@
 
             <checkbox id="isPng">
                 <input type="checkbox" id="isPngCheckBox" checked>
-                <label for="isPngCheckBox">存为PNG <small>(否则为JPEG有损压缩)</small></label>
+                <label for="isPngCheckBox">存为PNG <small>(否则为JPEG, 但被平台强制压缩几率更小)</small></label>
             </checkbox>
 
             <div id="jumpButton">
