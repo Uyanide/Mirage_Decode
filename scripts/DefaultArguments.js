@@ -1,7 +1,7 @@
 
 class DefaultArguments {
     constructor() {
-        this.decodeThreshold = 32;
+        this.decodeThreshold = 24;
         this.isDecodeReverse = false;
         this.decodeMethod = 'lcopy';
         // this.decodeMethod = 'black';

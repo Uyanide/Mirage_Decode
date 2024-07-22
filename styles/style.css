@@ -1,11 +1,43 @@
+:root {
+    --background-color: #fff;
+    --secondary-background-color: #ececec;
+    --secondary-notselected-background-color: #f6f6f6;
+    --element-backgound-color: #f6f6f6;
+    --front-color: #000;
+    --element-border-color: #ccc;
+    --link-color: #2285d5;
+}
+
+[data-theme="light"] {
+    --background-color: #fff;
+    --secondary-background-color: #ececec;
+    --secondary-notselected-background-color: #f6f6f6;
+    --element-backgound-color: #f6f6f6;
+    --front-color: #000;
+    --element-border-color: #ccc;
+    --link-color: #2285d5;
+}
+
+[data-theme="dark"] {
+    --background-color: #000;
+    --secondary-background-color: #161616;
+    --secondary-notselected-background-color: #090909;
+    --element-backgound-color: #444;
+    --front-color: #dfdfdf;
+    --element-border-color: #555;
+    --link-color: #4baeff;
+}
+
+/**********************************************/
+
 body {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
     margin-top: 30px;
-    background-color: #000;
-    color: #dfdfdf;
+    background-color: var(--background-color);
+    color: var(--front-color);
 }
 
 input[type=text],
@@ -13,10 +45,10 @@ input[type=number],
 button,
 .fileInputLabel,
 select {
-    background-color: #333;
-    color: #dfdfdf;
+    background-color: var(--element-backgound-color);
+    color: var(--front-color);
     padding: 5px;
-    border: 1px solid #555;
+    border: 1px solid var(--element-border-color);
     border-radius: 5px;
     font-size: 15px;
 }
@@ -35,7 +67,7 @@ input[type="checkbox"]:hover {
 
 button:hover,
 .fileInputLabel:hover {
-    background-color: #444;
+    background-color: var(--element-backgound-color);
 }
 
 /**********************************************/
@@ -65,9 +97,8 @@ button:hover,
     width: 100%;
 }
 
-.PageSwitchButton {
-    background-color: #242424;
-    color: #dfdfdf;
+.PageSwitchButtonUnselected,
+.PageSwitchButtonSelected {
     padding: 15px;
     width: 100%;
     border: none;
@@ -75,21 +106,23 @@ button:hover,
     font-size: 15px;
 }
 
-.PageSwitchButton:hover {
+.PageSwitchButtonUnselected {
+    background-color: var(--secondary-notselected-background-color);
+}
+
+.PageSwitchButtonSelected {
+    background-color: var(--secondary-background-color);
+}
+
+.PageSwitchButtonUnselected:hover,
+.PageSwitchButtonSelected:hover {
     transform: none;
-}
-
-#decodeButton {
-    background-color: #242424;
-}
-
-#encodeButton {
-    background-color: #121212;
+    background-color: var(--secondary-background-color);
 }
 
 .DisplayArea {
-    background-color: #242424;
-    color: #dfdfdf;
+    background-color: var(--secondary-background-color);
+    color: var(--front-color);
     border-radius: 0 0 15px 15px;
     margin-top: 0px;
     display: flex;
@@ -167,7 +200,7 @@ button:hover,
 }
 
 Canvas {
-    border: 1px solid #dfdfdf;
+    border: 1px solid var(--element-border-color);
 }
 
 .thresSlider {
@@ -215,9 +248,9 @@ Canvas {
 }
 
 .fileInputLabel {
-    background-color: #333;
-    color: #dfdfdf;
-    border: 1px solid #555;
+    background-color: var(--element-backgound-color);
+    color: var(--front-color);
+    border: 1px solid var(--element-border-color);
     border-radius: 5px;
     padding: 5px;
     cursor: pointer;
@@ -310,7 +343,7 @@ Canvas {
 /**********************************************/
 
 a {
-    color: #4baeff;
+    color: var(--link-color);
 }
 
 .link {
@@ -324,15 +357,15 @@ a {
 
 #privacyButton button {
     margin-top: 5px;
-    background-color: #000000;
-    color: #4baeff;
-    border: 0px solid #555;
+    background-color: var(--background-color);
+    color: var(--link-color);
+    border: 0px;
     font-size: 14px;
 }
 
 #privacyPolicy {
     text-align: center;
-    color: #ccc;
+    color: var(--front-color);
     max-width: min(100%, 600px);
     font-size: 12px;
     display: none;

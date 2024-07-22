@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="dark">
 
 <head>
     <!-- Google tag (gtag.js) -->
@@ -12,7 +12,7 @@
         gtag('config', 'G-43TMHBXPHM');
     </script>
 
-    <link rel="icon" href="neko.ico" type="image/x-icon">
+    <link rel="icon" href="resources/neko.ico" type="image/x-icon">
 
     <title>光棱坦克工厂</title>
 
@@ -22,6 +22,15 @@
     <script src="scripts/MirageDecoder.js"></script>
     <script src="scripts/MirageEncoder.js"></script>
     <script src="scripts/DefaultArguments.js"></script>
+    <script>
+        function applyTheme() {
+            const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            const theme = prefersDarkScheme ? "dark" : "light";
+            document.documentElement.setAttribute("data-theme", theme);
+        }
+        window.addEventListener("load", applyTheme);
+        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
+    </script>
 </head>
 
 <body>
@@ -34,8 +43,8 @@
     <div class="PageContainer">
 
         <div class="TitleContainer">
-            <button class="PageSwitchButton" id="decodeButton">显形</button>
-            <button class="PageSwitchButton" id="encodeButton">制作</button>
+            <button class="PageSwitchButtonSelected" id="decodeButton"><b>显形</b></button>
+            <button class="PageSwitchButtonUnselected" id="encodeButton"><b>制作</b></button>
         </div>
 
         <div class="DisplayArea" id="decodePage">
@@ -196,7 +205,7 @@
                 'resources/neko.png',
                 'resources/buta.png',
             ];
-            var isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 800);
+            var isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             var currCanvasId = 0;
         </script>
         <script>
@@ -334,18 +343,22 @@
                 var decodeButton = document.getElementById('decodeButton');
                 var encodeButton = document.getElementById('encodeButton');
                 if (curPageId === 'decodePage') {
-                    decodePage.style.display = 'none';
                     encodePage.style.display = 'flex';
-                    decodeButton.style.backgroundColor = '#121212';
-                    encodeButton.style.backgroundColor = '#242424';
+                    decodePage.style.display = 'none';
+                    decodeButton.classList.remove('PageSwitchButtonSelected');
+                    decodeButton.classList.add('PageSwitchButtonUnselected');
+                    encodeButton.classList.remove('PageSwitchButtonUnselected');
+                    encodeButton.classList.add('PageSwitchButtonSelected');
                     decodeRemoveEventListeners();
                     encodeSetUpEventListeners();
                     curPageId = 'encodePage';
                 } else {
                     decodePage.style.display = 'flex';
                     encodePage.style.display = 'none';
-                    decodeButton.style.backgroundColor = '#242424';
-                    encodeButton.style.backgroundColor = '#121212';
+                    decodeButton.classList.remove('PageSwitchButtonUnselected');
+                    decodeButton.classList.add('PageSwitchButtonSelected');
+                    encodeButton.classList.remove('PageSwitchButtonSelected');
+                    encodeButton.classList.add('PageSwitchButtonUnselected');
                     decodeSetupEventListeners();
                     encodeRemoveEventListeners();
                     curPageId = 'decodePage';
@@ -579,7 +592,11 @@
                     const input = document.getElementById('innerThresholdInput');
                     const slider = document.getElementById('innerThresholdRange');
                     input.style.color = '#dfdfdf';
-                    mirageEncoder.innerThreshold = parseInt(input.value, 10);
+                    const inputVal = parseInt(input.value, 10);
+                    if (isNaN(inputVal)) {
+                        return;
+                    }
+                    mirageEncoder.innerThreshold = inputVal;
                     if (mirageEncoder.innerThreshold > 128) {
                         mirageEncoder.innerThreshold = 128;
                         input.value = 128;
@@ -607,7 +624,11 @@
                     const input = document.getElementById('coverThresholdInput');
                     const slider = document.getElementById('coverThresholdRange');
                     input.style.color = '#dfdfdf';
-                    mirageEncoder.coverThreshold = parseInt(input.value, 10);
+                    const inputVal = parseInt(input.value, 10);
+                    if (isNaN(inputVal)) {
+                        return;
+                    }
+                    mirageEncoder.coverThreshold = inputVal;
                     if (mirageEncoder.coverThreshold > 128) {
                         mirageEncoder.coverThreshold = 128;
                         input.value = 128;
