@@ -643,7 +643,7 @@
                     callback(img);
                 }).catch((error) => {
                     console.error('图像加载失败:', error);
-                    alert('无法加载图像, 请确保图像文件状态。');
+                    alert('无法加载图像, 请确定文件类型和状态。');
                     loadImage(defaultSrc[currCanvasId]).then((img) => {
                         callback(img);
                     });
@@ -674,7 +674,7 @@
                             callback(img);
                         }).catch((error) => {
                             console.error('图像加载失败:', error);
-                            alert('无法加载图像, 请确保剪贴板图像文件状态。');
+                            alert('无法加载图像, 请确定剪贴板图像文件状态。');
                             loadImage(defaultSrc[currCanvasId]).then((img) => {
                                 callback(img);
                             });
@@ -694,7 +694,7 @@
                                 callback(img);
                             }).catch((error) => {
                                 console.error('图像加载失败:', error);
-                                alert('无法加载图像, 请确保拖动文件状态。');
+                                alert('无法加载图像, 请确定拖动文件类型和状态。');
                                 loadImage(defaultSrc[currCanvasId]).then((img) => {
                                     callback(img);
                                 });
@@ -749,6 +749,7 @@
                     decodeSetupEventListeners();
                     encodeRemoveEventListeners();
                     curPageId = 'decodePage';
+                    currCanvasId = 0;
                 }
             }
 
@@ -1054,6 +1055,7 @@
 
             // 从文件加载里图
             function encodeLoadInnerImageFile(event) {
+                currCanvasId = 1;
                 const file = event.target.files[0];
                 updateImageFromFile(file, (img) => {
                     mirage.updateInnerImage(img);
@@ -1062,25 +1064,26 @@
 
             // 从文件加载表图
             function encodeLoadCoverImageFile(event) {
+                currCanvasId = 2;
                 const file = event.target.files[0];
                 updateImageFromFile(file, (img) => {
                     mirage.updateCoverImage(img);
                 });
             }
 
-            // 从剪贴板加载表图
+            // 从剪贴板加载表里图
             var mouseX = 0;
             function updateMousePosition(event) {
                 mouseX = event.clientX;
             }
-
-            // 从剪贴板加载里图
             function encodeLoadImageFromClipboard(event) {
                 if (mouseX < window.innerWidth / 2) {
+                    currCanvasId = 1;
                     updateImageFromClipboard(event, (img) => {
                         mirage.updateInnerImage(img);
                     });
                 } else {
+                    currCanvasId = 2;
                     updateImageFromClipboard(event, (img) => {
                         mirage.updateCoverImage(img);
                     });
@@ -1089,6 +1092,7 @@
 
             // 从拖动加载里图
             function encodeLoadInnerImageFromDrag(event) {
+                currCanvasId = 1;
                 dragDropLoadImage(event, (img) => {
                     mirage.updateInnerImage(img);
                 });
@@ -1096,6 +1100,7 @@
 
             // 从拖动加载表图
             function encodeLoadCoverImageFromDrag(event) {
+                currCanvasId = 2;
                 dragDropLoadImage(event, (img) => {
                     mirage.updateCoverImage(img);
                 });
@@ -1203,6 +1208,19 @@
                 isPng = document.getElementById('isPngCheckBox').checked;
             }
 
+            // 保存图像
+            function encodeSaveImage() {
+                if (isPng) {
+                    saveIamgeFromCanvas('outputCanvas');
+                } else {
+                    const canvas = document.getElementById('outputCanvas');
+                    const link = document.createElement('a');
+                    link.href = canvas.toDataURL('image/jpeg', 1);
+                    link.download = 'output.jpg';
+                    link.click();
+                }
+            }
+
             // 以当前结果跳转显形界面
             function jumpToDecode() {
                 if (mirage.innerImg && mirage.coverImg) {
@@ -1222,19 +1240,6 @@
                         imageProcessor.updateImage(img);
                         switchPage();
                     };
-                }
-            }
-
-            // 保存图像
-            function encodeSaveImage() {
-                if (isPng) {
-                    saveIamgeFromCanvas('outputCanvas');
-                } else {
-                    const canvas = document.getElementById('outputCanvas');
-                    const link = document.createElement('a');
-                    link.href = canvas.toDataURL('image/jpeg', 1);
-                    link.download = 'output.jpg';
-                    link.click();
                 }
             }
 
