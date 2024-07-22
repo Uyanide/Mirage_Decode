@@ -1145,55 +1145,57 @@
             }
 
             // 设置里图色阶输入
+            let innerInputTimeout;
             function encodeSetInnerThresholdInput() {
-                const input = document.getElementById('innerThresholdInput');
-                const slider = document.getElementById('innerThresholdRange');
-                mirage.innerThreshold = parseInt(input.value, 10);
-                if (mirage.innerThreshold > 128) {
-                    mirage.innerThreshold = 128;
-                    input.value = 128;
-                } else if (mirage.innerThreshold < 0) {
-                    mirage.innerThreshold = 0;
-                    input.value = 0;
-                }
-                slider.value = mirage.innerThreshold;
-                if (mirage.innerThreshold > mirage.coverThreshold) {
-                    mirage.innerThreshold = mirage.coverThreshold;
-                    slider.value = mirage.coverThreshold;
-                    input.value = mirage.coverThreshold;
-                    input.style.color = '#ff5e5e';
-                } else {
-                    input.style.color = '#dfdfdf';
-                }
-                if (mirage.innerImg && mirage.coverImg) {
-                    mirage.processImage();
-                }
+                clearTimeout(innerInputTimeout);
+                setTimeout(function () {
+                    const input = document.getElementById('innerThresholdInput');
+                    const slider = document.getElementById('innerThresholdRange');
+                    mirage.innerThreshold = parseInt(input.value, 10);
+                    if (mirage.innerThreshold > 128) {
+                        mirage.innerThreshold = 128;
+                        input.value = 128;
+                    } else if (mirage.innerThreshold < 0) {
+                        mirage.innerThreshold = 0;
+                        input.value = 0;
+                    }
+                    slider.value = mirage.innerThreshold;
+                    if (mirage.innerThreshold > mirage.coverThreshold) {
+                        mirage.innerThreshold = mirage.coverThreshold;
+                        slider.value = mirage.coverThreshold;
+                        input.value = mirage.coverThreshold;
+                    }
+                    if (mirage.innerImg && mirage.coverImg) {
+                        mirage.processImage();
+                    }
+                }, 500);
             }
 
             // 设置表图色阶输入
+            let coverInputTimeout;
             function encodeSetCoverThresholdInput() {
-                const input = document.getElementById('coverThresholdInput');
-                const slider = document.getElementById('coverThresholdRange');
-                mirage.coverThreshold = parseInt(input.value, 10);
-                if (mirage.coverThreshold > 128) {
-                    mirage.coverThreshold = 128;
-                    input.value = 128;
-                } else if (mirage.coverThreshold < 0) {
-                    mirage.coverrThreshold = 0;
-                    input.value = 0;
-                }
-                slider.value = mirage.innerThreshold;
-                if (mirage.innerThreshold > mirage.coverThreshold) {
-                    mirage.coverThreshold = mirage.innerThreshold;
-                    slider.value = mirage.coverThreshold;
-                    input.value = mirage.coverThreshold;
-                    input.style.color = '#ff5e5e';
-                } else {
-                    input.style.color = '#dfdfdf';
-                }
-                if (mirage.innerImg && mirage.coverImg) {
-                    mirage.processImage();
-                }
+                clearTimeout(coverInputTimeout);
+                setTimeout(function () {
+                    const input = document.getElementById('coverThresholdInput');
+                    const slider = document.getElementById('coverThresholdRange');
+                    mirage.coverThreshold = parseInt(input.value, 10);
+                    if (mirage.coverThreshold > 128) {
+                        mirage.coverThreshold = 128;
+                        input.value = 128;
+                    } else if (mirage.coverThreshold < 0) {
+                        mirage.coverrThreshold = 0;
+                        input.value = 0;
+                    }
+                    slider.value = mirage.innerThreshold;
+                    if (mirage.innerThreshold > mirage.coverThreshold) {
+                        mirage.coverThreshold = mirage.innerThreshold;
+                        slider.value = mirage.coverThreshold;
+                        input.value = mirage.coverThreshold;
+                    }
+                    if (mirage.innerImg && mirage.coverImg) {
+                        mirage.processImage();
+                    }
+                }, 500);
             }
 
             // 设置表图是否取灰度
