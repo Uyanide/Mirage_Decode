@@ -19,16 +19,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="styles/style.css">
-    <script src="scripts/DefaultArguments.js"></script>
-    <script src="scripts/MirageDecoder.js"></script>
-    <script src="scripts/MirageEncoder.js"></script>
+    <script src="scripts/DefaultArguments.js?v=1.0.0"></script>
+    <script src="scripts/MirageDecoder.js?v=1.0.0"></script>
+    <script src="scripts/MirageEncoder.js?v=1.0.0"></script>
     <script>
         function applyTheme() {
             const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
             const theme = prefersDarkScheme ? "dark" : "light";
             document.documentElement.setAttribute("data-theme", theme);
         }
-        window.addEventListener("load", applyTheme);
         window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
     </script>
 </head>
@@ -43,8 +42,8 @@
     <div class="PageContainer">
 
         <div class="TitleContainer">
-            <button class="PageSwitchButtonSelected" id="decodeButton"><b>显形</b></button>
-            <button class="PageSwitchButtonUnselected" id="encodeButton"><b>制作</b></button>
+            <button class="PageSwitchButton" id="decodeButton"><b>显形</b></button>
+            <button class="PageSwitchButton" id="encodeButton"><b>制作</b></button>
         </div>
 
         <div class="DisplayArea" id="decodePage">
@@ -67,7 +66,7 @@
                     <input type="file" id="decodeImageFileInput" accept="image/*">
                 </div>
                 <div id="decodeUrlInput">
-                    <label for="decodeImageUrlInput">或从URL:</label>
+                    <label for="decodeImageUrlInput">或:</label>
                     <input type="text" id="decodeImageUrlInput" placeholder="输入图片URL">
                     <button id="decodeLoadImageButton">加载图片</button>
                 </div>
@@ -79,17 +78,17 @@
                 </div>
             </div>
 
-            <canvas id="decodeCanvas"></canvas>
-
-            <div class="thresSlider">
+            <div class="decodeSlider">
                 <label for="decodeThresholdRange">3. 滑动直至图像清晰: </label>
                 <input type="range" id="decodeThresholdRange" min="0" max="255">
             </div>
 
             <div class="checkbox" id="decodeReverseCheckbox">
                 <input type="checkbox" id="decodeReverseInput">
-                <label for="decodeReverseInput">是否为反向隐写<small>（如果无论如何都调不出来可以勾上试试）</small></label>
+                <label for="decodeReverseInput">是否为反色阶隐写</label>
             </div>
+
+            <canvas id="decodeCanvas"></canvas>
 
             <div id="saveButton">
                 <button id="decodeSaveImageButton">保存当前显示图像</button>
@@ -105,11 +104,11 @@
                     <label for="innerSourceFileInput" class="encodeDrag">或在下方画布处ctrl+v</label>
                     <canvas id="innerCanvas"></canvas>
                     <slider class="encodeSlider">
-                        <label for="innerThresholdRange">里图色阶端点: </label>
-                        <label for="innerThresholdRange"><small>(越小隐写效果越好)</small></label>
-                        <label for="innerThresholdRange"><small>(但越小里图质量越差)</small></label>
+                        <label for="innerThresholdRange" class="encodeSliderTitle">里图色阶端点: </label>
+                        <label for="innerThresholdRange">(越小隐写效果越好)</label>
+                        <label for="innerThresholdRange">(但越小里图质量越差)</label>
                         <input id="innerThresholdRange" type="range" min="0" max="128">
-                        <label for="innerThresholdRange"><small>(不应高于右侧值)</small></label>
+                        <label for="innerThresholdRange">(不应高于右侧值)</label>
                     </slider>
                     <div class="thresInput">
                         <label for="innerThresholdInput">当前值: </label>
@@ -124,11 +123,11 @@
                     <label for="coverSourceFileInput" class="encodeDrag">或在下方画布处ctrl+v</label>
                     <canvas id="coverCanvas"></canvas>
                     <slider class="encodeSlider">
-                        <label for="coverThresholdRange">表图色阶端点: </label>
-                        <label for="coverThresholdRange"><small>(越大显形效果越好)</small></label>
-                        <label for="coverThresholdRange"><small>(但越大表图质量越差)</small></label>
+                        <label for="coverThresholdRange" class="encodeSliderTitle">表图色阶端点: </label>
+                        <label for="coverThresholdRange">(越大显形效果越好)</label>
+                        <label for="coverThresholdRange">(但越大表图质量越差)</label>
                         <input type="range" id="coverThresholdRange" min="0" max="128">
-                        <label for="coverThresholdRange"><small>(不应低于左侧值)</small></label>
+                        <label for="coverThresholdRange">(不应低于左侧值)</label>
                     </slider>
                     <div class="thresInput">
                         <label for="coverThresholdInput">当前值: </label>
@@ -144,13 +143,15 @@
 
             <div id="isEncodeReverse">
                 <input type="checkbox" id="isEncodeReverseCheckBox">
-                <label for="isEncodeReverseCheckBox">是否色阶反向隐写</label>
+                <label for="isEncodeReverseCheckBox">是否反色阶隐写</label>
             </div>
+
+            <canvas id="outputCanvas"></canvas>
 
             <div id="encodeMethod">
                 <label for="encodeMethodSelect">选择像素混合方式: </label>
                 <select id="encodeMethodSelect">
-                    <option value="chess">棋盘布局(推荐)</option>
+                    <option value="chess">棋盘布局</option>
                     <option value="gap_2">2像素间隔斜线</option>
                     <option value="gap_3">3像素间隔斜线</option>
                     <option value="gap_5">5像素间隔斜线</option>
@@ -163,8 +164,6 @@
                 <label for="encodeSizeInput">输出图像最大长或宽 <small>(并非越大越好):</small> </label>
                 <input id="encodeSizeInput" type="number" value="1200">
             </div>
-
-            <canvas id="outputCanvas"></canvas>
 
             <div id="isPng">
                 <input type="checkbox" id="isPngCheckBox">
@@ -204,27 +203,100 @@
         </div>
 
         <script>
-            const isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            var currCanvasId = 0;
+            const version = '1.0.3';
+            (() => {
+                console.log('target version:', version);
+                console.log('current version:', localStorage.getItem('version'));
+                const previousVersion = localStorage.getItem('version');
+                if (!previousVersion || previousVersion !== version) {
+                    console.log('new version detected, clearing cache');
+                    localStorage.clear();
+                    localStorage.setItem('version', version);
+                    location.reload(true);
+                }
+            })();
         </script>
+
         <script>
-            /**************************实例化**************************/
+            const isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            let currCanvasIndex = 0; // 0: decode, 1: inner, 2: cover 用于错误处理
+            let currPageId;  // 当前页面ID
+
+            /**************************初始化**************************/
 
             const defaultArguments = new DefaultArguments();
-            let mirageDecoder, mirageEncoderl, defaultSrc;
-            (async () => {
-                await defaultArguments.loadDefaultArguments();
-                mirageDecoder = new MirageDecoder('decodeCanvas', defaultArguments);
-                mirageEncoder = new MirageEncoder('innerCanvas', 'coverCanvas', 'outputCanvas', defaultArguments);
-                defaultSrc = defaultArguments.defaultSrc;
-            })();
+            let mirageDecoder, mirageEncoder, defaultSrc;
+            document.addEventListener('DOMContentLoaded', async () => {
+                try {
+                    // 加载默认参数
+                    await defaultArguments.loadDefaultArguments();
+                    defaultSrc = defaultArguments.defaultSrc;
+                    defaultArguments.setDefaultValues();
+
+                    // 实例化解码器和编码器
+                    mirageDecoder = new MirageDecoder('decodeCanvas', defaultArguments);
+                    mirageEncoder = new MirageEncoder('innerCanvas', 'coverCanvas', 'outputCanvas', defaultArguments);
+
+                    // 判定并更换明暗主题
+                    applyTheme();
+
+                    // 加载默认图像
+                    const defaultImg = new Image();
+                    defaultImg.crossOrigin = 'anonymous';
+                    defaultImg.alt = 'default image';
+                    updateImageFromFile(defaultSrc[0], (img) => {
+                        mirageDecoder.updateImage(img);
+                    });
+
+                    updateImageFromFile(defaultSrc[1], (img) => {
+                        mirageEncoder.updateInnerImage(img);
+                    });
+
+                    updateImageFromFile(defaultSrc[2], (img) => {
+                        mirageEncoder.updateCoverImage(img);
+                    });
+
+                    // 设置全局事件监听器
+                    universalSetupEventListeners();
+
+                    // 显示默认页面
+                    switch (defaultArguments.defaultPageId) {
+                        case 'encodePage':
+                            encodeSetUpEventListeners();
+                            document.getElementById('decodePage').style.display = 'none';
+                            document.getElementById('encodePage').style.display = 'flex';
+                            document.getElementById('encodeButton').classList.add('PageSwitchButtonSelected');
+                            document.getElementById('decodeButton').classList.add('PageSwitchButtonUnselected');
+                            break;
+                        case 'decodePage':
+                            decodeSetupEventListeners();
+                            document.getElementById('encodePage').style.display = 'none';
+                            document.getElementById('decodePage').style.display = 'flex';
+                            document.getElementById('decodeButton').classList.add('PageSwitchButtonSelected');
+                            document.getElementById('encodeButton').classList.add('PageSwitchButtonUnselected');
+                            break;
+                    }
+                    currPageId = defaultArguments.defaultPageId;
+
+                    if (isOnPhone) {
+                        document.getElementById('decodePasteInput').style.display = 'none';
+                        document.getElementById('decodeDragInputHint').style.display = 'none';
+                        const elements = document.getElementsByClassName('encodeDrag');
+                        for (let i = 0; i < elements.length; i++) {
+                            elements[i].style.display = 'none';
+                        }
+                    }
+                } catch (error) {
+                    console.error('Failed to load default arguments:', error);
+                }
+            });
 
             /************************通用功能函数***********************/
 
             function handleImageLoadError(error, callback) {
                 console.error('图像加载失败:', error);
                 alert('无法加载图像, 请确定文件类型和状态。');
-                loadImage(defaultSrc[currCanvasId]).then((img) => {
+                loadImage(defaultSrc[currCanvasIndex]).then((img) => {
                     callback(img);
                 });
             }
@@ -334,14 +406,13 @@
                 link.click();
             }
 
-            var curPageId = 'decodePage';
             // 切换页面显示
             function switchPage() {
                 var decodePage = document.getElementById('decodePage');
                 var encodePage = document.getElementById('encodePage');
                 var decodeButton = document.getElementById('decodeButton');
                 var encodeButton = document.getElementById('encodeButton');
-                if (curPageId === 'decodePage') {
+                if (currPageId === 'decodePage') {
                     encodePage.style.display = 'flex';
                     decodePage.style.display = 'none';
                     decodeButton.classList.remove('PageSwitchButtonSelected');
@@ -350,7 +421,7 @@
                     encodeButton.classList.add('PageSwitchButtonSelected');
                     decodeRemoveEventListeners();
                     encodeSetUpEventListeners();
-                    curPageId = 'encodePage';
+                    currPageId = 'encodePage';
                 } else {
                     decodePage.style.display = 'flex';
                     encodePage.style.display = 'none';
@@ -360,8 +431,7 @@
                     encodeButton.classList.add('PageSwitchButtonUnselected');
                     decodeSetupEventListeners();
                     encodeRemoveEventListeners();
-                    curPageId = 'decodePage';
-                    currCanvasId = 0;
+                    currPageId = 'decodePage';
                 }
             }
 
@@ -391,6 +461,7 @@
             // 从文件加载图像
             function decodeLoadImageFile(event) {
                 const file = event.target.files[0];
+                currCanvasIndex = 0;
                 updateImageFromFile(file, (img) => {
                     mirageDecoder.updateImage(img);
                 });
@@ -398,6 +469,7 @@
 
             // 从URL加载图像
             function decodeLoadImageURL(event) {
+                currCanvasIndex = 0;
                 updateImageFromURL(event, (img) => {
                     mirageDecoder.updateImage(img);
                 });
@@ -405,6 +477,7 @@
 
             // 从剪贴板加载图像
             function decodeLoadImageFromClipboard(event) {
+                currCanvasIndex = 0;
                 updateImageFromClipboard(event, (img) => {
                     mirageDecoder.updateImage(img);
                 });
@@ -412,6 +485,7 @@
 
             // 从拖动加载图像
             function decodeLoadImageFromDrag(event) {
+                currCanvasIndex = 0;
                 dragDropLoadImage(event, (img) => {
                     mirageDecoder.updateImage(img);
                 });
@@ -485,15 +559,12 @@
                 document.getElementById('decodeThresholdRange').removeEventListener('mousedown', disableScroll);
                 document.getElementById('encodeButton').removeEventListener('click', switchPage);
             }
-        </script>
-
-        <script>
 
             /********************编码事件监听*********************/
 
             // 从文件加载里图
             function encodeLoadInnerImageFile(event) {
-                currCanvasId = 1;
+                currCanvasIndex = 1;
                 const file = event.target.files[0];
                 updateImageFromFile(file, (img) => {
                     mirageEncoder.updateInnerImage(img);
@@ -502,7 +573,7 @@
 
             // 从文件加载表图
             function encodeLoadCoverImageFile(event) {
-                currCanvasId = 2;
+                currCanvasIndex = 2;
                 const file = event.target.files[0];
                 updateImageFromFile(file, (img) => {
                     mirageEncoder.updateCoverImage(img);
@@ -516,12 +587,12 @@
             }
             function encodeLoadImageFromClipboard(event) {
                 if (mouseX < window.innerWidth / 2) {
-                    currCanvasId = 1;
+                    currCanvasIndex = 1;
                     updateImageFromClipboard(event, (img) => {
                         mirageEncoder.updateInnerImage(img);
                     });
                 } else {
-                    currCanvasId = 2;
+                    currCanvasIndex = 2;
                     updateImageFromClipboard(event, (img) => {
                         mirageEncoder.updateCoverImage(img);
                     });
@@ -530,7 +601,7 @@
 
             // 从拖动加载里图
             function encodeLoadInnerImageFromDrag(event) {
-                currCanvasId = 1;
+                currCanvasIndex = 1;
                 dragDropLoadImage(event, (img) => {
                     mirageEncoder.updateInnerImage(img);
                 });
@@ -538,7 +609,7 @@
 
             // 从拖动加载表图
             function encodeLoadCoverImageFromDrag(event) {
-                currCanvasId = 2;
+                currCanvasIndex = 2;
                 dragDropLoadImage(event, (img) => {
                     mirageEncoder.updateCoverImage(img);
                 });
@@ -677,6 +748,9 @@
 
                 sizeInputTimeout = setTimeout(function () {
                     mirageEncoder.size = parseInt(event.target.value, 10);
+                    if (isNaN(mirageEncoder.size)) {
+                        return;
+                    }
                     if (mirageEncoder.size > 4000) {
                         mirageEncoder.size = 4000;
                         event.target.value = 4000;
@@ -742,6 +816,8 @@
                 document.getElementById('coverThresholdRange').addEventListener('input', encodeSetCoverThreshold);
                 document.getElementById('innerThresholdInput').addEventListener('input', encodeSetInnerThresholdInput);
                 document.getElementById('coverThresholdInput').addEventListener('input', encodeSetCoverThresholdInput);
+                document.getElementById('innerThresholdRange').addEventListener('mousedown', disableScroll);
+                document.getElementById('coverThresholdRange').addEventListener('mousedown', disableScroll);
 
                 document.getElementById('isCoverGrayCheckBox').addEventListener('change', encodeSetCoverGray);
                 document.getElementById('isEncodeReverseCheckBox').addEventListener('change', encodeSetEncodeReverse);
@@ -757,7 +833,6 @@
             // 移除编码事件监听器
             function encodeRemoveEventListeners() {
                 document.getElementById('decodeButton').removeEventListener('click', switchPage);
-
                 document.getElementById('innerSourceFileInput').removeEventListener('change', encodeLoadInnerImageFile);
                 document.getElementById('coverSourceFileInput').removeEventListener('change', encodeLoadCoverImageFile);
                 if (!isOnPhone) {
@@ -770,47 +845,16 @@
                 document.getElementById('coverThresholdRange').removeEventListener('input', encodeSetCoverThreshold);
                 document.getElementById('innerThresholdInput').removeEventListener('input', encodeSetInnerThresholdInput);
                 document.getElementById('coverThresholdInput').removeEventListener('input', encodeSetCoverThresholdInput);
+                document.getElementById('innerThresholdRange').removeEventListener('mousedown', disableScroll);
+                document.getElementById('coverThresholdRange').removeEventListener('mousedown', disableScroll);
                 document.getElementById('isCoverGrayCheckBox').removeEventListener('change', encodeSetCoverGray);
                 document.getElementById('isEncodeReverseCheckBox').removeEventListener('change', encodeSetEncodeReverse);
                 document.getElementById('encodeMethodSelect').removeEventListener('change', encodeSetMethod);
                 document.getElementById('encodeSizeInput').removeEventListener('input', encodeSetSize);
+                document.getElementById('isPngCheckBox').removeEventListener('change', setSaveType);
                 document.getElementById('jumpToDecodeButton').removeEventListener('click', jumpToDecode);
                 document.getElementById('encodeSaveImageButton').removeEventListener('click', encodeSaveImage);
             }
-        </script>
-        <script>
-            window.onload = function () {
-                universalSetupEventListeners();
-                decodeSetupEventListeners();
-                if (defaultArguments.defaultPageId != 'decodePage') {
-                    switchPage();
-                }
-                defaultArguments.setDefaultValues();
-
-                var defaultImg = new Image();
-                defaultImg.crossOrigin = 'anonymous';
-                defaultImg.alt = 'default image';
-                updateImageFromFile(defaultSrc[0], (img) => {
-                    mirageDecoder.updateImage(img);
-                });
-
-                updateImageFromFile(defaultSrc[1], (img) => {
-                    mirageEncoder.updateInnerImage(img);
-                });
-
-                updateImageFromFile(defaultSrc[2], (img) => {
-                    mirageEncoder.updateCoverImage(img);
-                });
-
-                if (isOnPhone) {
-                    document.getElementById('decodePasteInput').style.display = 'none';
-                    document.getElementById('decodeDragInputHint').style.display = 'none';
-                    var elements = document.getElementsByClassName('encodeDrag');
-                    for (var i = 0; i < elements.length; i++) {
-                        elements[i].style.display = 'none';
-                    }
-                }
-            };
         </script>
     </div>
 </body>

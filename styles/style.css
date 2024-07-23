@@ -97,13 +97,13 @@ button:hover,
     width: 100%;
 }
 
-.PageSwitchButtonUnselected,
-.PageSwitchButtonSelected {
+.PageSwitchButton {
     padding: 15px;
     width: 100%;
     border: none;
     border-radius: 10px 10px 0 0;
     font-size: 15px;
+    background-color: var(--background-color);
 }
 
 .PageSwitchButtonUnselected {
@@ -114,8 +114,7 @@ button:hover,
     background-color: var(--secondary-background-color);
 }
 
-.PageSwitchButtonUnselected:hover,
-.PageSwitchButtonSelected:hover {
+.PageSwitchButton:hover {
     transform: none;
     background-color: var(--secondary-background-color);
 }
@@ -199,19 +198,18 @@ button:hover,
     margin-top: 20px;
 }
 
-Canvas {
-    border: 1px solid var(--element-border-color);
-}
-
-.thresSlider {
+.decodeSlider {
     display: flex;
-    max-width: 90%;
+    flex-direction: column;
+    align-items: center;
+    width: 90%;
+    max-width: 600px;
     margin-top: 20px;
 }
 
-.thresSlider input[type=range] {
-    margin-left: 10px;
-    width: 300px;
+.decodeSlider input[type=range] {
+    margin-top: 10px;
+    width: 80%;
 }
 
 .checkbox {
@@ -221,6 +219,10 @@ Canvas {
 
 #decodeReverseCheckbox {
     margin-top: 10px;
+}
+
+Canvas {
+    border: 1px solid var(--element-border-color);
 }
 
 #saveButton {
@@ -258,6 +260,7 @@ Canvas {
 
 .encodeDrag {
     margin-top: 10px;
+    font-size: 12px;
 }
 
 #innerCanvas,
@@ -276,7 +279,13 @@ Canvas {
 
 .encodeSlider input[type=range] {
     width: 90%;
-    max-width: 200px;
+    max-width: 320px;
+    margin-top: 5px;
+}
+
+.encodeSlider label:not(.encodeSliderTitle) {
+    font-size: 12px;
+    margin-top: 5px;
 }
 
 .thresInput {
@@ -295,6 +304,11 @@ Canvas {
 #isPng {
     display: flex;
     align-items: center;
+    margin-top: 10px;
+}
+
+#outputCanvas {
+    max-width: min(85%, 850px);
     margin-top: 20px;
 }
 
@@ -302,7 +316,7 @@ Canvas {
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 #encodeOutputSizeLimit input[type=number] {
@@ -318,22 +332,6 @@ Canvas {
 
 #encodeMethod select {
     margin-left: 5px;
-}
-
-#encodeSizeRange {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-}
-
-#encodeSizeRange input[type=range] {
-    width: 200px;
-}
-
-#outputCanvas {
-    max-width: min(90%, 800px);
-    margin-top: 20px;
 }
 
 #jumpButton {
