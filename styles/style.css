@@ -204,11 +204,11 @@ button:hover,
     align-items: center;
     width: 90%;
     max-width: 600px;
-    margin-top: 20px;
+    margin-top: 10px;
 }
 
 .decodeSlider input[type=range] {
-    margin-top: 10px;
+    margin-top: 5px;
     width: 80%;
 }
 
@@ -218,7 +218,7 @@ button:hover,
 }
 
 #decodeReverseCheckbox {
-    margin-top: 10px;
+    margin-top: 5px;
 }
 
 Canvas {

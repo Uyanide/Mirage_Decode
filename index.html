@@ -78,6 +78,8 @@
                 </div>
             </div>
 
+            <canvas id="decodeCanvas"></canvas>
+
             <div class="decodeSlider">
                 <label for="decodeThresholdRange">3. 滑动直至图像清晰: </label>
                 <input type="range" id="decodeThresholdRange" min="0" max="255">
@@ -87,8 +89,6 @@
                 <input type="checkbox" id="decodeReverseInput">
                 <label for="decodeReverseInput">是否为反色阶隐写</label>
             </div>
-
-            <canvas id="decodeCanvas"></canvas>
 
             <div id="saveButton">
                 <button id="decodeSaveImageButton">保存当前显示图像</button>
