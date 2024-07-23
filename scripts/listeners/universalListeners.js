@@ -176,7 +176,7 @@ function saveImageFromCanvas(canvasId, isPng = true) {
 
         // 释放 URL 对象
         URL.revokeObjectURL(url);
-    }, isPng ? 'image/png' : 'image/jpeg');
+    }, isPng ? 'image/png' : 'image/jpeg', 1.0);
 }
 
 // 切换页面显示
