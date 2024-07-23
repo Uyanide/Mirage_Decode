@@ -20,8 +20,8 @@
 
 [data-theme="dark"] {
     --background-color: #000;
-    --secondary-background-color: #161616;
-    --secondary-notselected-background-color: #090909;
+    --secondary-background-color: #191919;
+    --secondary-notselected-background-color: #101010;
     --element-backgound-color: #444;
     --front-color: #dfdfdf;
     --element-border-color: #555;
@@ -78,6 +78,7 @@ button:hover,
 
 .title {
     font-size: clamp(30px, 5vw, 50px);
+    margin-bottom: 10px;
 }
 
 .PageContainer {
@@ -244,7 +245,9 @@ Canvas {
     margin-top: 20px;
 }
 
-#decodeSaveSrcImageButton {
+.saveHint {
+    margin-top: 5px;
+    font-size: 12px;
     margin-bottom: 20px;
 }
 
@@ -356,10 +359,6 @@ Canvas {
 
 #jumpButton {
     margin-top: 20px;
-}
-
-#encodeSaveImageButton {
-    margin-bottom: 20px;
 }
 
 /**********************************************/
