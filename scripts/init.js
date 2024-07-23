@@ -83,6 +83,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('decodePasteButton').style.display = 'none';
         }
     } catch (error) {
-        console.error('Failed to load default arguments:', error);
+        console.error('Failed to initialize: ' + error);
     }
 });

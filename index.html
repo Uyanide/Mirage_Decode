@@ -7,7 +7,7 @@
         var errorHandling = errorHandling || {};
         var mirageProcessor = mirageProcessor || {};
 
-        applicationState.version = '1.0.10';
+        applicationState.version = '1.0.11';
         (() => {
             console.log('target version:', applicationState.version);
             console.log('current version:', localStorage.getItem('version'));
@@ -51,9 +51,9 @@
     <script src="scripts/mirageProcessor/MirageDecoder.js?v=1.0.0" defer></script>
     <script src="scripts/mirageProcessor/MirageEncoder.js?v=1.0.0" defer></script>
     <script src="scripts/init.js?v=1.0.0" defer></script>
-    <script src="scripts/listeners/decodeListeners.js" defer></script>
-    <script src="scripts/listeners/encodeListeners.js" defer></script>
-    <script src="scripts/listeners/universalListeners.js" defer></script>
+    <script src="scripts/listeners/DecodeListeners.js" defer></script>
+    <script src="scripts/listeners/EncodeListeners.js" defer></script>
+    <script src="scripts/listeners/UniversalListeners.js" defer></script>
 </head>
 
 <body>

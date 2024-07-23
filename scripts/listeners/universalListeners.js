@@ -169,12 +169,10 @@ function saveImageFromCanvas(canvasId, isPng = true) {
         link.href = url;
         link.download = fileName;
 
-        // 移除旧的下载链接元素
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
 
-        // 释放 URL 对象
         URL.revokeObjectURL(url);
     }, isPng ? 'image/png' : 'image/jpeg', 1.0);
 }
