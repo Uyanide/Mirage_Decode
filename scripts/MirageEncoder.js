@@ -10,7 +10,7 @@ class MirageEncoder {
         this.heigt = 0;
         this.isCoverGray = defaultArguments.isCoverGray;
         this.isEncodeReverse = defaultArguments.isEncodeReverse;
-        this.method = defaultArguments.method;
+        this.method = defaultArguments.encodeMethod;
         this.size = defaultArguments.size;
 
         this.innerCanvasId = innerCanvasId;

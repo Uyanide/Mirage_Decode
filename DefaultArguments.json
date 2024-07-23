@@ -1,0 +1,18 @@
+{
+    "decodeThreshold": 24,
+    "isDecodeReverse": false,
+    "decodeMethod": "luavg",
+    "innerThreshold": 24,
+    "coverThreshold": 42,
+    "isCoverGray": false,
+    "isEncodeReverse": false,
+    "isPng": false,
+    "encodeMethod": "chess",
+    "size": 1200,
+    "defaultPageId": "decodePage",
+    "defaultSrc": [
+        "resources/default.png",
+        "resources/neko.png",
+        "resources/buta.png"
+    ]
+}

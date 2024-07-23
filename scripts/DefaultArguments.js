@@ -1,25 +1,26 @@
-
 class DefaultArguments {
-    constructor() {
-        this.decodeThreshold = 24;
-        this.isDecodeReverse = false;
-        this.decodeMethod = 'lcopy';
-        // this.decodeMethod = 'black';
-        // this.decodeMethod = 'white';
-        // this.decodeMethod = 'trans';
-
-        this.innerThreshold = 24;
-        this.coverThreshold = 42;
-        this.isCoverGray = false;
-        this.isEncodeReverse = false;
-        this.isPng = false;
-
-        this.method = 'chess';
-
-        this.size = 1200;
-
-        this.defaultPageId = 'decodePage';
-        // this.defaultPageId = 'encodePage';
+    async loadDefaultArguments() {
+        try {
+            const response = await fetch('./DefaultArguments.json');
+            if (!response.ok) {
+                throw new Error('网络请求失败');
+            }
+            const defaultArguments = await response.json();
+            this.decodeThreshold = defaultArguments.decodeThreshold;
+            this.isDecodeReverse = defaultArguments.isDecodeReverse;
+            this.decodeMethod = defaultArguments.decodeMethod;
+            this.innerThreshold = defaultArguments.innerThreshold;
+            this.coverThreshold = defaultArguments.coverThreshold;
+            this.isCoverGray = defaultArguments.isCoverGray;
+            this.isEncodeReverse = defaultArguments.isEncodeReverse;
+            this.isPng = defaultArguments.isPng;
+            this.encodeMethod = defaultArguments.encodeMethod;
+            this.size = defaultArguments.size;
+            this.defaultPageId = defaultArguments.defaultPageId;
+            this.defaultSrc = defaultArguments.defaultSrc;
+        } catch (error) {
+            console.error('加载默认参数失败:', error);
+        }
     }
 
     setDefaultValues() {
@@ -35,7 +36,7 @@ class DefaultArguments {
         document.getElementById('isCoverGrayCheckBox').checked = this.isCoverGray;
         document.getElementById('isEncodeReverseCheckBox').checked = this.isEncodeReverse;
         document.getElementById('isPngCheckBox').checked = this.isPng;
-        document.getElementById('encodeMethodSelect').value = this.method;
+        document.getElementById('encodeMethodSelect').value = this.encodeMethod;
         document.getElementById('encodeSizeInput').value = this.size;
     }
 }

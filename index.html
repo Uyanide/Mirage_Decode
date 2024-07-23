@@ -19,9 +19,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="styles/style.css">
+    <script src="scripts/DefaultArguments.js"></script>
     <script src="scripts/MirageDecoder.js"></script>
     <script src="scripts/MirageEncoder.js"></script>
-    <script src="scripts/DefaultArguments.js"></script>
     <script>
         function applyTheme() {
             const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
@@ -36,7 +36,7 @@
 <body>
     <h1 class="title">光棱坦克工厂</h1>
 
-    <div class="link" , id="infoLink">
+    <div class="link" id="infoLink">
         <small><a href="https://tieba.baidu.com/p/9093709508" target="_blank">什么是光棱坦克？</a></small>
     </div>
 
@@ -54,7 +54,9 @@
                     <option value="black">置为黑色</option>
                     <option value="white">置为白色</option>
                     <option value="trans">置为透明</option>
-                    <option value="lcopy">邻近生成</option>
+                    <option value="lcopy">左侧复制</option>
+                    <option value="ucopy">上方复制</option>
+                    <option value="luavg">左上平均</option>
                 </select>
             </div>
 
@@ -99,8 +101,8 @@
                 <div class="encodeFileInput" , id="innerFileInput">
                     <label for="innerSourceFileInput" class="fileInputLabel">选择里图文件</label>
                     <input type="file" id="innerSourceFileInput" accept="image/*">
-                    <lable for="innerCanvas" class="encodeDrag">或直接拖动至下方画布</lable>
-                    <lable for="innerCanvas" class="encodeDrag">或在下方画布处ctrl+v</lable>
+                    <label for="innerSourceFileInput" class="encodeDrag">或直接拖动至下方画布</label>
+                    <label for="innerSourceFileInput" class="encodeDrag">或在下方画布处ctrl+v</label>
                     <canvas id="innerCanvas"></canvas>
                     <slider class="encodeSlider">
                         <label for="innerThresholdRange">里图色阶端点: </label>
@@ -118,8 +120,8 @@
                 <div class="encodeFileInput" , id="coverFileInput">
                     <label for="coverSourceFileInput" class="fileInputLabel">选择表图文件</label>
                     <input type="file" id="coverSourceFileInput" accept="image/*">
-                    <lable for="coverCanvas" class="encodeDrag">或直接拖动至下方画布</lable>
-                    <lable for="coverCanvas" class="encodeDrag">或在下方画布处ctrl+v</lable>
+                    <label for="coverSourceFileInput" class="encodeDrag">或直接拖动至下方画布</label>
+                    <label for="coverSourceFileInput" class="encodeDrag">或在下方画布处ctrl+v</label>
                     <canvas id="coverCanvas"></canvas>
                     <slider class="encodeSlider">
                         <label for="coverThresholdRange">表图色阶端点: </label>
@@ -140,10 +142,10 @@
                 <label for="isCoverGrayCheckBox">表图是否取灰度</label>
             </checkbox>
 
-            <checkbox id="isEncodeReverse">
+            <div id="isEncodeReverse">
                 <input type="checkbox" id="isEncodeReverseCheckBox">
                 <label for="isEncodeReverseCheckBox">是否色阶反向隐写</label>
-            </checkbox>
+            </div>
 
             <div id="encodeMethod">
                 <label for="encodeMethodSelect">选择像素混合方式: </label>
@@ -157,17 +159,17 @@
                 </select>
             </div>
 
-            <dev id="encodeOutputSizeLimit">
+            <div id="encodeOutputSizeLimit">
                 <label for="encodeSizeInput">输出图像最大长或宽 <small>(并非越大越好):</small> </label>
                 <input id="encodeSizeInput" type="number" value="1200">
-            </dev>
+            </div>
 
             <canvas id="outputCanvas"></canvas>
 
-            <checkbox id="isPng">
+            <div id="isPng">
                 <input type="checkbox" id="isPngCheckBox">
                 <label for="isPngCheckBox">存为PNG <small>(否则为JPEG, 但被平台强制压缩几率更低)</small></label>
-            </checkbox>
+            </div>
 
             <div id="jumpButton">
                 <button id="jumpToDecodeButton">以当前结果跳转显形测试</button>
@@ -202,22 +204,30 @@
         </div>
 
         <script>
-            const defaultSrc = [
-                'resources/default.png',
-                'resources/neko.png',
-                'resources/buta.png',
-            ];
-            var isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            const isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             var currCanvasId = 0;
         </script>
         <script>
             /**************************实例化**************************/
 
             const defaultArguments = new DefaultArguments();
-            const mirageDecoder = new MirageDecoder('decodeCanvas', defaultArguments);
-            const mirageEncoder = new MirageEncoder('innerCanvas', 'coverCanvas', 'outputCanvas', defaultArguments);
+            let mirageDecoder, mirageEncoderl, defaultSrc;
+            (async () => {
+                await defaultArguments.loadDefaultArguments();
+                mirageDecoder = new MirageDecoder('decodeCanvas', defaultArguments);
+                mirageEncoder = new MirageEncoder('innerCanvas', 'coverCanvas', 'outputCanvas', defaultArguments);
+                defaultSrc = defaultArguments.defaultSrc;
+            })();
 
             /************************通用功能函数***********************/
+
+            function handleImageLoadError(error, callback) {
+                console.error('图像加载失败:', error);
+                alert('无法加载图像, 请确定文件类型和状态。');
+                loadImage(defaultSrc[currCanvasId]).then((img) => {
+                    callback(img);
+                });
+            }
 
             // 从源加载图像并返回
             async function loadImage(input) {
@@ -247,11 +257,7 @@
                 loadImage(file).then((img) => {
                     callback(img);
                 }).catch((error) => {
-                    console.error('图像加载失败:', error);
-                    alert('无法加载图像, 请确定文件类型和状态。');
-                    loadImage(defaultSrc[currCanvasId]).then((img) => {
-                        callback(img);
-                    });
+                    handleImageLoadError(error, callback);
                 });
             }
 
@@ -261,11 +267,7 @@
                 loadImage(imageUrl).then((img) => {
                     callback(img);
                 }).catch((error) => {
-                    console.error('图像加载失败:', error);
-                    alert('无法加载图像, 请确保图像可访问。');
-                    loadImage(defaultSrc[currCanvasId]).then((img) => {
-                        callback(img);
-                    });
+                    handleImageLoadError(error, callback);
                 });
             }
 
@@ -278,11 +280,7 @@
                         loadImage(blob).then((img) => {
                             callback(img);
                         }).catch((error) => {
-                            console.error('图像加载失败:', error);
-                            alert('无法加载图像, 请确定剪贴板图像文件状态。');
-                            loadImage(defaultSrc[currCanvasId]).then((img) => {
-                                callback(img);
-                            });
+                            handleImageLoadError(error, callback);
                         });
                     }
                 }
@@ -298,11 +296,7 @@
                             loadImage(file).then((img) => {
                                 callback(img);
                             }).catch((error) => {
-                                console.error('图像加载失败:', error);
-                                alert('无法加载图像, 请确定拖动文件类型和状态。');
-                                loadImage(defaultSrc[currCanvasId]).then((img) => {
-                                    callback(img);
-                                });
+                                handleImageLoadError(error, callback);
                             });
                         }
                     }
@@ -310,7 +304,9 @@
             }
 
             // 禁用滚动
+            var scrollPosition = 0;
             function disableScroll() {
+                document.addEventListener('mouseup', enableScroll);
                 scrollPosition = window.pageYOffset;
                 window.onscroll = function () {
                     window.scrollTo(0, scrollPosition);
@@ -320,6 +316,7 @@
             // 恢复滚动
             function enableScroll() {
                 window.onscroll = null;
+                document.removeEventListener('mouseup', enableScroll);
             }
 
             // 保存图像
@@ -466,10 +463,8 @@
                 // 保存图像
                 document.getElementById('decodeSaveImageButton').addEventListener('click', decodeSaveImage);
 
-                var slider = document.getElementById('decodeThresholdRange');
-                var scrollPosition = 0;
-                slider.addEventListener('mousedown', disableScroll);
-                document.addEventListener('mouseup', enableScroll);
+                // 禁用滚动
+                document.getElementById('decodeThresholdRange').addEventListener('mousedown', disableScroll);
 
                 // 切换页面
                 document.getElementById('encodeButton').addEventListener('click', switchPage);
@@ -487,6 +482,7 @@
                 document.getElementById('decodeMethodSelect').removeEventListener('change', decodeSetCoverMethod);
                 document.getElementById('decodeReverseInput').removeEventListener('change', decodeSetReverse);
                 document.getElementById('decodeSaveImageButton').removeEventListener('click', decodeSaveImage);
+                document.getElementById('decodeThresholdRange').removeEventListener('mousedown', disableScroll);
                 document.getElementById('encodeButton').removeEventListener('click', switchPage);
             }
         </script>
@@ -794,7 +790,7 @@
                 var defaultImg = new Image();
                 defaultImg.crossOrigin = 'anonymous';
                 defaultImg.alt = 'default image';
-                updateImageFromFile(defaultSrc[currCanvasId], (img) => {
+                updateImageFromFile(defaultSrc[0], (img) => {
                     mirageDecoder.updateImage(img);
                 });
 
