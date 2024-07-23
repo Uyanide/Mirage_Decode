@@ -18,7 +18,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="styles/style.css">
+    <link rel="stylesheet" type="text/css" href="styles/style.css?v=1.0.0">
     <script src="scripts/DefaultArguments.js?v=1.0.0"></script>
     <script src="scripts/MirageDecoder.js?v=1.0.0"></script>
     <script src="scripts/MirageEncoder.js?v=1.0.0"></script>
@@ -82,6 +82,8 @@
                 </div>
             </div>
 
+            <canvas id="decodeCanvas"></canvas>
+
             <div class="decodeSlider">
                 <label for="decodeThresholdRange">3. 滑动直至图像清晰: </label>
                 <input type="range" id="decodeThresholdRange" min="0" max="255">
@@ -91,8 +93,6 @@
                 <input type="checkbox" id="decodeReverseInput">
                 <label for="decodeReverseInput">是否为反色阶隐写</label>
             </div>
-
-            <canvas id="decodeCanvas"></canvas>
 
             <div id="saveButton">
                 <button id="decodeSaveImageButton">保存当前显示图像</button>
@@ -226,6 +226,7 @@
             // const isOnPhone = true;
             let currCanvasIndex = 0; // 0: decode, 1: inner, 2: cover 用于错误处理
             let currPageId;  // 当前页面ID
+            var isPng; // 是否将制作结果保存为PNG
 
             /**************************初始化**************************/
 
@@ -237,6 +238,7 @@
                     await defaultArguments.loadDefaultArguments();
                     defaultSrc = defaultArguments.defaultSrc;
                     defaultArguments.setDefaultValues();
+                    isPng = defaultArguments.isPng;
 
                     // 实例化解码器和编码器
                     mirageDecoder = new MirageDecoder('decodeCanvas', defaultArguments);
@@ -813,7 +815,6 @@
             }
 
             // 设置保存类型
-            var isPng = defaultArguments.isPng;
             function setSaveType(event) {
                 isPng = event.target.checked;
             }
