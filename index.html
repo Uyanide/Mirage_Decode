@@ -2,6 +2,21 @@
 <html lang="zh-CN" data-theme="dark">
 
 <head>
+    <script>
+        const version = '1.0.6';
+        (() => {
+            console.log('target version:', version);
+            console.log('current version:', localStorage.getItem('version'));
+            const previousVersion = localStorage.getItem('version');
+            if (!previousVersion || previousVersion !== version) {
+                console.log('new version detected, clearing cache');
+                localStorage.clear();
+                localStorage.setItem('version', version);
+                location.reload(true);
+            }
+        })();
+    </script>
+
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-43TMHBXPHM"></script>
     <script>
@@ -18,7 +33,7 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="styles/style.css?v=1.0.1">
+    <link rel="stylesheet" type="text/css" href="styles/style.css?v=1.0.2">
     <script src="scripts/DefaultArguments.js?v=1.0.0"></script>
     <script src="scripts/MirageDecoder.js?v=1.0.0"></script>
     <script src="scripts/MirageEncoder.js?v=1.0.0"></script>
@@ -94,8 +109,12 @@
                 <label for="decodeReverseInput">是否为反色阶隐写</label>
             </div>
 
-            <div id="saveButton">
-                <button id="decodeSaveImageButton">保存当前显示图像</button>
+            <div class="saveButton">
+                <button id="decodeSaveImageButton">保存显示图像</button>
+            </div>
+
+            <div class="saveButton">
+                <button id="decodeSaveSrcImageButton">保存原始图像</button>
             </div>
         </div>
 
@@ -178,7 +197,7 @@
                 <button id="jumpToDecodeButton">以当前结果跳转显形测试</button>
             </div>
 
-            <div id="saveButton">
+            <div class="saveButton">
                 <button id="encodeSaveImageButton">保存结果</button>
             </div>
         </div>
@@ -205,21 +224,6 @@
                     href="https://policies.google.com/privacy" target="_blank">Google
                     Analytics的隐私政策。</a></p>
         </div>
-
-        <script>
-            const version = '1.0.5';
-            (() => {
-                console.log('target version:', version);
-                console.log('current version:', localStorage.getItem('version'));
-                const previousVersion = localStorage.getItem('version');
-                if (!previousVersion || previousVersion !== version) {
-                    console.log('new version detected, clearing cache');
-                    localStorage.clear();
-                    localStorage.setItem('version', version);
-                    location.reload(true);
-                }
-            })();
-        </script>
 
         <script>
             const isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
@@ -616,6 +620,20 @@
                 saveImageFromCanvas('decodeCanvas');
             }
 
+            // 保存原始图像
+            function decodeSaveSrcImage() {
+                const canvas = document.createElement('canvas');
+                canvas.id = 'temp_srcCanvas';
+                canvas.width = mirageDecoder.img.width;
+                canvas.height = mirageDecoder.img.height;
+                canvas.style.display = 'none';
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(mirageDecoder.img, 0, 0);
+                document.body.appendChild(canvas);
+                saveImageFromCanvas('temp_srcCanvas', isPng);
+                canvas.remove();
+            }
+
             // 设置解码事件监听器
             function decodeSetupEventListeners() {
                 // 图像加载事件监听
@@ -634,6 +652,7 @@
 
                 // 保存图像
                 document.getElementById('decodeSaveImageButton').addEventListener('click', decodeSaveImage);
+                document.getElementById('decodeSaveSrcImageButton').addEventListener('click', decodeSaveSrcImage);
 
                 // 禁用滚动
                 document.getElementById('decodeThresholdRange').addEventListener('mousedown', disableScroll);
@@ -656,6 +675,7 @@
                 document.getElementById('decodeMethodSelect').removeEventListener('change', decodeSetCoverMethod);
                 document.getElementById('decodeReverseInput').removeEventListener('change', decodeSetReverse);
                 document.getElementById('decodeSaveImageButton').removeEventListener('click', decodeSaveImage);
+                document.getElementById('decodeSaveSrcImageButton').removeEventListener('click', decodeSaveSrcImage);
                 document.getElementById('decodeThresholdRange').removeEventListener('mousedown', disableScroll);
                 document.getElementById('encodeButton').removeEventListener('click', switchPage);
             }

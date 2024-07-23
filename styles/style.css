@@ -236,8 +236,11 @@ Canvas {
     border: 1px solid var(--element-border-color);
 }
 
-#saveButton {
+.saveButton {
     margin-top: 20px;
+}
+
+#decodeSaveSrcImageButton {
     margin-bottom: 20px;
 }
 
@@ -347,6 +350,10 @@ Canvas {
 
 #jumpButton {
     margin-top: 20px;
+}
+
+#encodeSaveImageButton {
+    margin-bottom: 20px;
 }
 
 /**********************************************/
