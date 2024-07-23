@@ -30,6 +30,10 @@
 
 /**********************************************/
 
+* {
+    user-select: none;
+}
+
 body {
     display: flex;
     justify-content: center;
@@ -279,7 +283,8 @@ Canvas {
 
 #innerCanvas,
 #coverCanvas {
-    max-width: min(90%, 400px);
+    /* max-width: min(90%, 400px); */
+    width: 90%;
     margin-top: 20px;
 }
 
@@ -322,7 +327,8 @@ Canvas {
 }
 
 #outputCanvas {
-    max-width: min(85%, 850px);
+    /* max-width: min(85%, 850px); */
+    width: 75%;
     margin-top: 20px;
 }
 

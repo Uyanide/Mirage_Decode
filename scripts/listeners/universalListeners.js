@@ -1,0 +1,230 @@
+function copyImage(img) {
+    const canvas = document.createElement('canvas');
+    canvas.width = img.width;
+    canvas.height = img.height;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0);
+    const url = canvas.toDataURL();
+    canvas.remove();
+    return url;
+}
+
+applicationState.currCanvasIndex = 0;
+function handleImageLoadError(error, callback) {
+    console.error('图像加载失败:', error);
+    alert('无法加载图像, 请确定文件类型和状态。');
+    if (errorHandling.defaultImg[errorHandling.currCanvasIndex].src) {
+        const img = new Image();
+        img.src = copyImage(errorHandling.defaultImg[errorHandling.currCanvasIndex]);
+        img.onload = () => {
+            callback(img);
+        };
+    }
+}
+
+// 从源加载图像并返回
+async function loadImage(input, timeout = 5000) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        let timer;
+
+        img.onload = () => {
+            clearTimeout(timer);
+            resolve(img);
+        };
+
+        img.onerror = (error) => {
+            clearTimeout(timer);
+            reject(error);
+        };
+
+        timer = setTimeout(() => {
+            img.src = '';
+            reject(new Error('加载图像超时'));
+        }, timeout);
+
+        if (typeof input === 'string') {
+            img.crossOrigin = 'anonymous';
+            img.src = input;
+        } else if (input instanceof File) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                img.src = e.target.result;
+            };
+            reader.onerror = (error) => {
+                clearTimeout(timer);
+                reject(error);
+            };
+            reader.readAsDataURL(input);
+        } else {
+            clearTimeout(timer);
+            reject(new Error('不支持的输入类型'));
+        }
+    });
+}
+
+// 从文件加载图像，调用callback
+async function updateImageFromFile(file, callback) {
+    loadImage(file).then((img) => {
+        callback(img);
+    }).catch((error) => {
+        handleImageLoadError(error, callback);
+    });
+}
+
+// 从URL加载图像，调用callback
+async function updateImageFromURL(event, callback) {
+    const imageUrl = event.target.previousElementSibling.value;
+    loadImage(imageUrl).then((img) => {
+        callback(img);
+    }).catch((error) => {
+        handleImageLoadError(error, callback);
+    });
+}
+
+// 从剪贴板更新图像，调用callback
+async function updateImageFromClipboard(event, callback) {
+    const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+    for (const item of items) {
+        if (item.type.indexOf('image') !== -1) {
+            const blob = item.getAsFile();
+            loadImage(blob).then((img) => {
+                callback(img);
+            }).catch((error) => {
+                handleImageLoadError(error, callback);
+            });
+        }
+    }
+}
+
+// 直接从剪贴板更新图像，调用callback
+async function updateImageFromClipboardDirect(callback) {
+    try {
+        const permission = await navigator.permissions.query({ name: 'clipboard-read' });
+        if (permission.state === 'granted' || permission.state === 'prompt') {
+            const clipboardItems = await navigator.clipboard.read();
+            for (const item of clipboardItems) {
+                if (item.types.includes('image/png')) {
+                    const blob = await item.getType('image/png');
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(blob);
+                    img.onload = () => {
+                        callback(img);
+                    };
+                } else {
+                    alert('剪贴板中没有图片');
+                }
+            }
+        } else {
+            alert('没有剪贴板读取权限');
+        }
+    } catch (error) {
+        handleImageLoadError(error, callback);
+    }
+}
+
+// 拖动文件加载图像
+async function dragDropLoadImage(event, callback) {
+    event.preventDefault();
+    if (event.dataTransfer.items) {
+        for (const item of event.dataTransfer.items) {
+            if (item.kind === 'file') {
+                const file = item.getAsFile();
+                loadImage(file).then((img) => {
+                    callback(img);
+                }).catch((error) => {
+                    handleImageLoadError(error, callback);
+                });
+            }
+        }
+    }
+}
+
+// 禁用滚动
+applicationState.scrollPosition = 0;
+function disableScroll() {
+    document.addEventListener('mouseup', enableScroll);
+    applicationState.scrollPosition = window.scrollY;
+    window.onscroll = function () {
+        window.scrollTo(0, applicationState.scrollPosition);
+    };
+}
+
+// 恢复滚动
+function enableScroll() {
+    window.onscroll = null;
+    document.removeEventListener('mouseup', enableScroll);
+}
+
+// 保存图像
+function saveImageFromCanvas(canvasId, isPng = true) {
+    const canvas = document.getElementById(canvasId);
+
+    canvas.toBlob(function (blob) {
+        const link = document.createElement('a');
+        const timestamp = new Date().getTime();
+        const fileName = isPng ? `output_${timestamp}.png` : `output_${timestamp}.jpg`;
+
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.download = fileName;
+
+        // 移除旧的下载链接元素
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        // 释放 URL 对象
+        URL.revokeObjectURL(url);
+    }, isPng ? 'image/png' : 'image/jpeg');
+}
+
+// 切换页面显示
+function switchPage() {
+    var decodePage = document.getElementById('decodePage');
+    var encodePage = document.getElementById('encodePage');
+    var decodeButton = document.getElementById('decodeButton');
+    var encodeButton = document.getElementById('encodeButton');
+    if (applicationState.currPageId === 'decodePage') {
+        encodePage.style.display = 'flex';
+        decodePage.style.display = 'none';
+        decodeButton.classList.remove('PageSwitchButtonSelected');
+        decodeButton.classList.add('PageSwitchButtonUnselected');
+        encodeButton.classList.remove('PageSwitchButtonUnselected');
+        encodeButton.classList.add('PageSwitchButtonSelected');
+        decodeRemoveEventListeners();
+        encodeSetUpEventListeners();
+        applicationState.currPageId = 'encodePage';
+    } else {
+        decodePage.style.display = 'flex';
+        encodePage.style.display = 'none';
+        decodeButton.classList.remove('PageSwitchButtonUnselected');
+        decodeButton.classList.add('PageSwitchButtonSelected');
+        encodeButton.classList.remove('PageSwitchButtonSelected');
+        encodeButton.classList.add('PageSwitchButtonUnselected');
+        decodeSetupEventListeners();
+        encodeRemoveEventListeners();
+        applicationState.currPageId = 'decodePage';
+    }
+}
+
+function universalSetupEventListeners() {
+    // 隐私政策按钮事件监听
+    document.getElementById('togglePrivacyPolicy').addEventListener('click', (event) => {
+        const privacyPolicy = document.getElementById('privacyPolicy');
+        const state = window.getComputedStyle(privacyPolicy).display;
+        if (state === 'none') {
+            privacyPolicy.style.display = 'block';
+            event.target.textContent = '隐藏使用须知';
+            window.scrollTo(0, document.body.scrollHeight);
+        } else {
+            privacyPolicy.style.display = 'none';
+            event.target.textContent = '显示使用须知';
+        }
+    });
+
+    // 禁用拖动默认事件
+    document.addEventListener('dragover', (event) => {
+        event.preventDefault();
+    });
+}
