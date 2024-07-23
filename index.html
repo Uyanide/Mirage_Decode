@@ -207,7 +207,7 @@
         </div>
 
         <script>
-            const version = '1.0.4';
+            const version = '1.0.5';
             (() => {
                 console.log('target version:', version);
                 console.log('current version:', localStorage.getItem('version'));
@@ -231,12 +231,13 @@
             /**************************初始化**************************/
 
             const defaultArguments = new DefaultArguments();
-            let mirageDecoder, mirageEncoder, defaultSrc;
+            let mirageDecoder, mirageEncoder;
+            let defaultImg = [];
             document.addEventListener('DOMContentLoaded', async () => {
                 try {
                     // 加载默认参数
                     await defaultArguments.loadDefaultArguments();
-                    defaultSrc = defaultArguments.defaultSrc;
+                    const defaultSrc = defaultArguments.defaultSrc;
                     defaultArguments.setDefaultValues();
                     isPng = defaultArguments.isPng;
 
@@ -248,20 +249,36 @@
                     applyTheme();
 
                     // 加载默认图像
-                    const defaultImg = new Image();
-                    defaultImg.crossOrigin = 'anonymous';
-                    defaultImg.alt = 'default image';
-                    updateImageFromFile(defaultSrc[0], (img) => {
-                        mirageDecoder.updateImage(img);
-                    });
-
-                    updateImageFromFile(defaultSrc[1], (img) => {
-                        mirageEncoder.updateInnerImage(img);
-                    });
-
-                    updateImageFromFile(defaultSrc[2], (img) => {
-                        mirageEncoder.updateCoverImage(img);
-                    });
+                    for (let i = 0; i < defaultArguments.defaultSrc.length; i++) {
+                        defaultImg[i] = new Image();
+                        defaultImg[i].crossOrigin = 'anonymous';
+                        const timer = setTimeout(() => {
+                            defaultImg[i].src = '';
+                            defaultImg[i].onerror = null;
+                            console.error('加载默认图像超时: ' + defaultArguments.defaultSrc[i]);
+                        }, 5000);
+                        defaultImg[i].onload = () => {
+                            clearTimeout(timer);
+                            switch (i) {
+                                case 0:
+                                    mirageDecoder.updateImage(defaultImg[i]);
+                                    break;
+                                case 1:
+                                    mirageEncoder.updateInnerImage(defaultImg[i]);
+                                    break;
+                                case 2:
+                                    mirageEncoder.updateCoverImage(defaultImg[i]);
+                                    break;
+                            }
+                        };
+                        defaultImg[i].onerror = () => {
+                            clearTimeout(timer);
+                            console.error('无法加载默认图像: ' + defaultArguments.defaultSrc[i]);
+                            defaultImg[i].src = '';
+                            defaultImg[i].onerror = null;
+                        };
+                        defaultImg[i].src = defaultArguments.defaultSrc[i];
+                    }
 
                     // 设置全局事件监听器
                     universalSetupEventListeners();
@@ -303,20 +320,49 @@
 
             /************************通用功能函数***********************/
 
+            function copyImage(img) {
+                const canvas = document.createElement('canvas');
+                canvas.width = img.width;
+                canvas.height = img.height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0);
+                const url = canvas.toDataURL();
+                canvas.remove();
+                return url;
+            }
+
             function handleImageLoadError(error, callback) {
                 console.error('图像加载失败:', error);
                 alert('无法加载图像, 请确定文件类型和状态。');
-                loadImage(defaultSrc[currCanvasIndex]).then((img) => {
-                    callback(img);
-                });
+                if (defaultImg[currCanvasIndex].src) {
+                    const img = new Image();
+                    img.src = copyImage(defaultImg[currCanvasIndex]);
+                    img.onload = () => {
+                        callback(img);
+                    };
+                }
             }
 
             // 从源加载图像并返回
-            async function loadImage(input) {
+            async function loadImage(input, timeout = 5000) {
                 return new Promise((resolve, reject) => {
                     const img = new Image();
-                    img.onload = () => resolve(img);
-                    img.onerror = reject;
+                    let timer;
+
+                    img.onload = () => {
+                        clearTimeout(timer);
+                        resolve(img);
+                    };
+
+                    img.onerror = (error) => {
+                        clearTimeout(timer);
+                        reject(error);
+                    };
+
+                    timer = setTimeout(() => {
+                        img.src = '';
+                        reject(new Error('加载图像超时'));
+                    }, timeout);
 
                     if (typeof input === 'string') {
                         img.crossOrigin = 'anonymous';
@@ -326,9 +372,13 @@
                         reader.onload = (e) => {
                             img.src = e.target.result;
                         };
-                        reader.onerror = reject;
+                        reader.onerror = (error) => {
+                            clearTimeout(timer);
+                            reject(error);
+                        };
                         reader.readAsDataURL(input);
                     } else {
+                        clearTimeout(timer);
                         reject(new Error('不支持的输入类型'));
                     }
                 });
