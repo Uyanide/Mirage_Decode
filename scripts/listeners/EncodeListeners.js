@@ -65,7 +65,9 @@ function encodeSetInnerThreshold() {
         text.value = mirageProcessor.mirageEncoder.coverThreshold;
         text.style.color = '#ff5e5e';
     } else {
-        text.style.color = '#dfdfdf';
+        const rootStyles = getComputedStyle(document.documentElement);
+        const frontColor = rootStyles.getPropertyValue('--front-color').trim();
+        text.style.color = frontColor;
     }
     if (mirageProcessor.mirageEncoder.innerImg && mirageProcessor.mirageEncoder.coverImg) {
         mirageProcessor.mirageEncoder.processImage();
@@ -84,7 +86,9 @@ function encodeSetCoverThreshold() {
         text.value = mirageProcessor.mirageEncoder.innerThreshold;
         text.style.color = '#ff5e5e';
     } else {
-        text.style.color = '#dfdfdf';
+        const rootStyles = getComputedStyle(document.documentElement);
+        const frontColor = rootStyles.getPropertyValue('--front-color').trim();
+        text.style.color = frontColor;
     }
     if (mirageProcessor.mirageEncoder.innerImg && mirageProcessor.mirageEncoder.coverImg) {
         mirageProcessor.mirageEncoder.processImage();
