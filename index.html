@@ -221,6 +221,7 @@
             const isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
             let currCanvasIndex = 0; // 0: decode, 1: inner, 2: cover 用于错误处理
             let currPageId;  // 当前页面ID
+            var isPng; // 是否将制作结果保存为PNG
 
             /**************************初始化**************************/
 
@@ -232,6 +233,7 @@
                     await defaultArguments.loadDefaultArguments();
                     defaultSrc = defaultArguments.defaultSrc;
                     defaultArguments.setDefaultValues();
+                    isPng = defaultArguments.isPng;
 
                     // 实例化解码器和编码器
                     mirageDecoder = new MirageDecoder('decodeCanvas', defaultArguments);
@@ -765,7 +767,6 @@
             }
 
             // 设置保存类型
-            var isPng = defaultArguments.isPng;
             function setSaveType(event) {
                 isPng = event.target.checked;
             }
