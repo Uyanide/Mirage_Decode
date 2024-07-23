@@ -555,6 +555,7 @@
                 updateImageFromFile(file, (img) => {
                     mirageDecoder.updateImage(img);
                 });
+                event.target.value = '';
             }
 
             // 从URL加载图像
@@ -563,6 +564,7 @@
                 updateImageFromURL(event, (img) => {
                     mirageDecoder.updateImage(img);
                 });
+                event.target.previousElementSibling.value = '';
             }
 
             // 从剪贴板加载图像
@@ -689,6 +691,7 @@
                 updateImageFromFile(file, (img) => {
                     mirageEncoder.updateInnerImage(img);
                 });
+                event.target.value = '';
             }
 
             // 从文件加载表图
@@ -698,6 +701,7 @@
                 updateImageFromFile(file, (img) => {
                     mirageEncoder.updateCoverImage(img);
                 });
+                event.target.value = '';
             }
 
             // 从剪贴板加载表里图
