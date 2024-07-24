@@ -13,9 +13,9 @@ class MirageEncoder {
         this.method = defaultArguments.encodeMethod;
         this.size = defaultArguments.size;
 
-        this.innerCanvasId = innerCanvasId;
-        this.coverCanvasId = coverCanvasId;
-        this.outputCanvasId = outputCanvasId
+        this.innerCanvas = document.getElementById(innerCanvasId);
+        this.coverCanvas = document.getElementById(coverCanvasId);
+        this.outputCanvas = document.getElementById(outputCanvasId);
 
         this.weight_r = 0.299;
         this.weight_g = 0.587;
@@ -24,34 +24,33 @@ class MirageEncoder {
 
     updateInnerImage(img) {
         this.innerImg = img;
-        const canvas = document.getElementById(this.innerCanvasId);
-        const ctx = canvas.getContext('2d');
+        const ctx = this.innerCanvas.getContext('2d');
 
         if (img.width > img.height) {
             if (img.width > this.size) {
                 const ratio = this.size / img.width;
-                canvas.width = this.size;
-                canvas.height = img.height * ratio;
+                this.innerCanvas.width = this.size;
+                this.innerCanvas.height = img.height * ratio;
             } else {
-                canvas.width = this.size;
-                canvas.height = img.height * this.size / img.width;
+                this.innerCanvas.width = this.size;
+                this.innerCanvas.height = img.height * this.size / img.width;
             }
         } else {
             if (img.height > this.size) {
                 const ratio = this.size / img.height;
-                canvas.width = img.width * ratio;
-                canvas.height = this.size;
+                this.innerCanvas.width = img.width * ratio;
+                this.innerCanvas.height = this.size;
             } else {
-                canvas.width = img.width * this.size / img.height;
-                canvas.height = this.size;
+                this.innerCanvas.width = img.width * this.size / img.height;
+                this.innerCanvas.height = this.size;
             }
         }
 
-        this.width = canvas.width;
-        this.height = canvas.height;
+        this.width = this.innerCanvas.width;
+        this.height = this.innerCanvas.height;
 
-        ctx.drawImage(this.innerImg, 0, 0, canvas.width, canvas.height);
-        this.innerImgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        ctx.drawImage(this.innerImg, 0, 0, this.innerCanvas.width, this.innerCanvas.height);
+        this.innerImgdata = ctx.getImageData(0, 0, this.innerCanvas.width, this.innerCanvas.height);
         if (this.coverImgdata) {
             this.updateCoverImage(this.coverImg);
         }
@@ -82,10 +81,9 @@ class MirageEncoder {
                 };
             }
 
-            const canvas = document.getElementById(this.coverCanvasId);
-            canvas.width = this.width;
-            canvas.height = this.height;
-            const ctx = canvas.getContext('2d');
+            this.coverCanvas.width = this.width;
+            this.coverCanvas.height = this.height;
+            const ctx = this.coverCanvas.getContext('2d');
 
             ctx.drawImage(
                 img,
@@ -99,19 +97,18 @@ class MirageEncoder {
                 this.height
             );
 
-            this.coverImgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            this.coverImgdata = ctx.getImageData(0, 0, this.coverCanvas.width, this.coverCanvas.height);
             if (this.isCoverGray) {
                 this.processCoverGray();
                 ctx.putImageData(this.coverImgdata, 0, 0);
             }
             this.processImage();
         } else {
-            const canvas = document.getElementById(this.coverCanvasId);
-            const ctx = canvas.getContext('2d');
-            canvas.width = img.width;
-            canvas.height = img.height;
-            ctx.drawImage(this.coverImg, 0, 0, canvas.width, canvas.height);
-            this.coverImgdata = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const ctx = this.coverCanvas.getContext('2d');
+            this.coverCanvas.width = img.width;
+            this.coverCanvas.height = img.height;
+            ctx.drawImage(this.coverImg, 0, 0, this.coverCanvas.width, this.coverCanvas.height);
+            this.coverImgdata = ctx.getImageData(0, 0, this.coverCanvas.width, this.coverCanvas.height);
         }
     }
 
@@ -211,13 +208,11 @@ class MirageEncoder {
             outputData[i + 3] = 255;
         }
 
-        const canvas = document.getElementById(this.outputCanvasId);
-        canvas.width = this.width;
-        canvas.height = this.height;
-        const ctx = canvas.getContext('2d');
+        this.outputCanvas.width = this.width;
+        this.outputCanvas.height = this.height;
+        const ctx = this.outputCanvas.getContext('2d');
         const outputImgData = new ImageData(outputData, this.width, this.height);
         ctx.putImageData(outputImgData, 0, 0);
-
     }
 
 }

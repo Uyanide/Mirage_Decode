@@ -12,7 +12,7 @@
     "defaultPageId": "decodePage",
     "defaultSrc": [
         "resources/default.png",
-        "resources/neko.png",
-        "resources/buta.png"
+        "resources/neko.jpg",
+        "resources/buta.jpg"
     ]
 }

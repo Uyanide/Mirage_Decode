@@ -18,8 +18,8 @@
 - **resources**
   - **neko.ico** (图标)
   - **default.png** (默认显形源)
-  - **buta.png** (默认表图)
-  - **neko.png** (默认里图)
+  - **buta.jpg** (默认表图)
+  - **neko.jpg** (默认里图)
 
 - **scripts**
   - **listeners** (事件监听、回调函数与辅助函数)

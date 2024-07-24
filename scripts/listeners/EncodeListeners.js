@@ -53,10 +53,15 @@ function encodeLoadCoverImageFromDrag(event) {
     });
 }
 
+const innerSlider = document.getElementById('innerThresholdRange');
+const coverSlider = document.getElementById('coverThresholdRange');
+const innerInput = document.getElementById('innerThresholdInput');
+const coverInput = document.getElementById('coverThresholdInput');
+
 // 设置里图色阶
 function encodeSetInnerThreshold() {
-    const slider = document.getElementById('innerThresholdRange');
-    const text = document.getElementById('innerThresholdInput');
+    const slider = innerSlider
+    const text = innerInput;
     mirageProcessor.mirageEncoder.innerThreshold = parseInt(slider.value, 10);
     text.value = mirageProcessor.mirageEncoder.innerThreshold;
     if (mirageProcessor.mirageEncoder.innerThreshold > mirageProcessor.mirageEncoder.coverThreshold) {
@@ -76,8 +81,8 @@ function encodeSetInnerThreshold() {
 
 // 设置表图色阶
 function encodeSetCoverThreshold() {
-    const slider = document.getElementById('coverThresholdRange');
-    const text = document.getElementById('coverThresholdInput');
+    const slider = coverSlider;
+    const text = coverInput;
     mirageProcessor.mirageEncoder.coverThreshold = parseInt(slider.value, 10);
     text.value = mirageProcessor.mirageEncoder.coverThreshold;
     if (mirageProcessor.mirageEncoder.innerThreshold > mirageProcessor.mirageEncoder.coverThreshold) {
@@ -100,8 +105,8 @@ let innerInputTimeout;
 function encodeSetInnerThresholdInput() {
     clearTimeout(innerInputTimeout);
     setTimeout(function () {
-        const input = document.getElementById('innerThresholdInput');
-        const slider = document.getElementById('innerThresholdRange');
+        const input = innerInput;
+        const slider = innerSlider;
         input.style.color = '#dfdfdf';
         const inputVal = parseInt(input.value, 10);
         if (isNaN(inputVal)) {
@@ -132,8 +137,8 @@ let coverInputTimeout;
 function encodeSetCoverThresholdInput() {
     clearTimeout(coverInputTimeout);
     setTimeout(function () {
-        const input = document.getElementById('coverThresholdInput');
-        const slider = document.getElementById('coverThresholdRange');
+        const input = coverInput;
+        const slider = coverSlider;
         input.style.color = '#dfdfdf';
         const inputVal = parseInt(input.value, 10);
         if (isNaN(inputVal)) {
@@ -228,9 +233,10 @@ function jumpToDecode() {
             document.getElementById('decodeThresholdRange').value = mirageProcessor.mirageEncoder.innerThreshold;
             mirageProcessor.mirageDecoder.threshold = mirageProcessor.mirageEncoder.innerThreshold;
         }
-        const canvas = document.getElementById('outputCanvas');
+        const canvas = mirageProcessor.mirageEncoder.outputCanvas;
         const img = new Image();
-        img.src = canvas.toDataURL('image/png');
+        console.log(applicationState.isPng ? 'image/png' : 'image/jpeg');
+        img.src = canvas.toDataURL(applicationState.isPng ? 'image/png' : 'image/jpeg', 1.0);
         img.onload = function () {
             mirageProcessor.mirageDecoder.updateImage(img);
             switchPage();

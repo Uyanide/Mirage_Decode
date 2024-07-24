@@ -6,23 +6,21 @@ class MirageDecoder {
         this.threshold = defaultArguments.decodeThreshold;
         this.reverse = defaultArguments.isDecodeReverse;
 
-        this.decodeCanvasId = decodeCanvasId;
+        this.decodeCanvas = document.getElementById(decodeCanvasId);
     }
 
     showImage(imgData) {
-        const canvas = document.getElementById(this.decodeCanvasId);
-        const ctx = canvas.getContext('2d');
+        const ctx = this.decodeCanvas.getContext('2d');
         ctx.putImageData(imgData, 0, 0);
     }
 
     updateImage(img) {
         this.img = img;
-        const canvas = document.getElementById(this.decodeCanvasId);
-        const ctx = canvas.getContext('2d');
-        canvas.width = this.img.width;
-        canvas.height = this.img.height;
-        ctx.drawImage(this.img, 0, 0, canvas.width, canvas.height);
-        this.imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const ctx = this.decodeCanvas.getContext('2d');
+        this.decodeCanvas.width = this.img.width;
+        this.decodeCanvas.height = this.img.height;
+        ctx.drawImage(this.img, 0, 0, this.decodeCanvas.width, this.decodeCanvas.height);
+        this.imgData = ctx.getImageData(0, 0, this.decodeCanvas.width, this.decodeCanvas.height);
         this.processImage();
     }
 
