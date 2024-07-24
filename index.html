@@ -3,11 +3,14 @@
 
 <head>
     <script>
+        // global namespaces
         var applicationState = applicationState || {};
         var errorHandling = errorHandling || {};
         var mirageProcessor = mirageProcessor || {};
-
-        applicationState.version = '1.1.0';
+    </script>
+    <script>
+        applicationState.version = '1.2.0';
+        // version check
         (() => {
             console.log('target version:', applicationState.version);
             console.log('current version:', localStorage.getItem('version'));
@@ -19,6 +22,21 @@
                 location.reload(true);
             }
         })();
+        // cache busting, just in case
+        var scripts = document.querySelectorAll('script[data-version]');
+        scripts.forEach(function (script) {
+            var src = script.getAttribute('src');
+            if (src) {
+                script.setAttribute('src', src + '?v=' + applicationState.version);
+            }
+        });
+        var links = document.querySelectorAll('link[rel="stylesheet"]');
+        links.forEach(function (link) {
+            var href = link.getAttribute('href');
+            if (href) {
+                link.setAttribute('href', href + '?v=' + applicationState.version);
+            }
+        });
     </script>
 
     <script>
@@ -27,6 +45,7 @@
             const theme = prefersDarkScheme ? "dark" : "light";
             document.documentElement.setAttribute("data-theme", theme);
         }
+        applyTheme();
         window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
     </script>
 
@@ -46,14 +65,14 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="styles/style.css?v=1.1.0">
-    <script src="scripts/DefaultArguments.js?v=1.1.0" defer></script>
-    <script src="scripts/mirageProcessor/MirageDecoder.js?v=1.1.0" defer></script>
-    <script src="scripts/mirageProcessor/MirageEncoder.js?v=1.1.0" defer></script>
-    <script src="scripts/init.js?v=1.1.0" defer></script>
-    <script src="scripts/listeners/DecodeListeners.js?v=1.1.0" defer></script>
-    <script src="scripts/listeners/EncodeListeners.js?v=1.1.0" defer></script>
-    <script src="scripts/listeners/UniversalListeners.js?v=1.1.0" defer></script>
+    <link rel="stylesheet" type="text/css" href="styles/style.css">
+    <script src="scripts/DefaultArguments.js" defer data-version></script>
+    <script src="scripts/mirageProcessor/MirageDecoder.js" defer data-version></script>
+    <script src="scripts/mirageProcessor/MirageEncoder.js" defer data-version></script>
+    <script src="scripts/init.js" defer data-version></script>
+    <script src="scripts/listeners/DecodeListeners.js" defer data-version></script>
+    <script src="scripts/listeners/EncodeListeners.js" defer data-version></script>
+    <script src="scripts/listeners/UniversalListeners.js" defer data-version></script>
 </head>
 
 <body>

@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         applicationState.defaultArguments = new DefaultArguments();
         // 加载默认参数
         await applicationState.defaultArguments.loadDefaultArguments();
-        const defaultSrc = applicationState.defaultArguments.defaultSrc;
         applicationState.defaultArguments.setDefaultValues();
         applicationState.isPng = applicationState.defaultArguments.isPng;
         applicationState.currPageId = applicationState.defaultArguments.defaultPageId;
@@ -13,9 +12,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         // 实例化解码器和编码器
         mirageProcessor.mirageDecoder = new MirageDecoder('decodeCanvas', applicationState.defaultArguments);
         mirageProcessor.mirageEncoder = new MirageEncoder('innerCanvas', 'coverCanvas', 'outputCanvas', applicationState.defaultArguments);
-
-        // 判定并更换明暗主题
-        applyTheme();
 
         // 加载默认图像
         errorHandling.defaultImg = [];

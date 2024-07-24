@@ -16,6 +16,10 @@ class MirageEncoder {
         this.innerCanvasId = innerCanvasId;
         this.coverCanvasId = coverCanvasId;
         this.outputCanvasId = outputCanvasId
+
+        this.weight_r = 0.299;
+        this.weight_g = 0.587;
+        this.weight_b = 0.114;
     }
 
     updateInnerImage(img) {
@@ -114,7 +118,11 @@ class MirageEncoder {
     processCoverGray() {
         var coverData = this.coverImgdata.data;
         for (let i = 0; i < coverData.length; i += 4) {
-            const avg = (coverData[i] + coverData[i + 1] + coverData[i + 2]) / 3;
+            const avg = Math.floor(
+                coverData[i] * this.weight_r +
+                coverData[i + 1] * this.weight_g +
+                coverData[i + 2] * this.weight_b
+            );
             coverData[i] = avg;
             coverData[i + 1] = avg;
             coverData[i + 2] = avg;
