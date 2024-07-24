@@ -2,8 +2,14 @@ applicationState.isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        applicationState.defaultArguments = new DefaultArguments();
+        // 版本显示
+        const versionInfoElement = document.getElementById('versionInfo');
+        if (versionInfoElement) {
+            versionInfoElement.innerHTML = `version: <b>${applicationState.version}</b>`;
+        }
+
         // 加载默认参数
+        applicationState.defaultArguments = new DefaultArguments();
         await applicationState.defaultArguments.loadDefaultArguments();
         applicationState.defaultArguments.setDefaultValues();
         applicationState.isPng = applicationState.defaultArguments.isPng;

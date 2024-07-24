@@ -22,9 +22,11 @@
   - **neko.jpg** (默认里图)
 
 - **scripts**
-  - **listeners** (事件监听、回调函数与辅助函数)
+  - **jpeg-js** ([jpeg-js/jpeg-js](https://github.com/jpeg-js/jpeg-js/))
+    - **encoder.js** ([jpeg-js/lib/encoder.js](https://github.com/jpeg-js/jpeg-js/blob/master/lib/encoder.js))
+  - **listeners** (事件监听、回调与辅助函数)
     - **DecodeListeners.js**
-    - **DncodeListeners.js**
+    - **EncodeListeners.js**
     - **UniversalListeners.js**
   - **mirageProcessors** (图像处理)
     - **MirageDecoder.js**

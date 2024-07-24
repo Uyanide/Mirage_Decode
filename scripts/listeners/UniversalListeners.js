@@ -157,24 +157,37 @@ function enableScroll() {
 }
 
 // 保存图像
-function saveImageFromCanvas(canvasId, isPng = true) {
+function downloadFromLink(url, link, fileName) {
+    link.href = url;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+function generateUrlFromCanvas(canvasId, isPng = true) {
     const canvas = document.getElementById(canvasId);
-
-    canvas.toBlob(function (blob) {
-        const link = document.createElement('a');
-        const timestamp = new Date().getTime();
-        const fileName = isPng ? `output_${timestamp}.png` : `output_${timestamp}.jpg`;
-
-        const url = URL.createObjectURL(blob);
-        link.href = url;
-        link.download = fileName;
-
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        URL.revokeObjectURL(url);
-    }, isPng ? 'image/png' : 'image/jpeg', 1.0);
+    if (isPng) {
+        return canvas.toDataURL('image/png');
+    } else {
+        const ctx = canvas.getContext('2d');
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const encoder = new JPEGEncoder(100);
+        const jpegData = encoder.encode(imageData, 100);
+        let binary = '';
+        const bytes = new Uint8Array(jpegData);
+        const len = bytes.byteLength;
+        for (let i = 0; i < len; i++) {
+            binary += String.fromCharCode(bytes[i]);
+        }
+        return `data:image/jpeg;base64,${btoa(binary)}`;
+    }
+}
+function saveImageFromCanvas(canvasId, isPng = true) {
+    const link = document.createElement('a');
+    const timestamp = new Date().getTime();
+    const canvas = document.getElementById(canvasId);
+    const fileName = `output_${timestamp}.${isPng ? 'png' : 'jpg'}`;
+    downloadFromLink(generateUrlFromCanvas(canvasId, isPng), link, fileName);
 }
 
 // 切换页面显示

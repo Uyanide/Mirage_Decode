@@ -233,10 +233,8 @@ function jumpToDecode() {
             document.getElementById('decodeThresholdRange').value = mirageProcessor.mirageEncoder.innerThreshold;
             mirageProcessor.mirageDecoder.threshold = mirageProcessor.mirageEncoder.innerThreshold;
         }
-        const canvas = mirageProcessor.mirageEncoder.outputCanvas;
         const img = new Image();
-        console.log(applicationState.isPng ? 'image/png' : 'image/jpeg');
-        img.src = canvas.toDataURL(applicationState.isPng ? 'image/png' : 'image/jpeg', 1.0);
+        img.src = generateUrlFromCanvas('outputCanvas', applicationState.isPng);
         img.onload = function () {
             mirageProcessor.mirageDecoder.updateImage(img);
             switchPage();
