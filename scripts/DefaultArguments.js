@@ -1,7 +1,7 @@
 class DefaultArguments {
-    async loadDefaultArguments() {
+    async loadDefaultArguments(jsonPath) {
         try {
-            const response = await fetch('DefaultArguments.json?v=' + applicationState.version);
+            const response = await fetch(jsonPath);
             if (!response.ok) {
                 throw new Error('网络请求失败');
             }

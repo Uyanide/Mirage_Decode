@@ -9,8 +9,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // 加载默认参数
+        let path = document.getElementById('jsonPath').getAttribute('data-json-path');
+        path = path + '?v=' + applicationState.version;
         applicationState.defaultArguments = new DefaultArguments();
-        await applicationState.defaultArguments.loadDefaultArguments();
+        await applicationState.defaultArguments.loadDefaultArguments(path);
         applicationState.defaultArguments.setDefaultValues();
         applicationState.isPng = applicationState.defaultArguments.isPng;
         applicationState.currPageId = applicationState.defaultArguments.defaultPageId;

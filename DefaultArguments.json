@@ -12,8 +12,8 @@
     "size": 1200,
     "defaultPageId": "decodePage",
     "defaultSrc": [
-        "resources/default.png",
-        "resources/neko.jpg",
-        "resources/buta.jpg"
+        "https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/resources/default.png",
+        "https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/resources/neko.jpg",
+        "https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/resources/buta.jpg"
     ]
 }
