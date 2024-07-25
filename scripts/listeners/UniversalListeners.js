@@ -22,6 +22,31 @@ function handleImageLoadError(error, callback) {
     }
 }
 
+function setDecodeValues(isReverse, threshold) {
+    document.getElementById('decodeReverseInput').checked = isReverse;
+    mirageProcessor.mirageDecoder.reverse = isReverse;
+    if (isReverse) {
+        document.getElementById('decodeThresholdRange').value = 255 - threshold;
+        mirageProcessor.mirageDecoder.threshold = 255 - threshold;
+    } else {
+        document.getElementById('decodeThresholdRange').value = threshold;
+        mirageProcessor.mirageDecoder.threshold = threshold;
+    }
+}
+
+function setDecodeValuesWithMetadata(img) {
+    const exif = piexif.load(img.src);
+    const infoString = exif['0th'][piexif.ImageIFD.Make];
+    console.log('读取元数据:', infoString);
+    if (infoString) {
+        const isReverse = infoString[0] === '1';
+        const innerThreshold = parseInt(infoString.slice(1), 16);
+        if (isReverse && innerThreshold) {
+            setDecodeValues(isReverse, innerThreshold);
+        }
+    }
+}
+
 // 从源加载图像并返回
 async function loadImage(input, timeout = 5000) {
     return new Promise((resolve, reject) => {
@@ -30,6 +55,9 @@ async function loadImage(input, timeout = 5000) {
 
         img.onload = () => {
             clearTimeout(timer);
+            if (errorHandling.currCanvasIndex === 0 && img.src.startsWith('data:image/jpeg;base64,')) {
+                setDecodeValuesWithMetadata(img);
+            }
             resolve(img);
         };
 
@@ -179,7 +207,10 @@ function generateUrlFromCanvas(canvasId, isPng = true) {
         for (let i = 0; i < len; i++) {
             binary += String.fromCharCode(bytes[i]);
         }
-        return `data:image/jpeg;base64,${btoa(binary)}`;
+        return writeMetadata(
+            `data:image/jpeg;base64,${btoa(binary)}`,
+            mirageProcessor.mirageEncoder.isEncodeReverse,
+            mirageProcessor.mirageEncoder.innerThreshold);
     }
 }
 function saveImageFromCanvas(canvasId, isPng = true) {
@@ -188,6 +219,18 @@ function saveImageFromCanvas(canvasId, isPng = true) {
     const canvas = document.getElementById(canvasId);
     const fileName = `output_${timestamp}.${isPng ? 'png' : 'jpg'}`;
     downloadFromLink(generateUrlFromCanvas(canvasId, isPng), link, fileName);
+}
+
+// 写入元数据（照相机信息）
+function writeMetadata(imgURL, isReverse, innerThreshold) {
+    const infoString = (isReverse ? '1' : '0') + innerThreshold.toString(16).padStart(2, '0');
+    console.log('写入元数据:', infoString);
+    let zeroth = {};
+    zeroth[piexif.ImageIFD.Make] = infoString;
+    const exifObj = { '0th': zeroth };
+    const exifbytes = piexif.dump(exifObj);
+    const inserted = piexif.insert(exifbytes, imgURL);
+    return inserted;
 }
 
 // 切换页面显示

@@ -224,15 +224,10 @@ function encodeSaveImage() {
 // 以当前结果跳转显形界面
 function jumpToDecode() {
     if (mirageProcessor.mirageEncoder.innerImg && mirageProcessor.mirageEncoder.coverImg) {
-        document.getElementById('decodeReverseInput').checked = mirageProcessor.mirageEncoder.isEncodeReverse;
-        mirageProcessor.mirageDecoder.reverse = mirageProcessor.mirageEncoder.isEncodeReverse;
-        if (mirageProcessor.mirageDecoder.reverse) {
-            document.getElementById('decodeThresholdRange').value = 255 - mirageProcessor.mirageEncoder.innerThreshold;
-            mirageProcessor.mirageDecoder.threshold = 255 - mirageProcessor.mirageEncoder.innerThreshold;
-        } else {
-            document.getElementById('decodeThresholdRange').value = mirageProcessor.mirageEncoder.innerThreshold;
-            mirageProcessor.mirageDecoder.threshold = mirageProcessor.mirageEncoder.innerThreshold;
-        }
+        setDecodeValues(
+            mirageProcessor.mirageEncoder.isEncodeReverse,
+            mirageProcessor.mirageEncoder.innerThreshold,
+        );
         const img = new Image();
         img.src = generateUrlFromCanvas('outputCanvas', applicationState.isPng);
         img.onload = function () {

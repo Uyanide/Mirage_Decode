@@ -14,6 +14,10 @@
 ## 技术原理及思路来源
 [Uyanide/Mirage_Image](https://github.com/Uyanide/Mirage_Image)
 
+## 引用库
+- **[jpeg-js/lib/encoder.js](https://github.com/jpeg-js/jpeg-js/blob/master/lib/encoder.js)** (用于统一不同浏览器编码JPEG的行为)
+- **[piexifjs](https://github.com/hMatoba/piexifjs)** (用于读写JPEG元数据)
+
 ## 项目结构
 - **resources**
   - **neko.ico** (图标)
@@ -22,8 +26,6 @@
   - **neko.jpg** (默认里图)
 
 - **scripts**
-  - **jpeg-js** ([jpeg-js/jpeg-js](https://github.com/jpeg-js/jpeg-js/))
-    - **encoder.js** ([jpeg-js/lib/encoder.js](https://github.com/jpeg-js/jpeg-js/blob/master/lib/encoder.js))
   - **listeners** (事件监听、回调与辅助函数)
     - **DecodeListeners.js**
     - **EncodeListeners.js**
