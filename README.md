@@ -21,18 +21,18 @@
 ## 项目结构
 - **docs** (用于部署的副本)
   - **index.html**
-  - 
+    
 - **jsDelivr** (用于部署的副本)
   - **DefaultArguments.js**
   - **DefaultArguments.json**
   - **scripts.txt**
-  - 
+    
 - **resources**
   - **neko.ico** (图标)
   - **default.png** (默认显形源)
   - **buta.jpg** (默认表图)
   - **neko.jpg** (默认里图)
-  - 
+    
 - **scripts**
   - **listeners** (事件监听、回调与辅助函数)
     - **DecodeListeners.js**
