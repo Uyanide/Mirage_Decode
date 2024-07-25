@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         applicationState.defaultArguments.setDefaultValues();
         applicationState.isPng = applicationState.defaultArguments.isPng;
         applicationState.currPageId = applicationState.defaultArguments.defaultPageId;
+        applicationState.isReadMetadata = applicationState.defaultArguments.isReadMetadata;
 
         // 实例化解码器和编码器
         mirageProcessor.mirageDecoder = new MirageDecoder('decodeCanvas', applicationState.defaultArguments);

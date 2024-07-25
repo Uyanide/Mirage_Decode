@@ -9,7 +9,7 @@
         var mirageProcessor = mirageProcessor || {};
     </script>
     <script>
-        applicationState.version = '1.2.2.2';
+        applicationState.version = '1.2.3';
         // version check
         (() => {
             console.log('target version:', applicationState.version);
@@ -84,8 +84,6 @@
         <small><a href="https://tieba.baidu.com/p/9093709508" target="_blank">什么是光棱坦克？</a></small>
     </div>
 
-    <button id="requestPermissionButton">允许显示通知(根据图片元数据自动调整参数)</button>
-
     <div class="PageContainer">
 
         <div class="TitleContainer">
@@ -94,6 +92,10 @@
         </div>
 
         <div class="DisplayArea" id="decodePage">
+            <div class="checkbox" id="isReadMetadata">
+                <input type="checkbox" id="isReadMetadataCheckBox">
+                <label for="isReadMetadataCheckBox">是否读取元数据(若有)自动填充参数<br>(重新加载图片生效)</label>
+            </div>
             <div id="decodeMethodSelect">
                 <label for="optionSelect">1. 选择表图像素处理方式: </label>
                 <select id="optionSelect">

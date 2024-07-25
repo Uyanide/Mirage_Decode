@@ -1,4 +1,5 @@
 {
+    "isReadMetadata": true,
     "decodeThreshold": 24,
     "isDecodeReverse": false,
     "decodeMethod": "luavg",

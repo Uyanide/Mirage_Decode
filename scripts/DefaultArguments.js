@@ -6,6 +6,7 @@ class DefaultArguments {
                 throw new Error('网络请求失败');
             }
             const defaultArguments = await response.json();
+            this.isReadMetadata = defaultArguments.isReadMetadata;
             this.decodeThreshold = defaultArguments.decodeThreshold;
             this.isDecodeReverse = defaultArguments.isDecodeReverse;
             this.decodeMethod = defaultArguments.decodeMethod;
@@ -24,6 +25,7 @@ class DefaultArguments {
     }
 
     setDefaultValues() {
+        document.getElementById('isReadMetadataCheckBox').checked = this.isReadMetadata;
         document.getElementById('decodeThresholdRange').value = this.decodeThreshold;
         document.getElementById('decodeReverseInput').checked = this.isDecodeReverse;
         document.getElementById('optionSelect').value = this.decodeMethod;

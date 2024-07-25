@@ -36,6 +36,9 @@ function setDecodeValues(isReverse, threshold) {
 }
 
 function setDecodeValuesWithMetadata(img) {
+    if (!applicationState.isReadMetadata) {
+        return
+    }
     const exif = piexif.load(img.src);
     const infoString = exif['0th'][piexif.ImageIFD.Make];
     console.log('读取元数据:', infoString);
@@ -43,7 +46,6 @@ function setDecodeValuesWithMetadata(img) {
         const isReverse = infoString[0] === '1';
         const innerThreshold = parseInt(infoString.slice(1), 16);
         if (isReverse != undefined && innerThreshold != undefined) {
-            showNotification('已读取元数据', `反向: ${isReverse ? '是' : '否'}, 阈值: ${innerThreshold}`);
             setDecodeValues(isReverse, innerThreshold);
         }
     }
@@ -264,15 +266,6 @@ function switchPage() {
     }
 }
 
-// 显示通知
-function showNotification(title, body) {
-    if (Notification.permission === 'granted') {
-        new Notification(title, { body });
-    } else {
-        console.log('通知权限未授予');
-    }
-}
-
 function universalSetupEventListeners() {
     // 隐私政策按钮事件监听
     document.getElementById('togglePrivacyPolicy').addEventListener('click', (event) => {
@@ -291,17 +284,5 @@ function universalSetupEventListeners() {
     // 禁用拖动默认事件
     document.addEventListener('dragover', (event) => {
         event.preventDefault();
-    });
-
-    // 请求通知权限
-    document.getElementById('requestPermissionButton').addEventListener('click', () => {
-        console.log(Notification.permission);
-        if (Notification.permission !== 'granted') {
-            Notification.requestPermission().then(permission => {
-                if (permission !== 'granted') {
-                    console.log('用户拒绝了通知权限');
-                }
-            });
-        }
     });
 }

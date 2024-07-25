@@ -1,3 +1,8 @@
+// 设置是否读取元数据
+function setReadMetadata(event) {
+    applicationState.isReadMetadata = event.target.checked;
+}
+
 // 从文件加载图像
 function decodeLoadImageFile(event) {
     const file = event.target.files[0];
@@ -88,6 +93,9 @@ function decodeSaveSrcImage() {
 
 // 设置解码事件监听器
 function decodeSetupEventListeners() {
+    // 读取元数据事件监听
+    document.getElementById('isReadMetadataCheckBox').addEventListener('change', setReadMetadata);
+
     // 图像加载事件监听
     document.getElementById('decodeImageFileInput').addEventListener('change', decodeLoadImageFile);
     document.getElementById('decodeLoadImageButton').addEventListener('click', decodeLoadImageURL);
@@ -115,6 +123,7 @@ function decodeSetupEventListeners() {
 
 // 移除解码事件监听器
 function decodeRemoveEventListeners() {
+    document.getElementById('isReadMetadataCheckBox').removeEventListener('change', setReadMetadata);
     document.getElementById('decodeImageFileInput').removeEventListener('change', decodeLoadImageFile);
     document.getElementById('decodeLoadImageButton').removeEventListener('click', decodeLoadImageURL);
     if (!applicationState.isOnPhone) {

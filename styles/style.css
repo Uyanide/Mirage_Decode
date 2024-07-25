@@ -81,13 +81,6 @@ button:hover,
     margin-bottom: 10px;
 }
 
-#requestPermissionButton {
-    margin-top: 10px;
-    background-color: var(--background-color);
-    border: 0px;
-    color: var(--link-color);
-}
-
 .PageContainer {
     display: flex;
     justify-content: center;
@@ -153,6 +146,14 @@ button:hover,
 }
 
 /**********************************************/
+
+#isReadMetadata {
+    margin-top: 20px;
+}
+
+#isReadMetadata label {
+    font-size: 12px;
+}
 
 #decodeMethodSelect {
     margin-top: 20px;
