@@ -2,14 +2,14 @@
 
 # 基于色阶分离与像素交错的隐写图显形与制作工具
 
-## Vercel链接（版本一定程度滞后）
-[光棱坦克工厂](https://mirage-decode.vercel.app)
+## Vercel链接
+[光棱坦克工厂](https://prismprocess.vercel.app)
 
 ## Github Pages链接
 [光棱坦克工厂](https://uyanide.github.io/Mirage_Decode/)
 
 ## 使用方法
-一看就懂，不懂也能用:)
+一看就懂，不懂也能用 :)
 
 ## 技术原理及思路来源
 [Uyanide/Mirage_Image](https://github.com/Uyanide/Mirage_Image)
@@ -19,20 +19,16 @@
 - **[piexifjs](https://github.com/hMatoba/piexifjs)** (用于读写JPEG元数据)
 
 ## 项目结构
-- **docs** (用于部署的副本)
+- **docs** (用于部署)
   - **index.html**
-    
-- **jsDelivr** (用于部署的副本)
-  - **DefaultArguments.js**
-  - **DefaultArguments.json**
-  - **scripts.txt**
-    
+  - **jsDelivr.txt** (通过jsDelivr引用的资源清单)
+
 - **resources**
   - **neko.ico** (图标)
   - **default.png** (默认显形源)
   - **buta.jpg** (默认表图)
   - **neko.jpg** (默认里图)
-    
+
 - **scripts**
   - **listeners** (事件监听、回调与辅助函数)
     - **DecodeListeners.js**

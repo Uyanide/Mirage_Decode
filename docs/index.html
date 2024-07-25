@@ -59,7 +59,7 @@
         gtag('config', 'G-43TMHBXPHM');
     </script>
 
-    <link rel="icon" href="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/resources/neko.ico"
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/Kollkas/Prism_Process@main/resources/neko.ico"
         type="image/x-icon">
 
     <title>光棱坦克工厂</title>
@@ -67,23 +67,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css"
-        href="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/styles/style.css">
+        href="https://cdn.jsdelivr.net/gh/Kollkas/Prism_Process@main/styles/style.css">
     <script src="https://cdn.jsdelivr.net/gh/jpeg-js/jpeg-js/lib/encoder.js" defer></script>
     <script src="https://cdn.jsdelivr.net/npm/piexifjs@1.0.4/piexif.js" defer></script>
-    <script id="jsonPath" data-json-path="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/DefaultArguments.json"
+    <script src="../scripts/png-metadata.js" defer></script>
+    <script id="jsonPath" data-json-path="https://cdn.jsdelivr.net/gh/Kollkas/Prism_Process@main/DefaultArguments.json"
         defer></script>
-    <script src="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/jsDelivr/DefaultArguments.js" defer
+    <script src="https://cdn.jsdelivr.net/gh/Kollkas/Prism_Process@main/jsDelivr/DefaultArguments.js" defer
         data-version></script>
-    <script src="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/mirageProcessor/MirageDecoder.js" defer
+    <script src="https://cdn.jsdelivr.net/gh/Kollkas/Prism_Process@main/scripts/mirageProcessor/MirageDecoder.js" defer
         data-version></script>
-    <script src="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/mirageProcessor/MirageEncoder.js" defer
+    <script src="https://cdn.jsdelivr.net/gh/Kollkas/Prism_Process@main/scripts/mirageProcessor/MirageEncoder.js" defer
         data-version></script>
-    <script src="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/init.js" defer data-version></script>
-    <script src="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/listeners/DecodeListeners.js" defer
+    <script src="https://cdn.jsdelivr.net/gh/Kollkas/Prism_Process@main/scripts/init.js" defer data-version></script>
+    <script src="https://cdn.jsdelivr.net/gh/Kollkas/Prism_Process@main/scripts/listeners/DecodeListeners.js" defer
         data-version></script>
-    <script src="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/listeners/EncodeListeners.js" defer
+    <script src="https://cdn.jsdelivr.net/gh/Kollkas/Prism_Process@main/scripts/listeners/EncodeListeners.js" defer
         data-version></script>
-    <script src="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/listeners/UniversalListeners.js" defer
+    <script src="https://cdn.jsdelivr.net/gh/Kollkas/Prism_Process@main/scripts/listeners/UniversalListeners.js" defer
         data-version></script>
 </head>
 
@@ -104,7 +105,7 @@
         <div class="DisplayArea" id="decodePage">
             <div class="checkbox" id="isReadMetadata">
                 <input type="checkbox" id="isReadMetadataCheckBox">
-                <label for="isReadMetadataCheckBox">是否读取元数据(若有)自动填充参数<br>(下一次加载图片时生效, 目前仅支持JPEG)</label>
+                <label for="isReadMetadataCheckBox">是否读取元数据(若有)自动填充参数<br>(下一次加载图片时生效)</label>
             </div>
             <div id="decodeMethodSelect">
                 <label for="optionSelect">1. 选择表图像素处理方式: </label>
@@ -251,7 +252,7 @@
         <p id="versionInfo">version: <b>UNKNOWN</b></p>
 
         <div class="link" , id="hintLink">
-            <small><a href="https://github.com/Uyanide/Mirage_Decode/issues/new" target="_blank">Bug反馈</a></small>
+            <small><a href="https://github.com/Kollkas/Prism_Process/issues/new" target="_blank">Bug反馈</a></small>
         </div>
 
         <div class="link" , id="profileLink">
@@ -259,7 +260,7 @@
         </div>
 
         <div class="link" , id="repoLink">
-            <small><a href="https://github.com/Uyanide/Mirage_Decode/tree/main" target="_blank">Github -
+            <small><a href="https://github.com/Kollkas/Prism_Process/tree/main" target="_blank">Github -
                     Mirage_Decode (本项目仓库)</a></small>
         </div>
 
