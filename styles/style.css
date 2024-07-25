@@ -81,12 +81,19 @@ button:hover,
     margin-bottom: 10px;
 }
 
+#requestPermissionButton {
+    margin-top: 10px;
+    background-color: var(--background-color);
+    border: 0px;
+    color: var(--link-color);
+}
+
 .PageContainer {
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-top: 20px;
+    margin-top: 10px;
     width: 90%;
     max-width: 1000px;
     min-width: 320px;

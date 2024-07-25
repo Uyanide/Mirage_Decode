@@ -264,17 +264,6 @@ function switchPage() {
     }
 }
 
-// 请求通知权限
-function requestNotificationPermission() {
-    if (Notification.permission === 'default') {
-        Notification.requestPermission().then(permission => {
-            if (permission !== 'granted') {
-                console.log('用户拒绝了通知权限');
-            }
-        });
-    }
-}
-
 // 显示通知
 function showNotification(title, body) {
     if (Notification.permission === 'granted') {
@@ -302,5 +291,17 @@ function universalSetupEventListeners() {
     // 禁用拖动默认事件
     document.addEventListener('dragover', (event) => {
         event.preventDefault();
+    });
+
+    // 请求通知权限
+    document.getElementById('requestPermissionButton').addEventListener('click', () => {
+        console.log(Notification.permission);
+        if (Notification.permission !== 'granted') {
+            Notification.requestPermission().then(permission => {
+                if (permission !== 'granted') {
+                    console.log('用户拒绝了通知权限');
+                }
+            });
+        }
     });
 }

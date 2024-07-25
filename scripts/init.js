@@ -2,8 +2,6 @@ applicationState.isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
-        // 在页面加载时请求通知权限
-        requestNotificationPermission();
         // 版本显示
         const versionInfoElement = document.getElementById('versionInfo');
         if (versionInfoElement) {
