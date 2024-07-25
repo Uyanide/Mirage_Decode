@@ -49,20 +49,9 @@ function setDecodeValuesWithJPEGMetadata(img) {
     setDecodeValues(isReverse, innerThreshold);
 }
 
-function base64ToArrayBuffer(base64) {
-    const binaryString = window.atob(base64);
-    const len = binaryString.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-        bytes[i] = binaryString.charCodeAt(i);
-    }
-    return bytes.buffer;
-}
-
 function setDecodeValuesWithPNGMetadata(img) {
-    const base64Data = img.src.split(',')[1];
-    const binaryArray = base64ToArrayBuffer(base64Data);
-    let chunkList = metadata.splitChunk(binaryArray);
+    const binaryString = atob(img.src.split(',')[1]);
+    let chunkList = metadata.splitChunk(binaryString);
     for (let i in chunkList) {
         let chunk = chunkList[i];
         if (chunk.type === 'PRSM') {
@@ -273,7 +262,7 @@ function writeMetadataJPEG(imgURL, isReverse, innerThreshold) {
 
 // 写入PRSM块（PNG）
 function writeChunkDataPENG(imgURL, isReverse, innerThreshold) {
-    const binaryData = base64ToArrayBuffer(imgURL.split(',')[1]);
+    const binaryData = atob(imgURL.split(',')[1]);
     let chunkList = metadata.splitChunk(binaryData);
     const infoString = generateInfoString(isReverse, innerThreshold);
     let chunk = metadata.createChunk('PRSM', infoString);
