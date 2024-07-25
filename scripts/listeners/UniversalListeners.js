@@ -266,7 +266,9 @@ function writeChunkDataPENG(imgURL, isReverse, innerThreshold) {
     let chunkList = metadata.splitChunk(binaryData);
     const infoString = generateInfoString(isReverse, innerThreshold);
     let chunk = metadata.createChunk('PRSM', infoString);
+    const iend = chunkList.pop();
     chunkList.push(chunk);
+    chunkList.push(iend);
     const output = metadata.joinChunk(chunkList);
     return `data:image/png;base64,${btoa(output)}`;
 }
