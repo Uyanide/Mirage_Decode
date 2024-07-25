@@ -23,6 +23,7 @@ function handleImageLoadError(error, callback) {
 }
 
 function setDecodeValues(isReverse, threshold) {
+    console.log('设置解码参数:', isReverse, threshold);
     document.getElementById('decodeReverseInput').checked = isReverse;
     mirageProcessor.mirageDecoder.reverse = isReverse;
     if (isReverse) {
@@ -41,7 +42,7 @@ function setDecodeValuesWithMetadata(img) {
     if (infoString) {
         const isReverse = infoString[0] === '1';
         const innerThreshold = parseInt(infoString.slice(1), 16);
-        if (isReverse && innerThreshold) {
+        if (isReverse != undefined && innerThreshold != undefined) {
             setDecodeValues(isReverse, innerThreshold);
         }
     }
