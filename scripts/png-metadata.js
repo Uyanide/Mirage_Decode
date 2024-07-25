@@ -13,34 +13,34 @@ metadata.writeFileSync = function (path, bin) {
 
 // check PNG signature
 metadata.isPNG = function (s) {
-    var sig = s.substr(0, 8);
+    var sig = s.substring(0, 8);
     return (sig == metadata.PNG_SIG);
 };
 
 metadata.splitChunk = function (s) {
     // read signature
-    var sig = s.substr(0, 8);
+    var sig = s.substring(0, 8);
     if (!metadata.isPNG(sig)) return false;
-    s = s.substr(8); // chomp sig
+    s = s.substring(8); // chomp sig
     var chunklist = [];
     // read chunk list
     while (s != '') {
         var chunk = {};
         // read chunk size
-        var size = stoi(s.substr(0, 4));
+        var size = stoi(s.substring(0, 4));
         if (size < 0) {
             // If the size is negative, the data is likely corrupt, but we'll let
             // the caller decide if any of the returned chunks are usable.
             // We'll move forward in the file with the minimum chunk length (12 bytes).
             size = 0;
         }
-        var buf = s.substr(0, size + 12);
-        s = s.substr(size + 12); // delete this chunk
+        var buf = s.substring(0, size + 12);
+        s = s.substring(size + 12); // delete this chunk
         // read chunk data
         chunk.size = size;
-        chunk.type = buf.substr(4, 4);
-        chunk.data = buf.substr(8, size);
-        chunk.crc = stoi(buf.substr(8 + size, 4));
+        chunk.type = buf.substring(4, 4);
+        chunk.data = buf.substring(8, size);
+        chunk.crc = stoi(buf.substring(8 + size, 4));
         // add chunk
         chunklist.push(chunk);
     }
