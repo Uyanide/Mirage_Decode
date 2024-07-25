@@ -1,8 +1,7 @@
 class DefaultArguments {
     async loadDefaultArguments() {
         try {
-            console.log(applicationState.version);
-            const response = await fetch('https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/DefaultArguments_jsDelivr.json?v=' + applicationState.version);
+            const response = await fetch('https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/jsDelivr/DefaultArguments.json?v=' + applicationState.version);
             if (!response.ok) {
                 throw new Error('网络请求失败');
             }

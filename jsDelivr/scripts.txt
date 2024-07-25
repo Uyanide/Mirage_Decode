@@ -1,0 +1,8 @@
+https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/DefaultArguments_jsDelivr.js
+https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/DefaultArguments_jsDelivr.json?
+https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/mirageProcessor/MirageDecoder.js
+https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/mirageProcessor/MirageEncoder.js
+https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/init.js
+https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/listeners/DecodeListeners.js
+https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/listeners/EncodeListeners.js
+https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/listeners/UniversalListeners.js
