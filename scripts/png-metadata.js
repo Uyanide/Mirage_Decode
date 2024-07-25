@@ -38,9 +38,9 @@ metadata.splitChunk = function (s) {
         s = s.substring(size + 12); // delete this chunk
         // read chunk data
         chunk.size = size;
-        chunk.type = buf.substring(4, 4);
-        chunk.data = buf.substring(8, size);
-        chunk.crc = stoi(buf.substring(8 + size, 4));
+        chunk.type = buf.substring(4, 8);
+        chunk.data = buf.substring(8, 8 + size);
+        chunk.crc = stoi(buf.substring(8 + size, 12 + size));
         // add chunk
         chunklist.push(chunk);
     }

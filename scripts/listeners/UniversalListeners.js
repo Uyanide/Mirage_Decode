@@ -214,7 +214,7 @@ function downloadFromLink(url, link, fileName) {
 function generateUrlFromCanvas(canvasId, isPng = true) {
     const canvas = document.getElementById(canvasId);
     if (isPng) {
-        return writeChunkDataPENG(
+        return writeChunkDataPNG(
             canvas.toDataURL('image/png'),
             mirageProcessor.mirageEncoder.isEncodeReverse,
             mirageProcessor.mirageEncoder.innerThreshold);
@@ -261,7 +261,7 @@ function writeMetadataJPEG(imgURL, isReverse, innerThreshold) {
 }
 
 // 写入PRSM块（PNG）
-function writeChunkDataPENG(imgURL, isReverse, innerThreshold) {
+function writeChunkDataPNG(imgURL, isReverse, innerThreshold) {
     const binaryData = atob(imgURL.split(',')[1]);
     let chunkList = metadata.splitChunk(binaryData);
     const infoString = generateInfoString(isReverse, innerThreshold);
