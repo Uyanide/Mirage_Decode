@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="dark">
+
+<head>
+    <script>
+        // global namespaces
+        var applicationState = applicationState || {};
+        var errorHandling = errorHandling || {};
+        var mirageProcessor = mirageProcessor || {};
+    </script>
+    <script>
+        applicationState.version = '1.2.5';
+        // version check
+        (() => {
+            console.log('target version:', applicationState.version);
+            console.log('current version:', localStorage.getItem('version'));
+            const previousVersion = localStorage.getItem('version');
+            if (!previousVersion || previousVersion !== applicationState.version) {
+                console.log('new version detected, clearing cache');
+                localStorage.clear();
+                localStorage.setItem('version', applicationState.version);
+                location.reload(true);
+            }
+        })();
+        // cache busting, just in case
+        var scripts = document.querySelectorAll('script[data-version]');
+        scripts.forEach(function (script) {
+            var src = script.getAttribute('src');
+            if (src) {
+                script.setAttribute('src', src + '?v=' + applicationState.version);
+            }
+        });
+        var links = document.querySelectorAll('link[rel="stylesheet"]');
+        links.forEach(function (link) {
+            var href = link.getAttribute('href');
+            if (href) {
+                link.setAttribute('href', href + '?v=' + applicationState.version);
+            }
+        });
+    </script>
+
+    <script>
+        function applyTheme() {
+            const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            const theme = prefersDarkScheme ? "dark" : "light";
+            document.documentElement.setAttribute("data-theme", theme);
+        }
+        applyTheme();
+        window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
+    </script>
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-43TMHBXPHM"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-43TMHBXPHM');
+    </script>
+
+    <link rel="icon" href="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/resources/neko.ico"
+        type="image/x-icon">
+
+    <title>光棱坦克工厂</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css"
+        href="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/styles/style.css">
+    <script src="https://cdn.jsdelivr.net/gh/jpeg-js/jpeg-js/lib/encoder.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/piexifjs@1.0.4/piexif.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/DefaultArguments_jsDelivr.js" defer
+        data-version></script>
+    <script src="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/mirageProcessor/MirageDecoder.js" defer
+        data-version></script>
+    <script src="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/mirageProcessor/MirageEncoder.js" defer
+        data-version></script>
+    <script src="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/init.js" defer data-version></script>
+    <script src="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/listeners/DecodeListeners.js" defer
+        data-version></script>
+    <script src="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/listeners/EncodeListeners.js" defer
+        data-version></script>
+    <script src="https://cdn.jsdelivr.net/gh/Uyanide/Mirage_Decode@main/scripts/listeners/UniversalListeners.js" defer
+        data-version></script>
+</head>
+
+<body>
+    <h1 class="title">光棱坦克工厂</h1>
+
+    <div class="link" id="infoLink">
+        <small><a href="https://tieba.baidu.com/p/9093709508" target="_blank">什么是光棱坦克？</a></small>
+    </div>
+
+    <div class="PageContainer">
+
+        <div class="TitleContainer">
+            <button class="PageSwitchButton" id="decodeButton"><b>显形</b></button>
+            <button class="PageSwitchButton" id="encodeButton"><b>制作</b></button>
+        </div>
+
+        <div class="DisplayArea" id="decodePage">
+            <div class="checkbox" id="isReadMetadata">
+                <input type="checkbox" id="isReadMetadataCheckBox">
+                <label for="isReadMetadataCheckBox">是否读取元数据(若有)自动填充参数<br>(下一次加载图片时生效, 目前仅支持JPEG)</label>
+            </div>
+            <div id="decodeMethodSelect">
+                <label for="optionSelect">1. 选择表图像素处理方式: </label>
+                <select id="optionSelect">
+                    <option value="black">置为黑色</option>
+                    <option value="white">置为白色</option>
+                    <option value="trans">置为透明</option>
+                    <option value="lcopy">左侧复制</option>
+                    <option value="ucopy">上方复制</option>
+                    <option value="luavg">左上平均</option>
+                </select>
+            </div>
+
+            <div id="decodeImageSelect">
+                <div id="decodeFileInput">
+                    <div>2.</div>
+                    <label for="decodeImageFileInput" class="fileInputLabel">选择图片文件</label>
+                    <input type="file" id="decodeImageFileInput" accept="image/*">
+                </div>
+                <div id="decodeUrlInput">
+                    <label for="decodeImageUrlInput">或:</label>
+                    <input type="text" id="decodeImageUrlInput" placeholder="输入图片URL">
+                    <button id="decodeLoadImageButton">加载图片</button>
+                </div>
+                <div id="decodePasteInput">
+                    或从剪贴板粘贴图片 (ctrl+v),
+                </div>
+                <div id="decodePasteButton">
+                    <lable for="decodePasteButtonInput">或从剪贴板</lable>
+                    <button id="decodePasteButtonInput">粘贴图片</button>
+                </div>
+                <div id="decodeDragInputHint">
+                    或直接将图片拖进窗口。
+                </div>
+            </div>
+
+            <canvas id="decodeCanvas"></canvas>
+
+            <div class="decodeSlider">
+                <label for="decodeThresholdRange">3. 滑动直至图像清晰: </label>
+                <input type="range" id="decodeThresholdRange" min="0" max="255">
+            </div>
+
+            <div class="checkbox" id="decodeReverseCheckbox">
+                <input type="checkbox" id="decodeReverseInput">
+                <label for="decodeReverseInput">是否为反色阶隐写</label>
+            </div>
+
+            <div class="saveButton">
+                <button id="decodeSaveImageButton">保存显示图像</button>
+            </div>
+
+            <div class="saveButton">
+                <button id="decodeSaveSrcImageButton">保存原始图像</button>
+            </div>
+            <p class="saveHint">(保存前请务必确认用浏览器打开)</p>
+        </div>
+
+        <div class="DisplayArea" id="encodePage">
+            <div id="encodeSourceInput">
+                <div class="encodeFileInput" , id="innerFileInput">
+                    <label for="innerSourceFileInput" class="fileInputLabel">选择里图文件</label>
+                    <input type="file" id="innerSourceFileInput" accept="image/*">
+                    <label for="innerSourceFileInput" class="encodeDrag">或直接拖动至下方画布</label>
+                    <label for="innerSourceFileInput" class="encodeDrag">或在下方画布处ctrl+v</label>
+                    <canvas id="innerCanvas"></canvas>
+                    <slider class="encodeSlider">
+                        <label for="innerThresholdRange" class="encodeSliderTitle">里图色阶端点: </label>
+                        <label for="innerThresholdRange">(越小隐写效果越好)</label>
+                        <label for="innerThresholdRange">(但越小里图质量越差)</label>
+                        <input id="innerThresholdRange" type="range" min="0" max="128">
+                        <label for="innerThresholdRange">(不应高于右侧值)</label>
+                    </slider>
+                    <div class="thresInput">
+                        <label for="innerThresholdInput">或输入: </label>
+                        <input type="number" id="innerThresholdInput">
+                    </div>
+                </div>
+
+                <div class="encodeFileInput" , id="coverFileInput">
+                    <label for="coverSourceFileInput" class="fileInputLabel">选择表图文件</label>
+                    <input type="file" id="coverSourceFileInput" accept="image/*">
+                    <label for="coverSourceFileInput" class="encodeDrag">或直接拖动至下方画布</label>
+                    <label for="coverSourceFileInput" class="encodeDrag">或在下方画布处ctrl+v</label>
+                    <canvas id="coverCanvas"></canvas>
+                    <slider class="encodeSlider">
+                        <label for="coverThresholdRange" class="encodeSliderTitle">表图色阶端点: </label>
+                        <label for="coverThresholdRange">(越大显形效果越好)</label>
+                        <label for="coverThresholdRange">(但越大表图质量越差)</label>
+                        <input type="range" id="coverThresholdRange" min="0" max="128">
+                        <label for="coverThresholdRange">(不应低于左侧值)</label>
+                    </slider>
+                    <div class="thresInput">
+                        <label for="coverThresholdInput">或输入: </label>
+                        <input type="number" id="coverThresholdInput">
+                    </div>
+                </div>
+            </div>
+
+            <checkbox id="isCoverGray">
+                <input type="checkbox" id="isCoverGrayCheckBox">
+                <label for="isCoverGrayCheckBox">表图是否取灰度</label>
+            </checkbox>
+
+            <div id="isEncodeReverse">
+                <input type="checkbox" id="isEncodeReverseCheckBox">
+                <label for="isEncodeReverseCheckBox">是否反色阶隐写</label>
+            </div>
+
+            <canvas id="outputCanvas"></canvas>
+
+            <div id="encodeMethod">
+                <label for="encodeMethodSelect">选择像素混合方式: </label>
+                <select id="encodeMethodSelect">
+                    <option value="chess">棋盘布局</option>
+                    <option value="gap_2">2像素间隔斜线</option>
+                    <option value="gap_3">3像素间隔斜线</option>
+                    <option value="gap_5">5像素间隔斜线</option>
+                    <option value="col_1">1像素间隔竖线</option>
+                    <option value="row_1">1像素间隔横线</option>
+                </select>
+            </div>
+
+            <div id="encodeOutputSizeLimit">
+                <label for="encodeSizeInput">输出图像最大长或宽 <small>(并非越大越好):</small> </label>
+                <input id="encodeSizeInput" type="number" value="1200">
+            </div>
+
+            <div id="isPng">
+                <input type="checkbox" id="isPngCheckBox">
+                <label for="isPngCheckBox">输出PNG <small>(否则为JPEG, 但被平台强制压缩几率更低)</small></label>
+            </div>
+
+            <div id="jumpButton">
+                <button id="jumpToDecodeButton">以当前结果跳转显形测试</button>
+            </div>
+
+            <div class="saveButton">
+                <button id="encodeSaveImageButton">保存结果</button>
+            </div>
+            <p class="saveHint">(保存前请务必确认用浏览器打开)</p>
+        </div>
+
+        <p id="versionInfo">version: <b>UNKNOWN</b></p>
+
+        <div class="link" , id="hintLink">
+            <small><a href="https://github.com/Uyanide/Mirage_Decode/issues/new" target="_blank">Bug反馈</a></small>
+        </div>
+
+        <div class="link" , id="profileLink">
+            <small><a href="https://github.com/Uyanide" target="_blank">Github - Uyanide (我)</a></small>
+        </div>
+
+        <div class="link" , id="repoLink">
+            <small><a href="https://github.com/Uyanide/Mirage_Decode/tree/main" target="_blank">Github -
+                    Mirage_Decode (本项目仓库)</a></small>
+        </div>
+
+        <div id="privacyButton">
+            <button id="togglePrivacyPolicy">显示使用须知</button>
+        </div>
+
+        <div id="privacyPolicy">
+            <p>本网站仅供个人学习交流使用，禁止一切非法用途，否则一切后果由使用者自行承担。</p>
+            <p>本网站使用Google Analytics记录访问者的行为。通过使用本网站，您同意数据按照Google Analytics的条款和隐私政策进行处理。更多信息，请访问:<a
+                    href="https://policies.google.com/privacy" target="_blank">Google
+                    Analytics的隐私政策。</a></p>
+        </div>
+    </div>
+</body>
+
+</html>
