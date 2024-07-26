@@ -3,7 +3,7 @@
 # 基于色阶分离与像素交错的隐写图显形与制作工具
 
 ## 链接
-[光棱坦克工厂](https://prism.uyanide.com)
+[光棱坦克工厂](https://uyanide.github.io/Mirage_Decode/)
 
 ## 使用方法
 一看就懂，不懂也能用 :)
@@ -23,6 +23,7 @@
   - **neko.jpg** (默认里图)
 
 - **scripts**
+  - **lib**
   - **listeners** (事件监听、回调与辅助函数)
     - **DecodeListeners.js**
     - **EncodeListeners.js**
