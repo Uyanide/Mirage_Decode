@@ -795,3 +795,5 @@ function getImageDataFromImage(idOrElement) {
 
     return (ctx.getImageData(0, 0, cvs.width, cvs.height));
 }
+
+errorHandling.scriptsLoaded.encoder = true;

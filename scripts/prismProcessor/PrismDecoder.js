@@ -1,4 +1,4 @@
-class MirageDecoder {
+class PrismDecoder {
     constructor(decodeCanvasId, defaultArguments) {
         this.img = null;
         this.imgData = null;
@@ -99,3 +99,5 @@ class MirageDecoder {
         }
     }
 }
+
+errorHandling.scriptsLoaded.PrismDecoder = true;

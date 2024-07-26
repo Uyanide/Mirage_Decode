@@ -42,3 +42,5 @@ class DefaultArguments {
         document.getElementById('encodeSizeInput').value = this.size;
     }
 }
+
+errorHandling.scriptsLoaded.DefaultArguments = true;

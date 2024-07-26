@@ -3,7 +3,7 @@ function encodeLoadInnerImageFile(event) {
     errorHandling.currCanvasIndex = 1;
     const file = event.target.files[0];
     updateImageFromFile(file, (img) => {
-        mirageProcessor.mirageEncoder.updateInnerImage(img);
+        PrismProcessor.PrismEncoder.updateInnerImage(img);
     });
     event.target.value = '';
 }
@@ -13,7 +13,7 @@ function encodeLoadCoverImageFile(event) {
     errorHandling.currCanvasIndex = 2;
     const file = event.target.files[0];
     updateImageFromFile(file, (img) => {
-        mirageProcessor.mirageEncoder.updateCoverImage(img);
+        PrismProcessor.PrismEncoder.updateCoverImage(img);
     });
     event.target.value = '';
 }
@@ -27,12 +27,12 @@ function encodeLoadImageFromClipboard(event) {
     if (mouseX < window.innerWidth / 2) {
         errorHandling.currCanvasIndex = 1;
         updateImageFromClipboard(event, (img) => {
-            mirageProcessor.mirageEncoder.updateInnerImage(img);
+            PrismProcessor.PrismEncoder.updateInnerImage(img);
         });
     } else {
         errorHandling.currCanvasIndex = 2;
         updateImageFromClipboard(event, (img) => {
-            mirageProcessor.mirageEncoder.updateCoverImage(img);
+            PrismProcessor.PrismEncoder.updateCoverImage(img);
         });
     }
 }
@@ -41,7 +41,7 @@ function encodeLoadImageFromClipboard(event) {
 function encodeLoadInnerImageFromDrag(event) {
     errorHandling.currCanvasIndex = 1;
     dragDropLoadImage(event, (img) => {
-        mirageProcessor.mirageEncoder.updateInnerImage(img);
+        PrismProcessor.PrismEncoder.updateInnerImage(img);
     });
 }
 
@@ -49,7 +49,7 @@ function encodeLoadInnerImageFromDrag(event) {
 function encodeLoadCoverImageFromDrag(event) {
     errorHandling.currCanvasIndex = 2;
     dragDropLoadImage(event, (img) => {
-        mirageProcessor.mirageEncoder.updateCoverImage(img);
+        PrismProcessor.PrismEncoder.updateCoverImage(img);
     });
 }
 
@@ -62,20 +62,20 @@ const coverInput = document.getElementById('coverThresholdInput');
 function encodeSetInnerThreshold() {
     const slider = innerSlider
     const text = innerInput;
-    mirageProcessor.mirageEncoder.innerThreshold = parseInt(slider.value, 10);
-    text.value = mirageProcessor.mirageEncoder.innerThreshold;
-    if (mirageProcessor.mirageEncoder.innerThreshold > mirageProcessor.mirageEncoder.coverThreshold) {
-        mirageProcessor.mirageEncoder.innerThreshold = mirageProcessor.mirageEncoder.coverThreshold;
-        slider.value = mirageProcessor.mirageEncoder.coverThreshold;
-        text.value = mirageProcessor.mirageEncoder.coverThreshold;
+    PrismProcessor.PrismEncoder.innerThreshold = parseInt(slider.value, 10);
+    text.value = PrismProcessor.PrismEncoder.innerThreshold;
+    if (PrismProcessor.PrismEncoder.innerThreshold > PrismProcessor.PrismEncoder.coverThreshold) {
+        PrismProcessor.PrismEncoder.innerThreshold = PrismProcessor.PrismEncoder.coverThreshold;
+        slider.value = PrismProcessor.PrismEncoder.coverThreshold;
+        text.value = PrismProcessor.PrismEncoder.coverThreshold;
         text.style.color = '#ff5e5e';
     } else {
         const rootStyles = getComputedStyle(document.documentElement);
         const frontColor = rootStyles.getPropertyValue('--front-color').trim();
         text.style.color = frontColor;
     }
-    if (mirageProcessor.mirageEncoder.innerImg && mirageProcessor.mirageEncoder.coverImg) {
-        mirageProcessor.mirageEncoder.processImage();
+    if (PrismProcessor.PrismEncoder.innerImg && PrismProcessor.PrismEncoder.coverImg) {
+        PrismProcessor.PrismEncoder.processImage();
     }
 }
 
@@ -83,20 +83,20 @@ function encodeSetInnerThreshold() {
 function encodeSetCoverThreshold() {
     const slider = coverSlider;
     const text = coverInput;
-    mirageProcessor.mirageEncoder.coverThreshold = parseInt(slider.value, 10);
-    text.value = mirageProcessor.mirageEncoder.coverThreshold;
-    if (mirageProcessor.mirageEncoder.innerThreshold > mirageProcessor.mirageEncoder.coverThreshold) {
-        mirageProcessor.mirageEncoder.coverThreshold = mirageProcessor.mirageEncoder.innerThreshold;
-        slider.value = mirageProcessor.mirageEncoder.innerThreshold;
-        text.value = mirageProcessor.mirageEncoder.innerThreshold;
+    PrismProcessor.PrismEncoder.coverThreshold = parseInt(slider.value, 10);
+    text.value = PrismProcessor.PrismEncoder.coverThreshold;
+    if (PrismProcessor.PrismEncoder.innerThreshold > PrismProcessor.PrismEncoder.coverThreshold) {
+        PrismProcessor.PrismEncoder.coverThreshold = PrismProcessor.PrismEncoder.innerThreshold;
+        slider.value = PrismProcessor.PrismEncoder.innerThreshold;
+        text.value = PrismProcessor.PrismEncoder.innerThreshold;
         text.style.color = '#ff5e5e';
     } else {
         const rootStyles = getComputedStyle(document.documentElement);
         const frontColor = rootStyles.getPropertyValue('--front-color').trim();
         text.style.color = frontColor;
     }
-    if (mirageProcessor.mirageEncoder.innerImg && mirageProcessor.mirageEncoder.coverImg) {
-        mirageProcessor.mirageEncoder.processImage();
+    if (PrismProcessor.PrismEncoder.innerImg && PrismProcessor.PrismEncoder.coverImg) {
+        PrismProcessor.PrismEncoder.processImage();
     }
 }
 
@@ -112,22 +112,22 @@ function encodeSetInnerThresholdInput() {
         if (isNaN(inputVal)) {
             return;
         }
-        mirageProcessor.mirageEncoder.innerThreshold = inputVal;
-        if (mirageProcessor.mirageEncoder.innerThreshold > 128) {
-            mirageProcessor.mirageEncoder.innerThreshold = 128;
+        PrismProcessor.PrismEncoder.innerThreshold = inputVal;
+        if (PrismProcessor.PrismEncoder.innerThreshold > 128) {
+            PrismProcessor.PrismEncoder.innerThreshold = 128;
             input.value = 128;
-        } else if (mirageProcessor.mirageEncoder.innerThreshold < 0) {
-            mirageProcessor.mirageEncoder.innerThreshold = 0;
+        } else if (PrismProcessor.PrismEncoder.innerThreshold < 0) {
+            PrismProcessor.PrismEncoder.innerThreshold = 0;
             input.value = 0;
         }
-        slider.value = mirageProcessor.mirageEncoder.innerThreshold;
-        if (mirageProcessor.mirageEncoder.innerThreshold > mirageProcessor.mirageEncoder.coverThreshold) {
-            mirageProcessor.mirageEncoder.innerThreshold = mirageProcessor.mirageEncoder.coverThreshold;
-            slider.value = mirageProcessor.mirageEncoder.coverThreshold;
-            input.value = mirageProcessor.mirageEncoder.coverThreshold;
+        slider.value = PrismProcessor.PrismEncoder.innerThreshold;
+        if (PrismProcessor.PrismEncoder.innerThreshold > PrismProcessor.PrismEncoder.coverThreshold) {
+            PrismProcessor.PrismEncoder.innerThreshold = PrismProcessor.PrismEncoder.coverThreshold;
+            slider.value = PrismProcessor.PrismEncoder.coverThreshold;
+            input.value = PrismProcessor.PrismEncoder.coverThreshold;
         }
-        if (mirageProcessor.mirageEncoder.innerImg && mirageProcessor.mirageEncoder.coverImg) {
-            mirageProcessor.mirageEncoder.processImage();
+        if (PrismProcessor.PrismEncoder.innerImg && PrismProcessor.PrismEncoder.coverImg) {
+            PrismProcessor.PrismEncoder.processImage();
         }
     }, 500);
 }
@@ -144,47 +144,47 @@ function encodeSetCoverThresholdInput() {
         if (isNaN(inputVal)) {
             return;
         }
-        mirageProcessor.mirageEncoder.coverThreshold = inputVal;
-        if (mirageProcessor.mirageEncoder.coverThreshold > 128) {
-            mirageProcessor.mirageEncoder.coverThreshold = 128;
+        PrismProcessor.PrismEncoder.coverThreshold = inputVal;
+        if (PrismProcessor.PrismEncoder.coverThreshold > 128) {
+            PrismProcessor.PrismEncoder.coverThreshold = 128;
             input.value = 128;
-        } else if (mirageProcessor.mirageEncoder.coverThreshold < 0) {
-            mirageProcessor.mirageEncoder.coverrThreshold = 0;
+        } else if (PrismProcessor.PrismEncoder.coverThreshold < 0) {
+            PrismProcessor.PrismEncoder.coverrThreshold = 0;
             input.value = 0;
         }
-        slider.value = mirageProcessor.mirageEncoder.coverThreshold;
-        if (mirageProcessor.mirageEncoder.innerThreshold > mirageProcessor.mirageEncoder.coverThreshold) {
-            mirageProcessor.mirageEncoder.coverThreshold = mirageProcessor.mirageEncoder.innerThreshold;
-            slider.value = mirageProcessor.mirageEncoder.coverThreshold;
-            input.value = mirageProcessor.mirageEncoder.coverThreshold;
+        slider.value = PrismProcessor.PrismEncoder.coverThreshold;
+        if (PrismProcessor.PrismEncoder.innerThreshold > PrismProcessor.PrismEncoder.coverThreshold) {
+            PrismProcessor.PrismEncoder.coverThreshold = PrismProcessor.PrismEncoder.innerThreshold;
+            slider.value = PrismProcessor.PrismEncoder.coverThreshold;
+            input.value = PrismProcessor.PrismEncoder.coverThreshold;
         }
-        if (mirageProcessor.mirageEncoder.innerImg && mirageProcessor.mirageEncoder.coverImg) {
-            mirageProcessor.mirageEncoder.processImage();
+        if (PrismProcessor.PrismEncoder.innerImg && PrismProcessor.PrismEncoder.coverImg) {
+            PrismProcessor.PrismEncoder.processImage();
         }
     }, 500);
 }
 
 // 设置表图是否取灰度
 function encodeSetCoverGray(event) {
-    mirageProcessor.mirageEncoder.isCoverGray = event.target.checked;
-    if (mirageProcessor.mirageEncoder.coverImg && mirageProcessor.mirageEncoder.innerImg) {
-        mirageProcessor.mirageEncoder.updateCoverImage(mirageProcessor.mirageEncoder.coverImg);
+    PrismProcessor.PrismEncoder.isCoverGray = event.target.checked;
+    if (PrismProcessor.PrismEncoder.coverImg && PrismProcessor.PrismEncoder.innerImg) {
+        PrismProcessor.PrismEncoder.updateCoverImage(PrismProcessor.PrismEncoder.coverImg);
     }
 }
 
 // 设置是否反向隐写
 function encodeSetEncodeReverse(event) {
-    mirageProcessor.mirageEncoder.isEncodeReverse = event.target.checked;
-    if (mirageProcessor.mirageEncoder.innerImg && mirageProcessor.mirageEncoder.coverImg) {
-        mirageProcessor.mirageEncoder.processImage();
+    PrismProcessor.PrismEncoder.isEncodeReverse = event.target.checked;
+    if (PrismProcessor.PrismEncoder.innerImg && PrismProcessor.PrismEncoder.coverImg) {
+        PrismProcessor.PrismEncoder.processImage();
     }
 }
 
 // 设置像素混合方式
 function encodeSetMethod(event) {
-    mirageProcessor.mirageEncoder.method = event.target.value;
-    if (mirageProcessor.mirageEncoder.innerImg && mirageProcessor.mirageEncoder.coverImg) {
-        mirageProcessor.mirageEncoder.updateInnerImage(mirageProcessor.mirageEncoder.innerImg);
+    PrismProcessor.PrismEncoder.method = event.target.value;
+    if (PrismProcessor.PrismEncoder.innerImg && PrismProcessor.PrismEncoder.coverImg) {
+        PrismProcessor.PrismEncoder.updateInnerImage(PrismProcessor.PrismEncoder.innerImg);
     }
 }
 
@@ -194,19 +194,19 @@ function encodeSetSize(event) {
     clearTimeout(sizeInputTimeout);
 
     sizeInputTimeout = setTimeout(function () {
-        mirageProcessor.mirageEncoder.size = parseInt(event.target.value, 10);
-        if (isNaN(mirageProcessor.mirageEncoder.size)) {
+        PrismProcessor.PrismEncoder.size = parseInt(event.target.value, 10);
+        if (isNaN(PrismProcessor.PrismEncoder.size)) {
             return;
         }
-        if (mirageProcessor.mirageEncoder.size > 4000) {
-            mirageProcessor.mirageEncoder.size = 4000;
+        if (PrismProcessor.PrismEncoder.size > 4000) {
+            PrismProcessor.PrismEncoder.size = 4000;
             event.target.value = 4000;
-        } else if (mirageProcessor.mirageEncoder.size < 100) {
-            mirageProcessor.mirageEncoder.size = 100;
+        } else if (PrismProcessor.PrismEncoder.size < 100) {
+            PrismProcessor.PrismEncoder.size = 100;
             event.target.value = 100;
         }
-        if (mirageProcessor.mirageEncoder.innerImg) {
-            mirageProcessor.mirageEncoder.updateInnerImage(mirageProcessor.mirageEncoder.innerImg);
+        if (PrismProcessor.PrismEncoder.innerImg) {
+            PrismProcessor.PrismEncoder.updateInnerImage(PrismProcessor.PrismEncoder.innerImg);
         }
     }, 500);
 }
@@ -223,15 +223,15 @@ function encodeSaveImage() {
 
 // 以当前结果跳转显形界面
 function jumpToDecode() {
-    if (mirageProcessor.mirageEncoder.innerImg && mirageProcessor.mirageEncoder.coverImg) {
+    if (PrismProcessor.PrismEncoder.innerImg && PrismProcessor.PrismEncoder.coverImg) {
         setDecodeValues(
-            mirageProcessor.mirageEncoder.isEncodeReverse,
-            mirageProcessor.mirageEncoder.innerThreshold,
+            PrismProcessor.PrismEncoder.isEncodeReverse,
+            PrismProcessor.PrismEncoder.innerThreshold,
         );
         const img = new Image();
         img.src = generateUrlFromCanvas('outputCanvas', applicationState.isPng);
         img.onload = function () {
-            mirageProcessor.mirageDecoder.updateImage(img);
+            PrismProcessor.PrismDecoder.updateImage(img);
             switchPage();
         };
     }
@@ -295,3 +295,5 @@ function encodeRemoveEventListeners() {
     document.getElementById('jumpToDecodeButton').removeEventListener('click', jumpToDecode);
     document.getElementById('encodeSaveImageButton').removeEventListener('click', encodeSaveImage);
 }
+
+errorHandling.scriptsLoaded.EncodeListeners = true;

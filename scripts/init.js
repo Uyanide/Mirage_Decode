@@ -1,3 +1,5 @@
+errorHandling.isInitLoaded = true;
+
 applicationState.isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -19,8 +21,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         applicationState.isReadMetadata = applicationState.defaultArguments.isReadMetadata;
 
         // 实例化解码器和编码器
-        mirageProcessor.mirageDecoder = new MirageDecoder('decodeCanvas', applicationState.defaultArguments);
-        mirageProcessor.mirageEncoder = new MirageEncoder('innerCanvas', 'coverCanvas', 'outputCanvas', applicationState.defaultArguments);
+        PrismProcessor.PrismDecoder = new PrismDecoder('decodeCanvas', applicationState.defaultArguments);
+        PrismProcessor.PrismEncoder = new PrismEncoder('innerCanvas', 'coverCanvas', 'outputCanvas', applicationState.defaultArguments);
 
         // 加载默认图像
         errorHandling.defaultImg = [];
@@ -36,13 +38,13 @@ document.addEventListener('DOMContentLoaded', async () => {
                 clearTimeout(timer);
                 switch (i) {
                     case 0:
-                        mirageProcessor.mirageDecoder.updateImage(errorHandling.defaultImg[i]);
+                        PrismProcessor.PrismDecoder.updateImage(errorHandling.defaultImg[i]);
                         break;
                     case 1:
-                        mirageProcessor.mirageEncoder.updateInnerImage(errorHandling.defaultImg[i]);
+                        PrismProcessor.PrismEncoder.updateInnerImage(errorHandling.defaultImg[i]);
                         break;
                     case 2:
-                        mirageProcessor.mirageEncoder.updateCoverImage(errorHandling.defaultImg[i]);
+                        PrismProcessor.PrismEncoder.updateCoverImage(errorHandling.defaultImg[i]);
                         break;
                 }
             };
@@ -92,3 +94,5 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert('初始化失败: ' + error);
     }
 });
+
+errorHandling.scriptsLoaded.init = true;

@@ -23,13 +23,13 @@ function handleImageLoadError(error, callback) {
 
 function setDecodeValues(isReverse, threshold) {
     document.getElementById('decodeReverseInput').checked = isReverse;
-    mirageProcessor.mirageDecoder.reverse = isReverse;
+    PrismProcessor.PrismDecoder.reverse = isReverse;
     if (isReverse) {
         document.getElementById('decodeThresholdRange').value = 255 - threshold;
-        mirageProcessor.mirageDecoder.threshold = 255 - threshold;
+        PrismProcessor.PrismDecoder.threshold = 255 - threshold;
     } else {
         document.getElementById('decodeThresholdRange').value = threshold;
-        mirageProcessor.mirageDecoder.threshold = threshold;
+        PrismProcessor.PrismDecoder.threshold = threshold;
     }
 }
 
@@ -234,8 +234,8 @@ function generateUrlFromCanvas(canvasId, isPng = true) {
     if (isPng) {
         return writeChunkDataPNG(
             canvas.toDataURL('image/png'),
-            mirageProcessor.mirageEncoder.isEncodeReverse,
-            mirageProcessor.mirageEncoder.innerThreshold);
+            PrismProcessor.PrismEncoder.isEncodeReverse,
+            PrismProcessor.PrismEncoder.innerThreshold);
     } else {
         const ctx = canvas.getContext('2d');
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -249,8 +249,8 @@ function generateUrlFromCanvas(canvasId, isPng = true) {
         }
         return writeMetadataJPEG(
             `data:image/jpeg;base64,${btoa(binary)}`,
-            mirageProcessor.mirageEncoder.isEncodeReverse,
-            mirageProcessor.mirageEncoder.innerThreshold);
+            PrismProcessor.PrismEncoder.isEncodeReverse,
+            PrismProcessor.PrismEncoder.innerThreshold);
     }
 }
 function saveImageFromCanvas(canvasId, isPng = true) {
@@ -269,7 +269,6 @@ function generateInfoString(isReverse, innerThreshold) {
 // 写入元数据（照相机信息）
 function writeMetadataJPEG(imgURL, isReverse, innerThreshold) {
     const infoString = generateInfoString(isReverse, innerThreshold);
-    console.log('写入元数据:', infoString);
     let zeroth = {};
     zeroth[piexif.ImageIFD.Make] = infoString;
     const exifObj = { '0th': zeroth };
@@ -340,3 +339,5 @@ function universalSetupEventListeners() {
         event.preventDefault();
     });
 }
+
+errorHandling.scriptsLoaded.UniversalListeners = true;

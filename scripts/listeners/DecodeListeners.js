@@ -8,7 +8,7 @@ function decodeLoadImageFile(event) {
     const file = event.target.files[0];
     errorHandling.currCanvasIndex = 0;
     updateImageFromFile(file, (img) => {
-        mirageProcessor.mirageDecoder.updateImage(img);
+        PrismProcessor.PrismDecoder.updateImage(img);
     });
     event.target.value = '';
 }
@@ -17,7 +17,7 @@ function decodeLoadImageFile(event) {
 function decodeLoadImageURL(event) {
     errorHandling.currCanvasIndex = 0;
     updateImageFromURL(event, (img) => {
-        mirageProcessor.mirageDecoder.updateImage(img);
+        PrismProcessor.PrismDecoder.updateImage(img);
     });
     event.target.previousElementSibling.value = '';
 }
@@ -26,7 +26,7 @@ function decodeLoadImageURL(event) {
 function decodeLoadImageFromClipboard(event) {
     errorHandling.currCanvasIndex = 0;
     updateImageFromClipboard(event, (img) => {
-        mirageProcessor.mirageDecoder.updateImage(img);
+        PrismProcessor.PrismDecoder.updateImage(img);
     });
 }
 
@@ -36,7 +36,7 @@ function decodeLoadImageFromPasteButton() {
     document.body.focus();
     const pasteEvent = new ClipboardEvent('paste');
     updateImageFromClipboardDirect((img) => {
-        mirageProcessor.mirageDecoder.updateImage(img);
+        PrismProcessor.PrismDecoder.updateImage(img);
     });
 }
 
@@ -44,31 +44,31 @@ function decodeLoadImageFromPasteButton() {
 function decodeLoadImageFromDrag(event) {
     errorHandling.currCanvasIndex = 0;
     dragDropLoadImage(event, (img) => {
-        mirageProcessor.mirageDecoder.updateImage(img);
+        PrismProcessor.PrismDecoder.updateImage(img);
     });
 }
 
 // 设置阈值
 function decodeSetThreshold(event) {
-    mirageProcessor.mirageDecoder.threshold = parseInt(event.target.value, 10);
-    if (mirageProcessor.mirageDecoder.img) {
-        mirageProcessor.mirageDecoder.processImage();
+    PrismProcessor.PrismDecoder.threshold = parseInt(event.target.value, 10);
+    if (PrismProcessor.PrismDecoder.img) {
+        PrismProcessor.PrismDecoder.processImage();
     }
 }
 
 // 设置表图像素处理方式
 function decodeSetCoverMethod(event) {
-    mirageProcessor.mirageDecoder.coverProcessMethod = event.target.value;
-    if (mirageProcessor.mirageDecoder.img) {
-        mirageProcessor.mirageDecoder.processImage();
+    PrismProcessor.PrismDecoder.coverProcessMethod = event.target.value;
+    if (PrismProcessor.PrismDecoder.img) {
+        PrismProcessor.PrismDecoder.processImage();
     }
 }
 
 // 设置反向隐写
 function decodeSetReverse(event) {
-    mirageProcessor.mirageDecoder.reverse = event.target.checked;
-    if (mirageProcessor.mirageDecoder.img) {
-        mirageProcessor.mirageDecoder.processImage();
+    PrismProcessor.PrismDecoder.reverse = event.target.checked;
+    if (PrismProcessor.PrismDecoder.img) {
+        PrismProcessor.PrismDecoder.processImage();
     }
 }
 
@@ -81,11 +81,11 @@ function decodeSaveImage() {
 function decodeSaveSrcImage() {
     const canvas = document.createElement('canvas');
     canvas.id = 'temp_srcCanvas';
-    canvas.width = mirageProcessor.mirageDecoder.img.width;
-    canvas.height = mirageProcessor.mirageDecoder.img.height;
+    canvas.width = PrismProcessor.PrismDecoder.img.width;
+    canvas.height = PrismProcessor.PrismDecoder.img.height;
     canvas.style.display = 'none';
     const ctx = canvas.getContext('2d');
-    ctx.drawImage(mirageProcessor.mirageDecoder.img, 0, 0);
+    ctx.drawImage(PrismProcessor.PrismDecoder.img, 0, 0);
     document.body.appendChild(canvas);
     saveImageFromCanvas('temp_srcCanvas', applicationState.isPng);
     canvas.remove();
@@ -140,3 +140,5 @@ function decodeRemoveEventListeners() {
     document.getElementById('decodeThresholdRange').removeEventListener('mousedown', disableScroll);
     document.getElementById('encodeButton').removeEventListener('click', switchPage);
 }
+
+errorHandling.scriptsLoaded.DecodeListeners = true;

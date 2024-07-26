@@ -116,3 +116,5 @@ function crc32(str) {
     }
     return (crc ^ (-1)) >>> 0;
 }
+
+errorHandling.scriptsLoaded.png_metadata = true;
