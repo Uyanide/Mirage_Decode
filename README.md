@@ -16,10 +16,6 @@
 - **[piexifjs](https://github.com/hMatoba/piexifjs)** (用于读写JPEG元数据)
 
 ## 项目结构
-- **docs** (用于部署)
-  - **index.html**
-  - **jsDelivr.txt** (通过jsDelivr引用的资源清单)
-
 - **resources**
   - **neko.ico** (图标)
   - **default.png** (默认显形源)
