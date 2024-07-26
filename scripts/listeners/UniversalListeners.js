@@ -80,6 +80,19 @@ function setDecodeValuesWithPNGMetadata(img) {
     }
 }
 
+function convertBlobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            resolve(reader.result);
+        };
+        reader.onerror = (error) => {
+            reject(error);
+        };
+        reader.readAsDataURL(blob);
+    });
+}
+
 // 从源加载图像并返回
 async function loadImage(input, timeout = 5000) {
     return new Promise((resolve, reject) => {
@@ -169,13 +182,14 @@ async function updateImageFromClipboardDirect(callback) {
         if (permission.state === 'granted' || permission.state === 'prompt') {
             const clipboardItems = await navigator.clipboard.read();
             for (const item of clipboardItems) {
-                if (item.types.includes('image/png')) {
-                    const blob = await item.getType('image/png');
-                    const img = document.createElement('img');
-                    img.src = URL.createObjectURL(blob);
-                    img.onload = () => {
+                if (item.types.some(type => type.startsWith('image/'))) {
+                    const blob = await item.getType(item.types.find(type => type.startsWith('image/')));
+                    const url = await convertBlobToBase64(blob);
+                    loadImage(url).then((img) => {
                         callback(img);
-                    };
+                    }).catch((error) => {
+                        throw error;
+                    });
                 } else {
                     alert('剪贴板中没有图片');
                 }
@@ -229,13 +243,19 @@ function downloadFromLink(url, link, fileName) {
     link.click();
     document.body.removeChild(link);
 }
-function generateUrlFromCanvas(canvasId, isPng = true) {
+function generateUrlFromCanvas(canvasId, isPng = true, writeInMetadata = false) {
+    const isReverse = PrismProcessor.PrismEncoder.isEncodeReverse;
+    const threshold = PrismProcessor.PrismEncoder.innerThreshold;
     const canvas = document.getElementById(canvasId);
     if (isPng) {
-        return writeChunkDataPNG(
-            canvas.toDataURL('image/png'),
-            PrismProcessor.PrismEncoder.isEncodeReverse,
-            PrismProcessor.PrismEncoder.innerThreshold);
+        if (writeInMetadata) {
+            return writeChunkDataPNG(
+                canvas.toDataURL('image/png'),
+                isReverse,
+                threshold);
+        } else {
+            return canvas.toDataURL('image/png');
+        }
     } else {
         const ctx = canvas.getContext('2d');
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -247,18 +267,22 @@ function generateUrlFromCanvas(canvasId, isPng = true) {
         for (let i = 0; i < len; i++) {
             binary += String.fromCharCode(bytes[i]);
         }
-        return writeMetadataJPEG(
-            `data:image/jpeg;base64,${btoa(binary)}`,
-            PrismProcessor.PrismEncoder.isEncodeReverse,
-            PrismProcessor.PrismEncoder.innerThreshold);
+        if (writeInMetadata) {
+            return writeMetadataJPEG(
+                `data:image/jpeg;base64,${btoa(binary)}`,
+                isReverse,
+                threshold);
+        } else {
+            return `data:image/jpeg;base64,${btoa(binary)}`;
+        }
     }
 }
-function saveImageFromCanvas(canvasId, isPng = true) {
+function saveImageFromCanvas(canvasId, isPng = true, writeInMetadata = false) {
     const link = document.createElement('a');
     const timestamp = new Date().getTime();
     const canvas = document.getElementById(canvasId);
     const fileName = `output_${timestamp}.${isPng ? 'png' : 'jpg'}`;
-    downloadFromLink(generateUrlFromCanvas(canvasId, isPng), link, fileName);
+    downloadFromLink(generateUrlFromCanvas(canvasId, isPng, writeInMetadata), link, fileName);
 }
 
 // 生成infoString

@@ -218,7 +218,7 @@ function setSaveType(event) {
 
 // 保存图像
 function encodeSaveImage() {
-    saveImageFromCanvas('outputCanvas', applicationState.isPng);
+    saveImageFromCanvas('outputCanvas', applicationState.isPng, true);
 }
 
 // 以当前结果跳转显形界面
@@ -229,7 +229,7 @@ function jumpToDecode() {
             PrismProcessor.PrismEncoder.innerThreshold,
         );
         const img = new Image();
-        img.src = generateUrlFromCanvas('outputCanvas', applicationState.isPng);
+        img.src = generateUrlFromCanvas('outputCanvas', applicationState.isPng, false);
         img.onload = function () {
             PrismProcessor.PrismDecoder.updateImage(img);
             switchPage();
