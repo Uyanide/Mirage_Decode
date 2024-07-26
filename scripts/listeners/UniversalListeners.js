@@ -11,7 +11,7 @@ function copyImage(img) {
 
 applicationState.currCanvasIndex = 0;
 function handleImageLoadError(error, callback) {
-    alert('无法加载图像, 请确定文件类型和状态。');
+    alert('无法加载图像, 请确定文件类型和状态。' + error);
     if (errorHandling.defaultImg[errorHandling.currCanvasIndex].src) {
         const img = new Image();
         img.src = copyImage(errorHandling.defaultImg[errorHandling.currCanvasIndex]);
@@ -36,34 +36,46 @@ function setDecodeValues(isReverse, threshold) {
 function getParametersFromString(str) {
     if (str === undefined || str.length < 3) {
         return {
+            isValid: false,
             isReverse: applicationState.defaultArguments.isDecodeReverse,
             innerThreshold: applicationState.defaultArguments.decodeThreshold
         };
     }
     const isReverse = str[0] === '1';
     const innerThreshold = parseInt(str.slice(1), 16);
-    return { isReverse, innerThreshold };
+    return {
+        isValid: true,
+        isReverse: isReverse,
+        innerThreshold: innerThreshold
+    };
 }
 
 function setDecodeValuesWithJPEGMetadata(img) {
     if (!applicationState.isReadMetadata) {
-        return
+        return;
     }
     const exif = piexif.load(img.src);
     const infoString = exif['0th'][piexif.ImageIFD.Make];
-    const { isReverse, innerThreshold } = getParametersFromString(infoString);
-    setDecodeValues(isReverse, innerThreshold);
+    const { isValid, isReverse, innerThreshold } = getParametersFromString(infoString);
+    if (isValid) {
+        setDecodeValues(isReverse, innerThreshold);
+    }
 }
 
 function setDecodeValuesWithPNGMetadata(img) {
+    if (!applicationState.isReadMetadata) {
+        return;
+    }
     const binaryString = atob(img.src.split(',')[1]);
     let chunkList = metadata.splitChunk(binaryString);
     for (let i in chunkList) {
         let chunk = chunkList[i];
         if (chunk.type === 'PRSM') {
             let infoString = chunk.data;
-            const { isReverse, innerThreshold } = getParametersFromString(infoString);
-            setDecodeValues(isReverse, innerThreshold);
+            const { isValid, isReverse, innerThreshold } = getParametersFromString(infoString);
+            if (isValid) {
+                setDecodeValues(isReverse, innerThreshold);
+            }
         }
     }
 }
