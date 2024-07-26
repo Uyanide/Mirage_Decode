@@ -1,6 +1,4 @@
-errorHandling.isMirageEncoderLoaded = true;
-
-class MirageEncoder {
+class PrismEncoder {
     constructor(innerCanvasId, coverCanvasId, outputCanvasId, defaultArguments) {
         this.innerImg = null;
         this.coverImg = null;
@@ -218,3 +216,5 @@ class MirageEncoder {
     }
 
 }
+
+errorHandling.scriptsLoaded.PrismEncoder = true;

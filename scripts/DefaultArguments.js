@@ -1,5 +1,3 @@
-errorHandling.isDefaultArgumentsLoaded = true;
-
 class DefaultArguments {
     async loadDefaultArguments(jsonPath) {
         try {
@@ -44,3 +42,5 @@ class DefaultArguments {
         document.getElementById('encodeSizeInput').value = this.size;
     }
 }
+
+errorHandling.scriptsLoaded.DefaultArguments = true;

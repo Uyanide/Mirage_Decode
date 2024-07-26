@@ -1,5 +1,3 @@
-errorHandling.isPngMetadataLoaded = true;
-
 var metadata = {};
 
 metadata.PNG_SIG = String.fromCharCode(0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a);
@@ -118,3 +116,5 @@ function crc32(str) {
     }
     return (crc ^ (-1)) >>> 0;
 }
+
+errorHandling.scriptsLoaded.png_metadata = true;

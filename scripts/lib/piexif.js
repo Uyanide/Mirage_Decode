@@ -2474,3 +2474,5 @@ SOFTWARE.
     }
 
 })();
+
+errorHandling.scriptsLoaded.piexif = true;
