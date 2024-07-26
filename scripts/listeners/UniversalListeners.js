@@ -34,8 +34,11 @@ function setDecodeValues(isReverse, threshold) {
 }
 
 function getParametersFromString(str) {
-    if (str.length < 3) {
-        return { isReverse: false, innerThreshold: applicationState.defaultArguments.decodeThreshold };
+    if (str === undefined || str.length < 3) {
+        return {
+            isReverse: applicationState.defaultArguments.isDecodeReverse,
+            innerThreshold: applicationState.defaultArguments.decodeThreshold
+        };
     }
     const isReverse = str[0] === '1';
     const innerThreshold = parseInt(str.slice(1), 16);
