@@ -11,7 +11,6 @@ function copyImage(img) {
 
 applicationState.currCanvasIndex = 0;
 function handleImageLoadError(error, callback) {
-    console.error('图像加载失败:', error);
     alert('无法加载图像, 请确定文件类型和状态。');
     if (errorHandling.defaultImg[errorHandling.currCanvasIndex].src) {
         const img = new Image();
@@ -23,7 +22,6 @@ function handleImageLoadError(error, callback) {
 }
 
 function setDecodeValues(isReverse, threshold) {
-    console.log('设置解码参数:', isReverse, threshold);
     document.getElementById('decodeReverseInput').checked = isReverse;
     mirageProcessor.mirageDecoder.reverse = isReverse;
     if (isReverse) {
@@ -35,17 +33,30 @@ function setDecodeValues(isReverse, threshold) {
     }
 }
 
-function setDecodeValuesWithMetadata(img) {
+function getParametersFromString(str) {
+    const isReverse = str[0] === '1';
+    const innerThreshold = parseInt(str.slice(1), 16);
+    return { isReverse, innerThreshold };
+}
+
+function setDecodeValuesWithJPEGMetadata(img) {
     if (!applicationState.isReadMetadata) {
         return
     }
     const exif = piexif.load(img.src);
     const infoString = exif['0th'][piexif.ImageIFD.Make];
-    console.log('读取元数据:', infoString);
-    if (infoString) {
-        const isReverse = infoString[0] === '1';
-        const innerThreshold = parseInt(infoString.slice(1), 16);
-        if (isReverse != undefined && innerThreshold != undefined) {
+    const { isReverse, innerThreshold } = getParametersFromString(infoString);
+    setDecodeValues(isReverse, innerThreshold);
+}
+
+function setDecodeValuesWithPNGMetadata(img) {
+    const binaryString = atob(img.src.split(',')[1]);
+    let chunkList = metadata.splitChunk(binaryString);
+    for (let i in chunkList) {
+        let chunk = chunkList[i];
+        if (chunk.type === 'PRSM') {
+            let infoString = chunk.data;
+            const { isReverse, innerThreshold } = getParametersFromString(infoString);
             setDecodeValues(isReverse, innerThreshold);
         }
     }
@@ -59,8 +70,12 @@ async function loadImage(input, timeout = 5000) {
 
         img.onload = () => {
             clearTimeout(timer);
-            if (errorHandling.currCanvasIndex === 0 && img.src.startsWith('data:image/jpeg;base64,')) {
-                setDecodeValuesWithMetadata(img);
+            if (errorHandling.currCanvasIndex === 0) {
+                if (img.src.startsWith('data:image/jpeg;base64,')) {
+                    setDecodeValuesWithJPEGMetadata(img);
+                } else if (img.src.startsWith('data:image/png;base64,')) {
+                    setDecodeValuesWithPNGMetadata(img);
+                }
             }
             resolve(img);
         };
@@ -199,7 +214,10 @@ function downloadFromLink(url, link, fileName) {
 function generateUrlFromCanvas(canvasId, isPng = true) {
     const canvas = document.getElementById(canvasId);
     if (isPng) {
-        return canvas.toDataURL('image/png');
+        return writeChunkDataPNG(
+            canvas.toDataURL('image/png'),
+            mirageProcessor.mirageEncoder.isEncodeReverse,
+            mirageProcessor.mirageEncoder.innerThreshold);
     } else {
         const ctx = canvas.getContext('2d');
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -211,7 +229,7 @@ function generateUrlFromCanvas(canvasId, isPng = true) {
         for (let i = 0; i < len; i++) {
             binary += String.fromCharCode(bytes[i]);
         }
-        return writeMetadata(
+        return writeMetadataJPEG(
             `data:image/jpeg;base64,${btoa(binary)}`,
             mirageProcessor.mirageEncoder.isEncodeReverse,
             mirageProcessor.mirageEncoder.innerThreshold);
@@ -225,9 +243,14 @@ function saveImageFromCanvas(canvasId, isPng = true) {
     downloadFromLink(generateUrlFromCanvas(canvasId, isPng), link, fileName);
 }
 
+// 生成infoString
+function generateInfoString(isReverse, innerThreshold) {
+    return (isReverse ? '1' : '0') + innerThreshold.toString(16).padStart(2, '0');
+}
+
 // 写入元数据（照相机信息）
-function writeMetadata(imgURL, isReverse, innerThreshold) {
-    const infoString = (isReverse ? '1' : '0') + innerThreshold.toString(16).padStart(2, '0');
+function writeMetadataJPEG(imgURL, isReverse, innerThreshold) {
+    const infoString = generateInfoString(isReverse, innerThreshold);
     console.log('写入元数据:', infoString);
     let zeroth = {};
     zeroth[piexif.ImageIFD.Make] = infoString;
@@ -235,6 +258,19 @@ function writeMetadata(imgURL, isReverse, innerThreshold) {
     const exifbytes = piexif.dump(exifObj);
     const inserted = piexif.insert(exifbytes, imgURL);
     return inserted;
+}
+
+// 写入PRSM块（PNG）
+function writeChunkDataPNG(imgURL, isReverse, innerThreshold) {
+    const binaryData = atob(imgURL.split(',')[1]);
+    let chunkList = metadata.splitChunk(binaryData);
+    const infoString = generateInfoString(isReverse, innerThreshold);
+    let chunk = metadata.createChunk('PRSM', infoString);
+    const iend = chunkList.pop();
+    chunkList.push(chunk);
+    chunkList.push(iend);
+    const output = metadata.joinChunk(chunkList);
+    return `data:image/png;base64,${btoa(output)}`;
 }
 
 // 切换页面显示
