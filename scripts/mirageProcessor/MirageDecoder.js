@@ -1,3 +1,5 @@
+errorHandling.isMirageDecoderLoaded = true;
+
 class MirageDecoder {
     constructor(decodeCanvasId, defaultArguments) {
         this.img = null;

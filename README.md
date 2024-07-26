@@ -2,11 +2,8 @@
 
 # 基于色阶分离与像素交错的隐写图显形与制作工具
 
-## Vercel链接
-[光棱坦克工厂](https://prismprocess.vercel.app)
-
-## Github Pages链接
-[光棱坦克工厂](https://uyanide.github.io/Mirage_Decode/)
+## 链接
+[光棱坦克工厂](https://prism.uyanide.com)
 
 ## 使用方法
 一看就懂，不懂也能用 :)
@@ -19,10 +16,6 @@
 - **[piexifjs](https://github.com/hMatoba/piexifjs)** (用于读写JPEG元数据)
 
 ## 项目结构
-- **docs** (用于部署)
-  - **index.html**
-  - **jsDelivr.txt** (通过jsDelivr引用的资源清单)
-
 - **resources**
   - **neko.ico** (图标)
   - **default.png** (默认显形源)

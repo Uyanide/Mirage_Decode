@@ -1,3 +1,5 @@
+errorHandling.isDecodeListenersLoaded = true;
+
 // 设置是否读取元数据
 function setReadMetadata(event) {
     applicationState.isReadMetadata = event.target.checked;

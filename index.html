@@ -9,7 +9,7 @@
         var mirageProcessor = mirageProcessor || {};
     </script>
     <script>
-        applicationState.version = '1.3.5';
+        applicationState.version = '1.3.7';
         // version check
         (() => {
             console.log('target version:', applicationState.version);
@@ -47,6 +47,21 @@
         }
         applyTheme();
         window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
+    </script>
+
+    <script>
+        // test if all scripts are loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            if (!errorHandling.isDecodeListenersLoaded
+                || !errorHandling.isEncodeListenersLoaded
+                || !errorHandling.isUniversalListenersLoaded
+                || !errorHandling.isDefaultArgumentsLoaded
+                || !errorHandling.isMirageDecoderLoaded
+                || !errorHandling.isMirageEncoderLoaded
+                || !errorHandling.isInitLoaded) {
+                alert('某些脚本未能正确加载，请刷新页面重试。');
+            }
+        });
     </script>
 
     <!-- Google tag (gtag.js) -->

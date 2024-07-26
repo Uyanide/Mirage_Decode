@@ -1,3 +1,5 @@
+errorHandling.isUniversalListenersLoaded = true;
+
 function copyImage(img) {
     const canvas = document.createElement('canvas');
     canvas.width = img.width;
@@ -34,6 +36,12 @@ function setDecodeValues(isReverse, threshold) {
 }
 
 function getParametersFromString(str) {
+    if (str === undefined || str.length < 3) {
+        return {
+            isReverse: applicationState.defaultArguments.isDecodeReverse,
+            innerThreshold: applicationState.defaultArguments.decodeThreshold
+        };
+    }
     const isReverse = str[0] === '1';
     const innerThreshold = parseInt(str.slice(1), 16);
     return { isReverse, innerThreshold };

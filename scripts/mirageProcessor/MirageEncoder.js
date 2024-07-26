@@ -1,3 +1,5 @@
+errorHandling.isMirageEncoderLoaded = true;
+
 class MirageEncoder {
     constructor(innerCanvasId, coverCanvasId, outputCanvasId, defaultArguments) {
         this.innerImg = null;

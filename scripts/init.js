@@ -1,3 +1,5 @@
+errorHandling.isInitLoaded = true;
+
 applicationState.isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 
 document.addEventListener('DOMContentLoaded', async () => {

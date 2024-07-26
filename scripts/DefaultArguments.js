@@ -1,3 +1,5 @@
+errorHandling.isDefaultArgumentsLoaded = true;
+
 class DefaultArguments {
     async loadDefaultArguments(jsonPath) {
         try {

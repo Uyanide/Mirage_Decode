@@ -1,3 +1,5 @@
+errorHandling.isEncodeListenersLoaded = true;
+
 // 从文件加载里图
 function encodeLoadInnerImageFile(event) {
     errorHandling.currCanvasIndex = 1;
