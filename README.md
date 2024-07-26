@@ -32,7 +32,7 @@
     - **DecodeListeners.js**
     - **EncodeListeners.js**
     - **UniversalListeners.js**
-  - **prismProcessors** (图像处理)
+  - **prismProcessor** (图像处理)
     - **PrismDecoder.js**
     - **PrismEncoder.js**
   - **DefaultArguments.js** (加载默认参数)
