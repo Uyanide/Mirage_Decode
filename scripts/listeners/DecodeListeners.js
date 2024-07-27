@@ -56,6 +56,23 @@ function decodeSetThreshold(event) {
     }
 }
 
+// 设置对比度
+function decodeSetContrast(event) {
+    PrismProcessor.PrismDecoder.contrast = parseInt(event.target.value, 10);
+    if (PrismProcessor.PrismDecoder.img) {
+        PrismProcessor.PrismDecoder.adjustContrast();
+    }
+}
+
+// 重置对比度
+function decodeResetContrast() {
+    document.getElementById('decodeContrastRange').value = 50;
+    PrismProcessor.PrismDecoder.contrast = 50;
+    if (PrismProcessor.PrismDecoder.img) {
+        PrismProcessor.PrismDecoder.adjustContrast();
+    }
+}
+
 // 设置表图像素处理方式
 function decodeSetCoverMethod(event) {
     PrismProcessor.PrismDecoder.coverProcessMethod = event.target.value;
@@ -87,7 +104,8 @@ function decodeSaveSrcImage() {
     const ctx = canvas.getContext('2d');
     ctx.drawImage(PrismProcessor.PrismDecoder.img, 0, 0);
     document.body.appendChild(canvas);
-    saveImageFromCanvas('temp_srcCanvas', applicationState.isPng);
+    console.log(PrismProcessor.PrismDecoder.reverse, PrismProcessor.PrismDecoder.threshold);
+    saveImageFromCanvas('temp_srcCanvas', applicationState.isPng, false);
     canvas.remove();
 }
 
@@ -109,6 +127,8 @@ function decodeSetupEventListeners() {
     document.getElementById('decodeThresholdRange').addEventListener('input', decodeSetThreshold);
     document.getElementById('decodeMethodSelect').addEventListener('change', decodeSetCoverMethod);
     document.getElementById('decodeReverseInput').addEventListener('change', decodeSetReverse);
+    document.getElementById('decodeContrastRange').addEventListener('input', decodeSetContrast);
+    document.getElementById('decodeResetContrastButton').addEventListener('click', decodeResetContrast);
 
     // 保存图像
     document.getElementById('decodeSaveImageButton').addEventListener('click', decodeSaveImage);
@@ -116,6 +136,7 @@ function decodeSetupEventListeners() {
 
     // 禁用滚动
     document.getElementById('decodeThresholdRange').addEventListener('mousedown', disableScroll);
+    document.getElementById('decodeContrastRange').addEventListener('mousedown', disableScroll);
 
     // 切换页面
     document.getElementById('encodeButton').addEventListener('click', switchPage);
@@ -135,9 +156,12 @@ function decodeRemoveEventListeners() {
     document.getElementById('decodeThresholdRange').removeEventListener('input', decodeSetThreshold);
     document.getElementById('decodeMethodSelect').removeEventListener('change', decodeSetCoverMethod);
     document.getElementById('decodeReverseInput').removeEventListener('change', decodeSetReverse);
+    document.getElementById('decodeContrastRange').removeEventListener('input', decodeSetContrast);
+    document.getElementById('decodeResetContrastButton').removeEventListener('click', decodeResetContrast);
     document.getElementById('decodeSaveImageButton').removeEventListener('click', decodeSaveImage);
     document.getElementById('decodeSaveSrcImageButton').removeEventListener('click', decodeSaveSrcImage);
     document.getElementById('decodeThresholdRange').removeEventListener('mousedown', disableScroll);
+    document.getElementById('decodeContrastRange').removeEventListener('mousedown', disableScroll);
     document.getElementById('encodeButton').removeEventListener('click', switchPage);
 }
 

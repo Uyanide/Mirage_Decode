@@ -21,32 +21,54 @@ function handleImageLoadError(error, callback) {
     }
 }
 
-function setDecodeValues(isReverse, threshold) {
-    document.getElementById('decodeReverseInput').checked = isReverse;
-    PrismProcessor.PrismDecoder.reverse = isReverse;
-    if (isReverse) {
-        document.getElementById('decodeThresholdRange').value = 255 - threshold;
-        PrismProcessor.PrismDecoder.threshold = 255 - threshold;
+function setDecodeValues(isReverse, threshold, contrast) {
+    if (contrast !== undefined) {
+        document.getElementById('decodeContrastRange').value = 100 - contrast;
+        PrismProcessor.PrismDecoder.contrast = 100 - contrast;
+    }
+    if (isReverse !== undefined) {
+        document.getElementById('decodeReverseInput').checked = isReverse;
+        PrismProcessor.PrismDecoder.reverse = isReverse;
     } else {
-        document.getElementById('decodeThresholdRange').value = threshold;
-        PrismProcessor.PrismDecoder.threshold = threshold;
+        isReverse = document.getElementById('decodeReverseInput').checked;
+    }
+    if (threshold !== undefined) {
+        if (isReverse) {
+            document.getElementById('decodeThresholdRange').value = 255 - threshold;
+            PrismProcessor.PrismDecoder.threshold = 255 - threshold;
+        } else {
+            document.getElementById('decodeThresholdRange').value = threshold;
+            PrismProcessor.PrismDecoder.threshold = threshold;
+        }
     }
 }
 
 function getParametersFromString(str) {
-    if (str === undefined || str.length < 3) {
+    console.log('reading from Metadata: ' + str);
+    if (str === undefined) {
         return {
-            isValid: false,
-            isReverse: applicationState.defaultArguments.isDecodeReverse,
-            innerThreshold: applicationState.defaultArguments.decodeThreshold
+            isValid: false
         };
     }
-    const isReverse = str[0] === '1';
-    const innerThreshold = parseInt(str.slice(1), 16);
+    let isReverse, innerThreshold, innerContrast = 50;
+    switch (str.length) {
+        case 5:
+            innerContrast = parseInt(str.slice(3, 5), 16);
+        case 3:
+            innerThreshold = parseInt(str.slice(1, 3), 16);
+        case 1:
+            isReverse = str[0] === '1';
+            break;
+        default:
+            return {
+                isValid: false
+            };
+    }
     return {
         isValid: true,
         isReverse: isReverse,
-        innerThreshold: innerThreshold
+        innerThreshold: innerThreshold,
+        innerContrast: innerContrast
     };
 }
 
@@ -56,9 +78,9 @@ function setDecodeValuesWithJPEGMetadata(img) {
     }
     const exif = piexif.load(img.src);
     const infoString = exif['0th'][piexif.ImageIFD.Make];
-    const { isValid, isReverse, innerThreshold } = getParametersFromString(infoString);
+    const { isValid, isReverse, innerThreshold, innerContrast } = getParametersFromString(infoString);
     if (isValid) {
-        setDecodeValues(isReverse, innerThreshold);
+        setDecodeValues(isReverse, innerThreshold, innerContrast);
     }
 }
 
@@ -72,12 +94,25 @@ function setDecodeValuesWithPNGMetadata(img) {
         let chunk = chunkList[i];
         if (chunk.type === 'PRSM') {
             let infoString = chunk.data;
-            const { isValid, isReverse, innerThreshold } = getParametersFromString(infoString);
+            const { isValid, isReverse, innerThreshold, innerContrast } = getParametersFromString(infoString);
             if (isValid) {
-                setDecodeValues(isReverse, innerThreshold);
+                setDecodeValues(isReverse, innerThreshold, innerContrast);
             }
         }
     }
+}
+
+function convertBlobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+            resolve(reader.result);
+        };
+        reader.onerror = (error) => {
+            reject(error);
+        };
+        reader.readAsDataURL(blob);
+    });
 }
 
 // 从源加载图像并返回
@@ -169,13 +204,14 @@ async function updateImageFromClipboardDirect(callback) {
         if (permission.state === 'granted' || permission.state === 'prompt') {
             const clipboardItems = await navigator.clipboard.read();
             for (const item of clipboardItems) {
-                if (item.types.includes('image/png')) {
-                    const blob = await item.getType('image/png');
-                    const img = document.createElement('img');
-                    img.src = URL.createObjectURL(blob);
-                    img.onload = () => {
+                if (item.types.some(type => type.startsWith('image/'))) {
+                    const blob = await item.getType(item.types.find(type => type.startsWith('image/')));
+                    const url = await convertBlobToBase64(blob);
+                    loadImage(url).then((img) => {
                         callback(img);
-                    };
+                    }).catch((error) => {
+                        throw error;
+                    });
                 } else {
                     alert('剪贴板中没有图片');
                 }
@@ -229,13 +265,21 @@ function downloadFromLink(url, link, fileName) {
     link.click();
     document.body.removeChild(link);
 }
-function generateUrlFromCanvas(canvasId, isPng = true) {
+function generateUrlFromCanvas(canvasId, isPng = true, writeInMetadata = false) {
+    const isReverse = PrismProcessor.PrismEncoder.isEncodeReverse;
+    const threshold = PrismProcessor.PrismEncoder.innerThreshold;
+    const contrast = PrismProcessor.PrismEncoder.innerContrast;
     const canvas = document.getElementById(canvasId);
     if (isPng) {
-        return writeChunkDataPNG(
-            canvas.toDataURL('image/png'),
-            PrismProcessor.PrismEncoder.isEncodeReverse,
-            PrismProcessor.PrismEncoder.innerThreshold);
+        if (writeInMetadata) {
+            return writeChunkDataPNG(
+                canvas.toDataURL('image/png'),
+                isReverse,
+                threshold,
+                contrast);
+        } else {
+            return canvas.toDataURL('image/png');
+        }
     } else {
         const ctx = canvas.getContext('2d');
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
@@ -247,28 +291,35 @@ function generateUrlFromCanvas(canvasId, isPng = true) {
         for (let i = 0; i < len; i++) {
             binary += String.fromCharCode(bytes[i]);
         }
-        return writeMetadataJPEG(
-            `data:image/jpeg;base64,${btoa(binary)}`,
-            PrismProcessor.PrismEncoder.isEncodeReverse,
-            PrismProcessor.PrismEncoder.innerThreshold);
+        if (writeInMetadata) {
+            return writeMetadataJPEG(
+                `data:image/jpeg;base64,${btoa(binary)}`,
+                isReverse,
+                threshold,
+                contrast);
+        } else {
+            return `data:image/jpeg;base64,${btoa(binary)}`;
+        }
     }
 }
-function saveImageFromCanvas(canvasId, isPng = true) {
+function saveImageFromCanvas(canvasId, isPng = true, writeInMetadata = false) {
     const link = document.createElement('a');
     const timestamp = new Date().getTime();
     const canvas = document.getElementById(canvasId);
     const fileName = `output_${timestamp}.${isPng ? 'png' : 'jpg'}`;
-    downloadFromLink(generateUrlFromCanvas(canvasId, isPng), link, fileName);
+    downloadFromLink(generateUrlFromCanvas(canvasId, isPng, writeInMetadata), link, fileName);
 }
 
 // 生成infoString
-function generateInfoString(isReverse, innerThreshold) {
-    return (isReverse ? '1' : '0') + innerThreshold.toString(16).padStart(2, '0');
+function generateInfoString(isReverse, innerThreshold, innerContrast) {
+    const infoString = (isReverse ? '1' : '0') + innerThreshold.toString(16).padStart(2, '0') + innerContrast.toString(16).padStart(2, '0');
+    console.log('writing to Metadata: ' + infoString);
+    return infoString;
 }
 
 // 写入元数据（照相机信息）
-function writeMetadataJPEG(imgURL, isReverse, innerThreshold) {
-    const infoString = generateInfoString(isReverse, innerThreshold);
+function writeMetadataJPEG(imgURL, isReverse, innerThreshold, innerContrast) {
+    const infoString = generateInfoString(isReverse, innerThreshold, innerContrast);
     let zeroth = {};
     zeroth[piexif.ImageIFD.Make] = infoString;
     const exifObj = { '0th': zeroth };
@@ -278,10 +329,10 @@ function writeMetadataJPEG(imgURL, isReverse, innerThreshold) {
 }
 
 // 写入PRSM块（PNG）
-function writeChunkDataPNG(imgURL, isReverse, innerThreshold) {
+function writeChunkDataPNG(imgURL, isReverse, innerThreshold, innerContrast) {
     const binaryData = atob(imgURL.split(',')[1]);
     let chunkList = metadata.splitChunk(binaryData);
-    const infoString = generateInfoString(isReverse, innerThreshold);
+    const infoString = generateInfoString(isReverse, innerThreshold, innerContrast);
     let chunk = metadata.createChunk('PRSM', infoString);
     const iend = chunkList.pop();
     chunkList.push(chunk);
@@ -338,6 +389,32 @@ function universalSetupEventListeners() {
     document.addEventListener('dragover', (event) => {
         event.preventDefault();
     });
+}
+
+// 调整对比度
+function truncate(value) {
+    return Math.min(255, Math.max(0, value));
+}
+// contrast范围：0-100
+function adjustContrastImgData(imageData, contrast) {
+    contrast = (contrast - 50) * 5.1;
+    const data = imageData.data;
+    const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+
+    for (let i = 0; i < data.length; i += 4) {
+        data[i] = truncate(factor * (data[i] - 128) + 128);
+        data[i + 1] = truncate(factor * (data[i + 1] - 128) + 128);
+        data[i + 2] = truncate(factor * (data[i + 2] - 128) + 128);
+    }
+}
+
+// function getReverseContrast(contrast) {
+//     return (33947130 * contrast) / (65025 * (contrast - 259) - 67081 * (contrast + 255))
+// }
+
+// 克隆ImageData
+function cloneImageData(imageData) {
+    return new ImageData(new Uint8ClampedArray(imageData.data), imageData.width, imageData.height);
 }
 
 errorHandling.scriptsLoaded.UniversalListeners = true;

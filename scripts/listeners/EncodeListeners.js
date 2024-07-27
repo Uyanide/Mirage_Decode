@@ -164,6 +164,52 @@ function encodeSetCoverThresholdInput() {
     }, 500);
 }
 
+// 设置里图对比度
+function encodeSetInnerContrast(event) {
+    PrismProcessor.PrismEncoder.innerContrast = parseInt(event.target.value, 10);
+    if (PrismProcessor.PrismEncoder.innerImg) {
+        PrismProcessor.PrismEncoder.adjustInnerContrast();
+        if (PrismProcessor.PrismEncoder.coverImg) {
+            PrismProcessor.PrismEncoder.processImage();
+        }
+    }
+}
+
+// 设置表图对比度
+function encodeSetCoverContrast(event) {
+    PrismProcessor.PrismEncoder.coverContrast = parseInt(event.target.value, 10);
+    if (PrismProcessor.PrismEncoder.coverImg) {
+        PrismProcessor.PrismEncoder.adjustCoverContrast();
+        if (PrismProcessor.PrismEncoder.innerImg) {
+            PrismProcessor.PrismEncoder.processImage();
+        }
+    }
+}
+
+// 重置里图对比度
+function resetInnerContrast() {
+    PrismProcessor.PrismEncoder.innerContrast = 50;
+    document.getElementById('innerContrastRange').value = 50;
+    if (PrismProcessor.PrismEncoder.innerImg) {
+        PrismProcessor.PrismEncoder.adjustInnerContrast();
+        if (PrismProcessor.PrismEncoder.coverImg) {
+            PrismProcessor.PrismEncoder.processImage();
+        }
+    }
+}
+
+// 重置表图对比度
+function resetCoverContrast() {
+    PrismProcessor.PrismEncoder.coverContrast = 50;
+    document.getElementById('coverContrastRange').value = 50;
+    if (PrismProcessor.PrismEncoder.coverImg) {
+        PrismProcessor.PrismEncoder.adjustCoverContrast();
+        if (PrismProcessor.PrismEncoder.innerImg) {
+            PrismProcessor.PrismEncoder.processImage();
+        }
+    }
+}
+
 // 设置表图是否取灰度
 function encodeSetCoverGray(event) {
     PrismProcessor.PrismEncoder.isCoverGray = event.target.checked;
@@ -198,12 +244,12 @@ function encodeSetSize(event) {
         if (isNaN(PrismProcessor.PrismEncoder.size)) {
             return;
         }
-        if (PrismProcessor.PrismEncoder.size > 4000) {
-            PrismProcessor.PrismEncoder.size = 4000;
-            event.target.value = 4000;
-        } else if (PrismProcessor.PrismEncoder.size < 100) {
-            PrismProcessor.PrismEncoder.size = 100;
-            event.target.value = 100;
+        if (PrismProcessor.PrismEncoder.size > applicationState.defaultArguments.maxSize) {
+            PrismProcessor.PrismEncoder.size = applicationState.defaultArguments.maxSize;
+            event.target.value = applicationState.defaultArguments.maxSize;
+        } else if (PrismProcessor.PrismEncoder.size < applicationState.defaultArguments.minSize) {
+            PrismProcessor.PrismEncoder.size = applicationState.defaultArguments.minSize;
+            event.target.value = applicationState.defaultArguments.minSize;
         }
         if (PrismProcessor.PrismEncoder.innerImg) {
             PrismProcessor.PrismEncoder.updateInnerImage(PrismProcessor.PrismEncoder.innerImg);
@@ -218,7 +264,7 @@ function setSaveType(event) {
 
 // 保存图像
 function encodeSaveImage() {
-    saveImageFromCanvas('outputCanvas', applicationState.isPng);
+    saveImageFromCanvas('outputCanvas', applicationState.isPng, true);
 }
 
 // 以当前结果跳转显形界面
@@ -227,9 +273,10 @@ function jumpToDecode() {
         setDecodeValues(
             PrismProcessor.PrismEncoder.isEncodeReverse,
             PrismProcessor.PrismEncoder.innerThreshold,
+            PrismProcessor.PrismEncoder.innerContrast
         );
         const img = new Image();
-        img.src = generateUrlFromCanvas('outputCanvas', applicationState.isPng);
+        img.src = generateUrlFromCanvas('outputCanvas', applicationState.isPng, false);
         img.onload = function () {
             PrismProcessor.PrismDecoder.updateImage(img);
             switchPage();
@@ -250,14 +297,21 @@ function encodeSetUpEventListeners() {
 
         document.getElementById('innerCanvas').addEventListener('drop', encodeLoadInnerImageFromDrag);
         document.getElementById('coverCanvas').addEventListener('drop', encodeLoadCoverImageFromDrag);
+    } else {
+        document.getElementById('innerThresholdRange').addEventListener('mousedown', disableScroll);
+        document.getElementById('coverThresholdRange').addEventListener('mousedown', disableScroll);
+        document.getElementById('innerContrastRange').addEventListener('mousedown', disableScroll);
+        document.getElementById('coverContrastRange').addEventListener('mousedown', disableScroll);
     }
 
     document.getElementById('innerThresholdRange').addEventListener('input', encodeSetInnerThreshold);
     document.getElementById('coverThresholdRange').addEventListener('input', encodeSetCoverThreshold);
     document.getElementById('innerThresholdInput').addEventListener('input', encodeSetInnerThresholdInput);
     document.getElementById('coverThresholdInput').addEventListener('input', encodeSetCoverThresholdInput);
-    document.getElementById('innerThresholdRange').addEventListener('mousedown', disableScroll);
-    document.getElementById('coverThresholdRange').addEventListener('mousedown', disableScroll);
+    document.getElementById('innerContrastRange').addEventListener('input', encodeSetInnerContrast);
+    document.getElementById('coverContrastRange').addEventListener('input', encodeSetCoverContrast);
+    document.getElementById('innerResetContrastButton').addEventListener('click', resetInnerContrast);
+    document.getElementById('coverResetContrastButton').addEventListener('click', resetCoverContrast);
 
     document.getElementById('isCoverGrayCheckBox').addEventListener('change', encodeSetCoverGray);
     document.getElementById('isEncodeReverseCheckBox').addEventListener('change', encodeSetEncodeReverse);
@@ -280,13 +334,20 @@ function encodeRemoveEventListeners() {
         window.removeEventListener('paste', encodeLoadImageFromClipboard);
         document.getElementById('innerCanvas').removeEventListener('drop', encodeLoadInnerImageFromDrag);
         document.getElementById('coverCanvas').removeEventListener('drop', encodeLoadCoverImageFromDrag);
+    } else {
+        document.getElementById('innerContrastRange').removeEventListener('mousedown', disableScroll);
+        document.getElementById('coverContrastRange').removeEventListener('mousedown', disableScroll);
+        document.getElementById('innerThresholdRange').removeEventListener('mousedown', disableScroll);
+        document.getElementById('coverThresholdRange').removeEventListener('mousedown', disableScroll);
     }
     document.getElementById('innerThresholdRange').removeEventListener('input', encodeSetInnerThreshold);
     document.getElementById('coverThresholdRange').removeEventListener('input', encodeSetCoverThreshold);
     document.getElementById('innerThresholdInput').removeEventListener('input', encodeSetInnerThresholdInput);
     document.getElementById('coverThresholdInput').removeEventListener('input', encodeSetCoverThresholdInput);
-    document.getElementById('innerThresholdRange').removeEventListener('mousedown', disableScroll);
-    document.getElementById('coverThresholdRange').removeEventListener('mousedown', disableScroll);
+    document.getElementById('innerContrastRange').removeEventListener('input', encodeSetInnerContrast);
+    document.getElementById('coverContrastRange').removeEventListener('input', encodeSetCoverContrast);
+    document.getElementById('innerResetContrastButton').removeEventListener('click', resetInnerContrast);
+    document.getElementById('coverResetContrastButton').removeEventListener('click', resetCoverContrast);
     document.getElementById('isCoverGrayCheckBox').removeEventListener('change', encodeSetCoverGray);
     document.getElementById('isEncodeReverseCheckBox').removeEventListener('change', encodeSetEncodeReverse);
     document.getElementById('encodeMethodSelect').removeEventListener('change', encodeSetMethod);
