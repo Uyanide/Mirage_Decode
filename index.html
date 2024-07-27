@@ -10,7 +10,7 @@
         var PrismProcessor = PrismProcessor || {};
     </script>
     <script>
-        applicationState.version = '1.4.0';
+        applicationState.version = '1.4.1';
         // version check
         (() => {
             console.log('target version:', applicationState.version);
@@ -187,7 +187,7 @@
             <div class="saveButton">
                 <button id="decodeSaveSrcImageButton">保存原始图像</button>
             </div>
-            <p class="saveHint">(保存前请务必确认用浏览器打开)</p>
+            <p class="saveHint"></p>
         </div>
 
         <div class="DisplayArea" id="encodePage">
@@ -286,7 +286,7 @@
             <div class="saveButton">
                 <button id="encodeSaveImageButton">保存结果</button>
             </div>
-            <p class="saveHint">(保存前请务必确认用浏览器打开)</p>
+            <p class="saveHint"></p>
         </div>
 
         <p id="versionInfo">version: <b>UNKNOWN</b></p>

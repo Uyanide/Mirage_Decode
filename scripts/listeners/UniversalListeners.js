@@ -258,12 +258,32 @@ function enableScroll() {
 }
 
 // 保存图像
-function downloadFromLink(url, link, fileName) {
-    link.href = url;
-    link.download = fileName;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+function downloadFromLink(url, fileName) {
+    if (!applicationState.isDownloadNotSupported) {
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    } else {
+        const byteString = atob(url.split(',')[1]);
+        const mimeString = url.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        const blob = new Blob([ab], { type: mimeString });
+
+        const objectURL = URL.createObjectURL(blob);
+        const newTab = window.open();
+        newTab.document.write('<img src="' + objectURL + '" alt="' + fileName + '">');
+        newTab.document.close();
+        newTab.addEventListener('beforeunload', () => {
+            URL.revokeObjectURL(objectURL);
+        });
+    }
 }
 function generateUrlFromCanvas(canvasId, isPng = true, writeInMetadata = false) {
     const isReverse = PrismProcessor.PrismEncoder.isEncodeReverse;
@@ -303,11 +323,9 @@ function generateUrlFromCanvas(canvasId, isPng = true, writeInMetadata = false) 
     }
 }
 function saveImageFromCanvas(canvasId, isPng = true, writeInMetadata = false) {
-    const link = document.createElement('a');
     const timestamp = new Date().getTime();
-    const canvas = document.getElementById(canvasId);
     const fileName = `output_${timestamp}.${isPng ? 'png' : 'jpg'}`;
-    downloadFromLink(generateUrlFromCanvas(canvasId, isPng, writeInMetadata), link, fileName);
+    downloadFromLink(generateUrlFromCanvas(canvasId, isPng, writeInMetadata), fileName);
 }
 
 // 生成infoString
