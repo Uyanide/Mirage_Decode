@@ -4,6 +4,10 @@ class PrismEncoder {
         this.coverImg = null;
         this.innerImgdata = null;
         this.coverImgdata = null;
+        this.innerImgdataContrast = null;
+        this.coverImgdataContrast = null;
+        this.innerContrast = defaultArguments.innerContrast;
+        this.coverContrast = defaultArguments.coverContrast;
         this.innerThreshold = defaultArguments.innerThreshold;
         this.coverThreshold = defaultArguments.coverThreshold;
         this.width = 0;
@@ -51,6 +55,9 @@ class PrismEncoder {
 
         ctx.drawImage(this.innerImg, 0, 0, this.innerCanvas.width, this.innerCanvas.height);
         this.innerImgdata = ctx.getImageData(0, 0, this.innerCanvas.width, this.innerCanvas.height);
+        if (this.innerContrast !== 50) {
+            this.adjustInnerContrast();
+        }
         if (this.coverImgdata) {
             this.updateCoverImage(this.coverImg);
         }
@@ -100,7 +107,9 @@ class PrismEncoder {
             this.coverImgdata = ctx.getImageData(0, 0, this.coverCanvas.width, this.coverCanvas.height);
             if (this.isCoverGray) {
                 this.processCoverGray();
-                ctx.putImageData(this.coverImgdata, 0, 0);
+            }
+            if (this.coverContrast !== 50) {
+                this.adjustCoverContrast();
             }
             this.processImage();
         } else {
@@ -124,6 +133,7 @@ class PrismEncoder {
             coverData[i + 1] = avg;
             coverData[i + 2] = avg;
         }
+        this.showImage(this.coverImgdata, this.coverCanvas);
     }
 
     compressLow(targ, data, i, rate) {
@@ -151,8 +161,8 @@ class PrismEncoder {
     }
 
     processImage() {
-        var innerData = this.innerImgdata.data;
-        var coverData = this.coverImgdata.data;
+        var innerData = this.innerContrast === 50 ? this.innerImgdata.data : this.innerImgdataContrast.data;
+        var coverData = this.coverContrast === 50 ? this.coverImgdata.data : this.coverImgdataContrast.data;
         var outputData = new Uint8ClampedArray(innerData.length);
 
         const innerRate = this.innerThreshold / 255;
@@ -215,6 +225,22 @@ class PrismEncoder {
         ctx.putImageData(outputImgData, 0, 0);
     }
 
+    showImage(imgData, canvas) {
+        const ctx = canvas.getContext('2d');
+        ctx.putImageData(imgData, 0, 0);
+    }
+
+    adjustInnerContrast() {
+        this.innerImgdataContrast = cloneImageData(this.innerImgdata);
+        adjustContrastImgData(this.innerImgdataContrast, this.innerContrast);
+        this.showImage(this.innerImgdataContrast, this.innerCanvas);
+    }
+
+    adjustCoverContrast() {
+        this.coverImgdataContrast = cloneImageData(this.coverImgdata);
+        adjustContrastImgData(this.coverImgdataContrast, this.coverContrast);
+        this.showImage(this.coverImgdataContrast, this.coverCanvas);
+    }
 }
 
 errorHandling.scriptsLoaded.PrismEncoder = true;

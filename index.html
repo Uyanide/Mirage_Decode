@@ -174,6 +174,12 @@
                 <label for="decodeReverseInput">是否为反色阶隐写</label>
             </div>
 
+            <div class="decodeSlider">
+                <label for="decodeContrastRange">4. 可适当调整对比度: </label>
+                <input type="range" id="decodeContrastRange" min="0" max="100">
+                <button id="decodeResetContrastButton">重置对比度</button>
+            </div>
+
             <div class="saveButton">
                 <button id="decodeSaveImageButton">保存显示图像</button>
             </div>
@@ -193,7 +199,7 @@
                     <label for="innerSourceFileInput" class="encodeDrag">或在下方画布处ctrl+v</label>
                     <canvas id="innerCanvas"></canvas>
                     <slider class="encodeSlider">
-                        <label for="innerThresholdRange" class="encodeSliderTitle">里图色阶端点: </label>
+                        <label for="innerThresholdRange" class="encodeSliderTitle">1. 里图色阶端点: </label>
                         <label for="innerThresholdRange">(越小隐写效果越好)</label>
                         <label for="innerThresholdRange">(但越小里图质量越差)</label>
                         <input id="innerThresholdRange" type="range" min="0" max="128">
@@ -203,6 +209,11 @@
                         <label for="innerThresholdInput">或输入: </label>
                         <input type="number" id="innerThresholdInput">
                     </div>
+                    <slider class="encodeContrastSlider">
+                        <label for="innerContrastRange" class="encodeSliderTitle">2. 里图对比度: </label>
+                        <input type="range" id="innerContrastRange" min="0" max="100">
+                        <button id="innerResetContrastButton">重置对比度</button>
+                    </slider>
                 </div>
 
                 <div class="encodeFileInput" , id="coverFileInput">
@@ -212,7 +223,7 @@
                     <label for="coverSourceFileInput" class="encodeDrag">或在下方画布处ctrl+v</label>
                     <canvas id="coverCanvas"></canvas>
                     <slider class="encodeSlider">
-                        <label for="coverThresholdRange" class="encodeSliderTitle">表图色阶端点: </label>
+                        <label for="coverThresholdRange" class="encodeSliderTitle">1. 表图色阶端点: </label>
                         <label for="coverThresholdRange">(越大显形效果越好)</label>
                         <label for="coverThresholdRange">(但越大表图质量越差)</label>
                         <input type="range" id="coverThresholdRange" min="0" max="128">
@@ -222,6 +233,11 @@
                         <label for="coverThresholdInput">或输入: </label>
                         <input type="number" id="coverThresholdInput">
                     </div>
+                    <slider class="encodeContrastSlider">
+                        <label for="coverContrastRange" class="encodeSliderTitle">2. 表图对比度: </label>
+                        <input type="range" id="coverContrastRange" min="0" max="100">
+                        <button id="coverResetContrastButton">重置对比度</button>
+                    </slider>
                 </div>
             </div>
 

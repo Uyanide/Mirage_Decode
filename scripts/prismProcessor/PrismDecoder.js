@@ -5,6 +5,9 @@ class PrismDecoder {
         this.coverProcessMethod = defaultArguments.decodeMethod;
         this.threshold = defaultArguments.decodeThreshold;
         this.reverse = defaultArguments.isDecodeReverse;
+        this.contrast = defaultArguments.decodeContrast;
+
+        this.decodedImgData = null;
 
         this.decodeCanvas = document.getElementById(decodeCanvasId);
     }
@@ -25,8 +28,8 @@ class PrismDecoder {
     }
 
     processImage() {
-        var imgDataCopy = new ImageData(new Uint8ClampedArray(this.imgData.data), this.imgData.width, this.imgData.height);
-        var data = imgDataCopy.data;
+        this.decodedImgData = cloneImageData(this.imgData);
+        var data = this.decodedImgData.data;
         if (!this.reverse) {
             var ratio = 255 / this.threshold;
             for (var i = 0; i < data.length; i += 4) {
@@ -54,7 +57,11 @@ class PrismDecoder {
                 }
             }
         }
-        this.showImage(imgDataCopy);
+        if (this.contrast !== 50) {
+            this.adjustContrast();
+        } else {
+            this.showImage(this.decodedImgData);
+        }
     }
 
     processCoverPixel(data, i) {
@@ -97,6 +104,12 @@ class PrismDecoder {
                 data[i + 2] = 255;
                 break;
         }
+    }
+
+    adjustContrast() {
+        let imgDataCopy = cloneImageData(this.decodedImgData);
+        adjustContrastImgData(imgDataCopy, this.contrast);
+        this.showImage(imgDataCopy);
     }
 }
 

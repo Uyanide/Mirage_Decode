@@ -236,6 +236,10 @@ button:hover,
     width: 80%;
 }
 
+.decodeSlider button {
+    margin-top: 5px;
+}
+
 .checkbox {
     display: flex;
     max-width: 90%;
@@ -335,6 +339,24 @@ Canvas {
     display: flex;
     align-items: center;
     margin-top: 10px;
+}
+
+.encodeContrastSlider {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    width: 90%;
+}
+
+.encodeContrastSlider input[type=range] {
+    width: 90%;
+    max-width: 320px;
+    margin-top: 5px;
+}
+
+.encodeContrastSlider button {
+    margin-top: 5px;
 }
 
 #outputCanvas {

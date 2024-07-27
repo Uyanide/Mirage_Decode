@@ -364,4 +364,28 @@ function universalSetupEventListeners() {
     });
 }
 
+// 调整对比度
+function truncate(value) {
+    return Math.min(255, Math.max(0, value));
+}
+// contrast范围：0-100
+function adjustContrastImgData(imageData, contrast) {
+    contrast = (contrast - 50) * 5.1;
+    const data = imageData.data;
+    const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
+
+    for (let i = 0; i < data.length; i += 4) {
+        data[i] = truncate(factor * (data[i] - 128) + 128);     // Red
+        data[i + 1] = truncate(factor * (data[i + 1] - 128) + 128); // Green
+        data[i + 2] = truncate(factor * (data[i + 2] - 128) + 128); // Blue
+    }
+
+    return imageData;
+}
+
+// 克隆ImageData
+function cloneImageData(imageData) {
+    return new ImageData(new Uint8ClampedArray(imageData.data), imageData.width, imageData.height);
+}
+
 errorHandling.scriptsLoaded.UniversalListeners = true;
