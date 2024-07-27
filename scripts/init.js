@@ -3,10 +3,15 @@ errorHandling.isInitLoaded = true;
 errorHandling.userAgent = navigator.userAgent.toLowerCase();
 applicationState.isOnPhone = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(errorHandling.userAgent);
 applicationState.isDownloadNotSupported = applicationState.isOnPhone && /xiaomi|miui/i.test(errorHandling.userAgent);
+applicationState.isOnTiebaBrowser = /tieba/i.test(errorHandling.userAgent);
 // applicationState.isOnPhone = true;
 
 document.addEventListener('DOMContentLoaded', async () => {
     try {
+        if (applicationState.isOnTiebaBrowser) {
+            document.body.innerHTML = '<h1>请点击右上角<br>用浏览器打开</h1><img src="https://gsp0.baidu.com/5aAHeD3nKhI2p27j8IqW0jdnxx1xbK/tb/editor/images/client/image_emoticon1.png"></img>';
+            return;
+        }
         // 版本显示
         const versionInfoElement = document.getElementById('versionInfo');
         if (versionInfoElement) {
