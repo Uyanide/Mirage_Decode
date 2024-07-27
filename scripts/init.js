@@ -1,6 +1,10 @@
 errorHandling.isInitLoaded = true;
 
-applicationState.isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+errorHandling.userAgent = navigator.userAgent;
+applicationState.isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(errorHandling.userAgent);
+applicationState.isDownloadNotSupported = applicationState.isOnPhone &&
+    (errorHandling.userAgent.toLowerCase().includes('xiaomi')
+        || !errorHandling.userAgent.toLowerCase().includes('miui'));
 // applicationState.isOnPhone = true;
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -89,6 +93,16 @@ document.addEventListener('DOMContentLoaded', async () => {
         } else {
 
             document.getElementById('decodePasteButton').style.display = 'none';
+        }
+
+        // byd小米浏览器另辟蹊径也下不了png
+        if (applicationState.isDownloadNotSupported) {
+            document.getElementById('isPng').style.display = 'none';
+            applicationState.isPng = false;
+            const saveHints = document.getElementsByClassName('saveHint');
+            for (let i = 0; i < saveHints.length; i++) {
+                saveHints[i].innerText = '(请在弹出的窗口中长按保存)';
+            }
         }
     } catch (error) {
         console.error('Failed to initialize: ' + error);
