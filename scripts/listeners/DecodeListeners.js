@@ -104,7 +104,6 @@ function decodeSaveSrcImage() {
     const ctx = canvas.getContext('2d');
     ctx.drawImage(PrismProcessor.PrismDecoder.img, 0, 0);
     document.body.appendChild(canvas);
-    console.log(PrismProcessor.PrismDecoder.reverse, PrismProcessor.PrismDecoder.threshold);
     saveImageFromCanvas('temp_srcCanvas', applicationState.isPng, false);
     canvas.remove();
 }
