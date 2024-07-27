@@ -1,10 +1,8 @@
 errorHandling.isInitLoaded = true;
 
-errorHandling.userAgent = navigator.userAgent;
-applicationState.isOnPhone = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(errorHandling.userAgent);
-applicationState.isDownloadNotSupported = applicationState.isOnPhone &&
-    (errorHandling.userAgent.toLowerCase().includes('xiaomi')
-        || errorHandling.userAgent.toLowerCase().includes('miui'));
+errorHandling.userAgent = navigator.userAgent.toLowerCase();
+applicationState.isOnPhone = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(errorHandling.userAgent);
+applicationState.isDownloadNotSupported = applicationState.isOnPhone && /xiaomi|miui/i.test(errorHandling.userAgent);
 // applicationState.isOnPhone = true;
 
 document.addEventListener('DOMContentLoaded', async () => {
