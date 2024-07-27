@@ -21,9 +21,15 @@ function handleImageLoadError(error, callback) {
     }
 }
 
-function setDecodeValues(isReverse, threshold) {
+function setDecodeValues(isReverse, threshold, contrast) {
+    if (isReverse === undefined) {
+        return;
+    }
     document.getElementById('decodeReverseInput').checked = isReverse;
     PrismProcessor.PrismDecoder.reverse = isReverse;
+    if (threshold === undefined) {
+        return;
+    }
     if (isReverse) {
         document.getElementById('decodeThresholdRange').value = 255 - threshold;
         PrismProcessor.PrismDecoder.threshold = 255 - threshold;
@@ -31,22 +37,39 @@ function setDecodeValues(isReverse, threshold) {
         document.getElementById('decodeThresholdRange').value = threshold;
         PrismProcessor.PrismDecoder.threshold = threshold;
     }
+    if (contrast === undefined) {
+        return;
+    }
+    document.getElementById('decodeContrastRange').value = 100 - contrast;
+    PrismProcessor.PrismDecoder.contrast = 100 - contrast;
 }
 
 function getParametersFromString(str) {
-    if (str === undefined || str.length < 3) {
+    console.log('reading from Metadata: ' + str);
+    if (str === undefined) {
         return {
-            isValid: false,
-            isReverse: applicationState.defaultArguments.isDecodeReverse,
-            innerThreshold: applicationState.defaultArguments.decodeThreshold
+            isValid: false
         };
     }
-    const isReverse = str[0] === '1';
-    const innerThreshold = parseInt(str.slice(1), 16);
+    let isReverse, innerThreshold, innerContrast;
+    switch (str.length) {
+        case 5:
+            innerContrast = parseInt(str.slice(3, 5), 16);
+        case 3:
+            innerThreshold = parseInt(str.slice(1, 3), 16);
+        case 1:
+            isReverse = str[0] === '1';
+            break;
+        default:
+            return {
+                isValid: false
+            };
+    }
     return {
         isValid: true,
         isReverse: isReverse,
-        innerThreshold: innerThreshold
+        innerThreshold: innerThreshold,
+        innerContrast: innerContrast
     };
 }
 
@@ -56,9 +79,9 @@ function setDecodeValuesWithJPEGMetadata(img) {
     }
     const exif = piexif.load(img.src);
     const infoString = exif['0th'][piexif.ImageIFD.Make];
-    const { isValid, isReverse, innerThreshold } = getParametersFromString(infoString);
+    const { isValid, isReverse, innerThreshold, innerContrast } = getParametersFromString(infoString);
     if (isValid) {
-        setDecodeValues(isReverse, innerThreshold);
+        setDecodeValues(isReverse, innerThreshold, innerContrast);
     }
 }
 
@@ -72,9 +95,9 @@ function setDecodeValuesWithPNGMetadata(img) {
         let chunk = chunkList[i];
         if (chunk.type === 'PRSM') {
             let infoString = chunk.data;
-            const { isValid, isReverse, innerThreshold } = getParametersFromString(infoString);
+            const { isValid, isReverse, innerThreshold, innerContrast } = getParametersFromString(infoString);
             if (isValid) {
-                setDecodeValues(isReverse, innerThreshold);
+                setDecodeValues(isReverse, innerThreshold, innerContrast);
             }
         }
     }
@@ -246,13 +269,15 @@ function downloadFromLink(url, link, fileName) {
 function generateUrlFromCanvas(canvasId, isPng = true, writeInMetadata = false) {
     const isReverse = PrismProcessor.PrismEncoder.isEncodeReverse;
     const threshold = PrismProcessor.PrismEncoder.innerThreshold;
+    const contrast = PrismProcessor.PrismEncoder.innerContrast;
     const canvas = document.getElementById(canvasId);
     if (isPng) {
         if (writeInMetadata) {
             return writeChunkDataPNG(
                 canvas.toDataURL('image/png'),
                 isReverse,
-                threshold);
+                threshold,
+                contrast);
         } else {
             return canvas.toDataURL('image/png');
         }
@@ -271,7 +296,8 @@ function generateUrlFromCanvas(canvasId, isPng = true, writeInMetadata = false) 
             return writeMetadataJPEG(
                 `data:image/jpeg;base64,${btoa(binary)}`,
                 isReverse,
-                threshold);
+                threshold,
+                contrast);
         } else {
             return `data:image/jpeg;base64,${btoa(binary)}`;
         }
@@ -286,13 +312,15 @@ function saveImageFromCanvas(canvasId, isPng = true, writeInMetadata = false) {
 }
 
 // 生成infoString
-function generateInfoString(isReverse, innerThreshold) {
-    return (isReverse ? '1' : '0') + innerThreshold.toString(16).padStart(2, '0');
+function generateInfoString(isReverse, innerThreshold, innerContrast) {
+    const infoString = (isReverse ? '1' : '0') + innerThreshold.toString(16).padStart(2, '0') + innerContrast.toString(16).padStart(2, '0');
+    console.log('writing to Metadata: ' + infoString);
+    return infoString;
 }
 
 // 写入元数据（照相机信息）
-function writeMetadataJPEG(imgURL, isReverse, innerThreshold) {
-    const infoString = generateInfoString(isReverse, innerThreshold);
+function writeMetadataJPEG(imgURL, isReverse, innerThreshold, innerContrast) {
+    const infoString = generateInfoString(isReverse, innerThreshold, innerContrast);
     let zeroth = {};
     zeroth[piexif.ImageIFD.Make] = infoString;
     const exifObj = { '0th': zeroth };
@@ -302,10 +330,10 @@ function writeMetadataJPEG(imgURL, isReverse, innerThreshold) {
 }
 
 // 写入PRSM块（PNG）
-function writeChunkDataPNG(imgURL, isReverse, innerThreshold) {
+function writeChunkDataPNG(imgURL, isReverse, innerThreshold, innerContrast) {
     const binaryData = atob(imgURL.split(',')[1]);
     let chunkList = metadata.splitChunk(binaryData);
-    const infoString = generateInfoString(isReverse, innerThreshold);
+    const infoString = generateInfoString(isReverse, innerThreshold, innerContrast);
     let chunk = metadata.createChunk('PRSM', infoString);
     const iend = chunkList.pop();
     chunkList.push(chunk);
@@ -375,13 +403,15 @@ function adjustContrastImgData(imageData, contrast) {
     const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
 
     for (let i = 0; i < data.length; i += 4) {
-        data[i] = truncate(factor * (data[i] - 128) + 128);     // Red
-        data[i + 1] = truncate(factor * (data[i + 1] - 128) + 128); // Green
-        data[i + 2] = truncate(factor * (data[i + 2] - 128) + 128); // Blue
+        data[i] = truncate(factor * (data[i] - 128) + 128);
+        data[i + 1] = truncate(factor * (data[i + 1] - 128) + 128);
+        data[i + 2] = truncate(factor * (data[i + 2] - 128) + 128);
     }
-
-    return imageData;
 }
+
+// function getReverseContrast(contrast) {
+//     return (33947130 * contrast) / (65025 * (contrast - 259) - 67081 * (contrast + 255))
+// }
 
 // 克隆ImageData
 function cloneImageData(imageData) {

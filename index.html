@@ -211,6 +211,8 @@
                     </div>
                     <slider class="encodeContrastSlider">
                         <label for="innerContrastRange" class="encodeSliderTitle">2. 里图对比度: </label>
+                        <label for="innerContrastRange">(降低此值可提高隐写效果)</label>
+                        <label for="innerContrastRange">(但会严重降低里图质量)</label>
                         <input type="range" id="innerContrastRange" min="0" max="100">
                         <button id="innerResetContrastButton">重置对比度</button>
                     </slider>
@@ -235,6 +237,8 @@
                     </div>
                     <slider class="encodeContrastSlider">
                         <label for="coverContrastRange" class="encodeSliderTitle">2. 表图对比度: </label>
+                        <label for="coverContrastRange">(表图对比度酌情调整)</label>
+                        <label for="coverContrastRange">(此值不会写入元数据)</label>
                         <input type="range" id="coverContrastRange" min="0" max="100">
                         <button id="coverResetContrastButton">重置对比度</button>
                     </slider>

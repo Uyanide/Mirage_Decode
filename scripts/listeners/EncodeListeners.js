@@ -273,6 +273,7 @@ function jumpToDecode() {
         setDecodeValues(
             PrismProcessor.PrismEncoder.isEncodeReverse,
             PrismProcessor.PrismEncoder.innerThreshold,
+            PrismProcessor.PrismEncoder.innerContrast
         );
         const img = new Image();
         img.src = generateUrlFromCanvas('outputCanvas', applicationState.isPng, false);

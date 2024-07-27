@@ -317,7 +317,8 @@ Canvas {
     margin-top: 5px;
 }
 
-.encodeSlider label:not(.encodeSliderTitle) {
+.encodeSlider label:not(.encodeSliderTitle),
+.encodeContrastSlider label:not(.encodeSliderTitle) {
     font-size: 12px;
     margin-top: 5px;
 }
