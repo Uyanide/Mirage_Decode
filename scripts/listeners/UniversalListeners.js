@@ -407,6 +407,12 @@ function universalSetupEventListeners() {
     document.addEventListener('dragover', (event) => {
         event.preventDefault();
     });
+
+    // 切换明暗模式
+    document.getElementById('isDarkmodeCheckbox').addEventListener('change', (event) => {
+        const theme = event.target.checked ? 'dark' : 'light';
+        applyTheme(theme);
+    });
 }
 
 // 调整对比度

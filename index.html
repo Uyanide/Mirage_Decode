@@ -10,7 +10,7 @@
         var PrismProcessor = PrismProcessor || {};
     </script>
     <script>
-        applicationState.version = '1.4.1';
+        applicationState.version = '1.4.2';
         // version check
         (() => {
             console.log('target version:', applicationState.version);
@@ -41,10 +41,21 @@
     </script>
 
     <script>
-        function applyTheme() {
-            const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
-            const theme = prefersDarkScheme ? "dark" : "light";
-            document.documentElement.setAttribute("data-theme", theme);
+        function applyTheme(tarTheme) {
+            if (tarTheme === undefined || typeof tarTheme !== 'string') {
+                const prefersDarkScheme = window.matchMedia("(prefers-color-scheme: dark)").matches;
+                tarTheme = prefersDarkScheme ? "dark" : "light";
+            }
+            document.documentElement.setAttribute("data-theme", tarTheme);
+            const isDarkmodeCheckbox = document.getElementById('isDarkmodeCheckbox');
+            if (isDarkmodeCheckbox) {
+                isDarkmodeCheckbox.checked = tarTheme === 'dark';
+            } else {
+                document.addEventListener('DOMContentLoaded', function () {
+                    const isDarkmodeCheckbox = document.getElementById('isDarkmodeCheckbox');
+                    isDarkmodeCheckbox.checked = tarTheme === 'dark';
+                });
+            }
         }
         applyTheme();
         window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", applyTheme);
@@ -93,6 +104,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="styles/style.css">
+    <link rel="stylesheet" type="text/css" href="styles/switch.css">
     <script src="scripts/lib/encoder.js" defer></script>
     <script src="scripts/lib/piexif.js" defer></script>
     <script src="scripts/lib/png-metadata.js" defer data-version></script>
@@ -107,6 +119,15 @@
 </head>
 
 <body>
+
+    <div class="switchContainer">
+        <label for="switchEleme">切换亮/暗主题</label>
+        <label class="switch" id="isDarkmodeSwitch">
+            <input type="checkbox" id="isDarkmodeCheckbox">
+            <span class="slider"></span>
+        </label>
+    </div>
+
     <h1 class="title">光棱坦克工厂</h1>
 
     <div class="link" id="infoLink">
