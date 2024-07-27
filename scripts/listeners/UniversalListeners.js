@@ -22,26 +22,25 @@ function handleImageLoadError(error, callback) {
 }
 
 function setDecodeValues(isReverse, threshold, contrast) {
-    if (isReverse === undefined) {
-        return;
+    if (contrast !== undefined) {
+        document.getElementById('decodeContrastRange').value = 100 - contrast;
+        PrismProcessor.PrismDecoder.contrast = 100 - contrast;
     }
-    document.getElementById('decodeReverseInput').checked = isReverse;
-    PrismProcessor.PrismDecoder.reverse = isReverse;
-    if (threshold === undefined) {
-        return;
-    }
-    if (isReverse) {
-        document.getElementById('decodeThresholdRange').value = 255 - threshold;
-        PrismProcessor.PrismDecoder.threshold = 255 - threshold;
+    if (isReverse !== undefined) {
+        document.getElementById('decodeReverseInput').checked = isReverse;
+        PrismProcessor.PrismDecoder.reverse = isReverse;
     } else {
-        document.getElementById('decodeThresholdRange').value = threshold;
-        PrismProcessor.PrismDecoder.threshold = threshold;
+        isReverse = document.getElementById('decodeReverseInput').checked;
     }
-    if (contrast === undefined) {
-        return;
+    if (threshold !== undefined) {
+        if (isReverse) {
+            document.getElementById('decodeThresholdRange').value = 255 - threshold;
+            PrismProcessor.PrismDecoder.threshold = 255 - threshold;
+        } else {
+            document.getElementById('decodeThresholdRange').value = threshold;
+            PrismProcessor.PrismDecoder.threshold = threshold;
+        }
     }
-    document.getElementById('decodeContrastRange').value = 100 - contrast;
-    PrismProcessor.PrismDecoder.contrast = 100 - contrast;
 }
 
 function getParametersFromString(str) {
@@ -51,7 +50,7 @@ function getParametersFromString(str) {
             isValid: false
         };
     }
-    let isReverse, innerThreshold, innerContrast;
+    let isReverse, innerThreshold, innerContrast = 50;
     switch (str.length) {
         case 5:
             innerContrast = parseInt(str.slice(3, 5), 16);
