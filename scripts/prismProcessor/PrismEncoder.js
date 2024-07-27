@@ -140,12 +140,14 @@ class PrismEncoder {
         targ[i] = Math.floor(data[i] * rate);
         targ[i + 1] = Math.floor(data[i + 1] * rate);
         targ[i + 2] = Math.floor(data[i + 2] * rate);
+        targ[i + 3] = data[i + 3];
     }
 
     compressHigh(targ, data, i, rate, limit) {
         targ[i] = Math.floor(data[i] * rate + limit);
         targ[i + 1] = Math.floor(data[i + 1] * rate + limit);
         targ[i + 2] = Math.floor(data[i + 2] * rate + limit);
+        targ[i + 3] = data[i + 3];
     }
 
     isInnerPixel_slash(col, row, base) {
@@ -215,7 +217,6 @@ class PrismEncoder {
             } else {
                 coverCompress(outputData, coverData, i, coverRate, coverLimit);
             }
-            outputData[i + 3] = 255;
         }
 
         this.outputCanvas.width = this.width;
