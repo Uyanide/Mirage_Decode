@@ -85,6 +85,17 @@ button:hover,
     margin-bottom: 10px;
 }
 
+#infoLink {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#infoLink p {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
 .PageContainer {
     display: flex;
     justify-content: center;
