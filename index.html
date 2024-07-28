@@ -10,7 +10,7 @@
         var PrismProcessor = PrismProcessor || {};
     </script>
     <script>
-        applicationState.version = '1.4.6.8';
+        applicationState.version = '1.4.7.1';
         // version check
         (() => {
             console.log('target version:', applicationState.version);
@@ -129,7 +129,7 @@
     <div class="switchContainer">
         <p>切换明/暗主题</p>
         <label class="switch" id="isDarkmodeSwitch">
-            <input type="checkbox" id="isDarkmodeCheckbox">
+            <input type="checkbox" id="isDarkmodeCheckbox" title="switch from themes">
             <span class="switchSlider"></span>
         </label>
     </div>
@@ -313,11 +313,11 @@
 
         <p id="versionInfo">version: <b>UNKNOWN</b></p>
 
-        <div class="link" , id="hintLink">
+        <p id="refreshHint">
             如发现有功能不正常可手动清理浏览器缓存后刷新
-        </div>
+        </p>
 
-        <div class="link" , id="hintLink">
+        <div class="link" , id="bugReportLink">
             <a href="https://github.com/Uyanide/Mirage_Decode/issues/new" target="_blank">Bug反馈</a>
         </div>
 

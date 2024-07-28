@@ -417,6 +417,12 @@ Canvas {
     margin-bottom: 0px;
 }
 
+#refreshHint {
+    margin-top: 5px;
+    font-size: var(--small-font-size);
+    margin-bottom: 10px;
+}
+
 a {
     color: var(--link-color);
 }
@@ -426,16 +432,15 @@ a {
     font-size: var(--small-font-size);
 }
 
-#hintLink {
-    margin-top: 5px;
+#bugReportLink {
+    margin-top: 10px;
 }
 
 #privacyButton button {
     background-color: var(--background-color);
     color: var(--link-color);
     border: 0px;
-    font-size: var(--medium-font-size);
-    margin-top: 10px;
+    font-size: var(--small-font-size);
 }
 
 #privacyPolicy {
