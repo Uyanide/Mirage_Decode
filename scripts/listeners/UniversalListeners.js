@@ -76,11 +76,15 @@ function setDecodeValuesWithJPEGMetadata(img) {
     if (!applicationState.isReadMetadata) {
         return;
     }
-    const exif = piexif.load(img.src);
-    const infoString = exif['0th'][piexif.ImageIFD.Make];
-    const { isValid, isReverse, innerThreshold, innerContrast } = getParametersFromString(infoString);
-    if (isValid) {
-        setDecodeValues(isReverse, innerThreshold, innerContrast);
+    try {
+        const exif = piexif.load(img.src);
+        const infoString = exif['0th'][piexif.ImageIFD.Make];
+        const { isValid, isReverse, innerThreshold, innerContrast } = getParametersFromString(infoString);
+        if (isValid) {
+            setDecodeValues(isReverse, innerThreshold, innerContrast);
+        }
+    } catch (error) {
+        throw error;
     }
 }
 
@@ -88,17 +92,21 @@ function setDecodeValuesWithPNGMetadata(img) {
     if (!applicationState.isReadMetadata) {
         return;
     }
-    const binaryString = atob(img.src.split(',')[1]);
-    let chunkList = metadata.splitChunk(binaryString);
-    for (let i in chunkList) {
-        let chunk = chunkList[i];
-        if (chunk.type === 'PRSM') {
-            let infoString = chunk.data;
-            const { isValid, isReverse, innerThreshold, innerContrast } = getParametersFromString(infoString);
-            if (isValid) {
-                setDecodeValues(isReverse, innerThreshold, innerContrast);
+    try {
+        const binaryString = atob(img.src.split(',')[1]);
+        let chunkList = metadata.splitChunk(binaryString);
+        for (let i in chunkList) {
+            let chunk = chunkList[i];
+            if (chunk.type === 'PRSM') {
+                let infoString = chunk.data;
+                const { isValid, isReverse, innerThreshold, innerContrast } = getParametersFromString(infoString);
+                if (isValid) {
+                    setDecodeValues(isReverse, innerThreshold, innerContrast);
+                }
             }
         }
+    } catch (error) {
+        throw error;
     }
 }
 
@@ -124,10 +132,14 @@ async function loadImage(input, timeout = 5000) {
         img.onload = () => {
             clearTimeout(timer);
             if (errorHandling.currCanvasIndex === 0) {
-                if (img.src.startsWith('data:image/jpeg;base64,')) {
-                    setDecodeValuesWithJPEGMetadata(img);
-                } else if (img.src.startsWith('data:image/png;base64,')) {
-                    setDecodeValuesWithPNGMetadata(img);
+                try {
+                    if (img.src.startsWith('data:image/jpeg;base64,')) {
+                        setDecodeValuesWithJPEGMetadata(img);
+                    } else if (img.src.startsWith('data:image/png;base64,')) {
+                        setDecodeValuesWithPNGMetadata(img);
+                    }
+                } catch (error) {
+                    console.error('failed to read metadata: ' + error);
                 }
             }
             resolve(img);
