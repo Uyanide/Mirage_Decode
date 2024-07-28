@@ -7,7 +7,7 @@
     --element-border-color: #ccc;
     --link-color: #2285d5;
 
-    --large-font-size: 1.1rem;
+    --large-font-size: 1.2rem;
     --medium-font-size: 1rem;
     --small-font-size: 0.8rem;
 }
@@ -155,7 +155,7 @@ button:hover,
 }
 
 #isReadMetadata label {
-    font-size: var(--medium-font-size);
+    font-size: var(--small-font-size);
 }
 
 #decodeMethodSelect {
@@ -434,7 +434,8 @@ a {
     background-color: var(--background-color);
     color: var(--link-color);
     border: 0px;
-    font-size: var(--small-font-size);
+    font-size: var(--medium-font-size);
+    margin-top: 10px;
 }
 
 #privacyPolicy {
