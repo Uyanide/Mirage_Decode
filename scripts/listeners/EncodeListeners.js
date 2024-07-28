@@ -175,17 +175,6 @@ function encodeSetInnerContrast(event) {
     }
 }
 
-// 设置表图对比度
-function encodeSetCoverContrast(event) {
-    PrismProcessor.PrismEncoder.coverContrast = parseInt(event.target.value, 10);
-    if (PrismProcessor.PrismEncoder.coverImg) {
-        PrismProcessor.PrismEncoder.adjustCoverContrast();
-        if (PrismProcessor.PrismEncoder.innerImg) {
-            PrismProcessor.PrismEncoder.processImage();
-        }
-    }
-}
-
 // 重置里图对比度
 function resetInnerContrast() {
     PrismProcessor.PrismEncoder.innerContrast = 50;
@@ -193,18 +182,6 @@ function resetInnerContrast() {
     if (PrismProcessor.PrismEncoder.innerImg) {
         PrismProcessor.PrismEncoder.adjustInnerContrast();
         if (PrismProcessor.PrismEncoder.coverImg) {
-            PrismProcessor.PrismEncoder.processImage();
-        }
-    }
-}
-
-// 重置表图对比度
-function resetCoverContrast() {
-    PrismProcessor.PrismEncoder.coverContrast = 50;
-    document.getElementById('coverContrastRange').value = 50;
-    if (PrismProcessor.PrismEncoder.coverImg) {
-        PrismProcessor.PrismEncoder.adjustCoverContrast();
-        if (PrismProcessor.PrismEncoder.innerImg) {
             PrismProcessor.PrismEncoder.processImage();
         }
     }
@@ -310,10 +287,9 @@ function encodeSetUpEventListeners() {
         document.getElementById('innerCanvas').addEventListener('drop', encodeLoadInnerImageFromDrag);
         document.getElementById('coverCanvas').addEventListener('drop', encodeLoadCoverImageFromDrag);
     } else {
-        document.getElementById('innerThresholdRange').addEventListener('mousedown', disableScroll);
-        document.getElementById('coverThresholdRange').addEventListener('mousedown', disableScroll);
-        document.getElementById('innerContrastRange').addEventListener('mousedown', disableScroll);
-        document.getElementById('coverContrastRange').addEventListener('mousedown', disableScroll);
+        // document.getElementById('innerThresholdRange').addEventListener('touchstart', disableScroll);
+        // document.getElementById('coverThresholdRange').addEventListener('touchstart', disableScroll);
+        // document.getElementById('innerContrastRange').addEventListener('touchstart', disableScroll);
     }
 
     document.getElementById('innerThresholdRange').addEventListener('input', encodeSetInnerThreshold);
@@ -321,9 +297,7 @@ function encodeSetUpEventListeners() {
     document.getElementById('innerThresholdInput').addEventListener('input', encodeSetInnerThresholdInput);
     document.getElementById('coverThresholdInput').addEventListener('input', encodeSetCoverThresholdInput);
     document.getElementById('innerContrastRange').addEventListener('input', encodeSetInnerContrast);
-    document.getElementById('coverContrastRange').addEventListener('input', encodeSetCoverContrast);
     document.getElementById('innerResetContrastButton').addEventListener('click', resetInnerContrast);
-    document.getElementById('coverResetContrastButton').addEventListener('click', resetCoverContrast);
 
     document.getElementById('isCoverGrayCheckBox').addEventListener('change', encodeSetCoverGray);
     document.getElementById('isEncodeReverseCheckBox').addEventListener('change', encodeSetEncodeReverse);
@@ -348,19 +322,16 @@ function encodeRemoveEventListeners() {
         document.getElementById('innerCanvas').removeEventListener('drop', encodeLoadInnerImageFromDrag);
         document.getElementById('coverCanvas').removeEventListener('drop', encodeLoadCoverImageFromDrag);
     } else {
-        document.getElementById('innerContrastRange').removeEventListener('mousedown', disableScroll);
-        document.getElementById('coverContrastRange').removeEventListener('mousedown', disableScroll);
-        document.getElementById('innerThresholdRange').removeEventListener('mousedown', disableScroll);
-        document.getElementById('coverThresholdRange').removeEventListener('mousedown', disableScroll);
+        // document.getElementById('innerContrastRange').removeEventListener('touchstart', disableScroll);
+        // document.getElementById('innerThresholdRange').removeEventListener('touchstart', disableScroll);
+        // document.getElementById('coverThresholdRange').removeEventListener('touchstart', disableScroll);
     }
     document.getElementById('innerThresholdRange').removeEventListener('input', encodeSetInnerThreshold);
     document.getElementById('coverThresholdRange').removeEventListener('input', encodeSetCoverThreshold);
     document.getElementById('innerThresholdInput').removeEventListener('input', encodeSetInnerThresholdInput);
     document.getElementById('coverThresholdInput').removeEventListener('input', encodeSetCoverThresholdInput);
     document.getElementById('innerContrastRange').removeEventListener('input', encodeSetInnerContrast);
-    document.getElementById('coverContrastRange').removeEventListener('input', encodeSetCoverContrast);
     document.getElementById('innerResetContrastButton').removeEventListener('click', resetInnerContrast);
-    document.getElementById('coverResetContrastButton').removeEventListener('click', resetCoverContrast);
     document.getElementById('isCoverGrayCheckBox').removeEventListener('change', encodeSetCoverGray);
     document.getElementById('isEncodeReverseCheckBox').removeEventListener('change', encodeSetEncodeReverse);
     document.getElementById('isCoverMirageCheckBox').removeEventListener('change', encodeSetCoverMirage);
