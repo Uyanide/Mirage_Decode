@@ -351,6 +351,7 @@ function writeMetadataJPEG(imgURL, isReverse, innerThreshold, innerContrast) {
 
 // 写入PRSM块（PNG）
 function writeChunkDataPNG(imgURL, isReverse, innerThreshold, innerContrast) {
+    return imgURL;
     const binaryData = atob(imgURL.split(',')[1]);
     let chunkList = metadata.splitChunk(binaryData);
     const infoString = generateInfoString(isReverse, innerThreshold, innerContrast);
