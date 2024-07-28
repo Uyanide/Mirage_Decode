@@ -348,7 +348,7 @@ Canvas {
 #isPng {
     display: flex;
     align-items: center;
-    margin-top: 15px;
+    margin-top: 9px;
 }
 
 #encodeCheckboxes {
