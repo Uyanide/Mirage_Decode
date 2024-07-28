@@ -10,7 +10,7 @@
         var PrismProcessor = PrismProcessor || {};
     </script>
     <script>
-        applicationState.version = '1.4.3';
+        applicationState.version = '1.4.4';
         // version check
         (() => {
             console.log('target version:', applicationState.version);
@@ -159,6 +159,8 @@
                     <option value="luavg">左上平均</option>
                 </select>
             </div>
+
+            <div id="decodeMethodHint">(若表图为幻影坦克则推荐“置为透明”模式)</div>
 
             <div id="decodeImageSelect">
                 <div id="decodeFileInput">

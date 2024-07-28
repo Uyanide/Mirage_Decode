@@ -165,6 +165,11 @@ button:hover,
     margin-left: 5px;
 }
 
+#decodeMethodHint {
+    margin-top: 5px;
+    font-size: 12px;
+}
+
 #decodeImageSelect {
     display: flex;
     flex-direction: column;
