@@ -16,6 +16,7 @@ class DefaultArguments {
             this.coverThreshold = defaultArguments.coverThreshold;
             this.isCoverGray = defaultArguments.isCoverGray;
             this.isEncodeReverse = defaultArguments.isEncodeReverse;
+            this.isCoverMirage = defaultArguments.isCoverMirage;
             this.isPng = defaultArguments.isPng;
             this.encodeMethod = defaultArguments.encodeMethod;
             this.innerContrast = defaultArguments.innerContrast;
@@ -47,6 +48,7 @@ class DefaultArguments {
 
         document.getElementById('isCoverGrayCheckBox').checked = this.isCoverGray;
         document.getElementById('isEncodeReverseCheckBox').checked = this.isEncodeReverse;
+        document.getElementById('isCoverMirageCheckBox').checked = this.isCoverMirage;
         document.getElementById('isPngCheckBox').checked = this.isPng;
         document.getElementById('encodeMethodSelect').value = this.encodeMethod;
         document.getElementById('encodeSizeInput').value = this.size;

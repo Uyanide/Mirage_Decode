@@ -336,6 +336,7 @@ Canvas {
 
 #isCoverGray,
 #isEncodeReverse,
+#isCoverMirage,
 #isPng {
     display: flex;
     align-items: center;

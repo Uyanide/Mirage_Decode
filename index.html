@@ -10,7 +10,7 @@
         var PrismProcessor = PrismProcessor || {};
     </script>
     <script>
-        applicationState.version = '1.4.2';
+        applicationState.version = '1.4.3';
         // version check
         (() => {
             console.log('target version:', applicationState.version);
@@ -274,6 +274,11 @@
             <div id="isEncodeReverse">
                 <input type="checkbox" id="isEncodeReverseCheckBox">
                 <label for="isEncodeReverseCheckBox">是否反色阶隐写</label>
+            </div>
+
+            <div id="isCoverMirage">
+                <input type="checkbox" id="isCoverMirageCheckBox">
+                <label for="isCoverMirageCheckBox">表图是否为幻坦</label>
             </div>
 
             <canvas id="outputCanvas"></canvas>

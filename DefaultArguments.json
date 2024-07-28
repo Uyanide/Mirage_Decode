@@ -8,6 +8,7 @@
     "coverThreshold": 42,
     "isCoverGray": false,
     "isEncodeReverse": false,
+    "isCoverMirage": false,
     "isPng": false,
     "encodeMethod": "chess",
     "innerContrast": 50,

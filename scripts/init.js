@@ -98,10 +98,12 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.getElementById('decodePasteButton').style.display = 'none';
         }
 
-        // byd小米浏览器另辟蹊径也下不了png
+        // byd小米浏览器另辟蹊径也下不了png, 幻影也用不了, 完大蛋
         if (applicationState.isDownloadNotSupported) {
             document.getElementById('isPng').style.display = 'none';
+            document.getElementById('isCoverMirage').style.display = 'none';
             applicationState.isPng = false;
+            PrismProcessor.PrismEncoder.isCoverMirage = false;
             const saveHints = document.getElementsByClassName('saveHint');
             for (let i = 0; i < saveHints.length; i++) {
                 saveHints[i].innerText = '(请在弹出的窗口中长按保存)';
