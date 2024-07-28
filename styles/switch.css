@@ -2,12 +2,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
 }
 
-.switchContainer label {
+.switchContainer p {
     margin-right: 10px;
-    font-size: 14px;
+    font-size: 1rem;
 }
 
 .switch {
@@ -23,7 +22,7 @@
     height: 0;
 }
 
-.slider {
+.switchSlider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -35,7 +34,7 @@
     border-radius: 22px;
 }
 
-.slider:before {
+.switchSlider:before {
     position: absolute;
     content: "";
     height: 18px;
@@ -47,10 +46,10 @@
     border-radius: 50%;
 }
 
-input:checked+.slider {
+input:checked+.switchSlider {
     background-color: #002a6e;
 }
 
-input:checked+.slider:before {
+input:checked+.switchSlider:before {
     transform: translateX(18px);
 }

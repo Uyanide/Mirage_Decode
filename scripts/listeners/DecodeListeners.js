@@ -121,6 +121,10 @@ function decodeSetupEventListeners() {
         document.body.addEventListener('drop', decodeLoadImageFromDrag);
     } else {
         document.getElementById('decodePasteButtonInput').addEventListener('click', decodeLoadImageFromPasteButton);
+
+        // 禁用滚动
+        // document.getElementById('decodeThresholdRange').addEventListener('touchstart', disableScroll);
+        // document.getElementById('decodeContrastRange').addEventListener('touchstart', disableScroll);
     }
     // 参数调整事件监听
     document.getElementById('decodeThresholdRange').addEventListener('input', decodeSetThreshold);
@@ -132,10 +136,6 @@ function decodeSetupEventListeners() {
     // 保存图像
     document.getElementById('decodeSaveImageButton').addEventListener('click', decodeSaveImage);
     document.getElementById('decodeSaveSrcImageButton').addEventListener('click', decodeSaveSrcImage);
-
-    // 禁用滚动
-    document.getElementById('decodeThresholdRange').addEventListener('touchstart', disableScroll);
-    document.getElementById('decodeContrastRange').addEventListener('touchstart', disableScroll);
 
     // 切换页面
     document.getElementById('encodeButton').addEventListener('click', switchPage);
@@ -151,6 +151,8 @@ function decodeRemoveEventListeners() {
         document.body.removeEventListener('drop', decodeLoadImageFromDrag);
     } else {
         document.getElementById('decodePasteButtonInput').removeEventListener('click', decodeLoadImageFromPasteButton);
+        // document.getElementById('decodeThresholdRange').removeEventListener('touchstart', disableScroll);
+        // document.getElementById('decodeContrastRange').removeEventListener('touchstart', disableScroll);
     }
     document.getElementById('decodeThresholdRange').removeEventListener('input', decodeSetThreshold);
     document.getElementById('decodeMethodSelect').removeEventListener('change', decodeSetCoverMethod);
@@ -159,8 +161,6 @@ function decodeRemoveEventListeners() {
     document.getElementById('decodeResetContrastButton').removeEventListener('click', decodeResetContrast);
     document.getElementById('decodeSaveImageButton').removeEventListener('click', decodeSaveImage);
     document.getElementById('decodeSaveSrcImageButton').removeEventListener('click', decodeSaveSrcImage);
-    document.getElementById('decodeThresholdRange').removeEventListener('touchstart', disableScroll);
-    document.getElementById('decodeContrastRange').removeEventListener('touchstart', disableScroll);
     document.getElementById('encodeButton').removeEventListener('click', switchPage);
 }
 

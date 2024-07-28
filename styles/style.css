@@ -6,6 +6,10 @@
     --front-color: #000;
     --element-border-color: #ccc;
     --link-color: #2285d5;
+
+    --large-font-size: 1.1rem;
+    --medium-font-size: 1rem;
+    --small-font-size: 0.8rem;
 }
 
 [data-theme="light"] {
@@ -54,7 +58,7 @@ select {
     padding: 5px;
     border: 1px solid var(--element-border-color);
     border-radius: 5px;
-    font-size: 15px;
+    font-size: var(--medium-font-size);
 }
 
 input[type=file] {
@@ -86,7 +90,6 @@ button:hover,
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    margin-top: 10px;
     width: 90%;
     max-width: 1000px;
     min-width: 320px;
@@ -107,7 +110,7 @@ button:hover,
     width: 100%;
     border: none;
     border-radius: 10px 10px 0 0;
-    font-size: 15px;
+    font-size: var(--medium-font-size);
     background-color: var(--background-color);
 }
 
@@ -152,7 +155,7 @@ button:hover,
 }
 
 #isReadMetadata label {
-    font-size: 12px;
+    font-size: var(--small-font-size);
 }
 
 #decodeMethodSelect {
@@ -167,7 +170,7 @@ button:hover,
 
 #decodeMethodHint {
     margin-top: 5px;
-    font-size: 12px;
+    font-size: var(--small-font-size);
 }
 
 #decodeImageSelect {
@@ -264,7 +267,7 @@ Canvas {
 
 .saveHint {
     margin-top: 5px;
-    font-size: 12px;
+    font-size: var(--small-font-size);
     margin-bottom: 20px;
 }
 
@@ -298,7 +301,7 @@ Canvas {
 
 .encodeDrag {
     margin-top: 10px;
-    font-size: 12px;
+    font-size: var(--small-font-size);
 }
 
 #innerCanvas,
@@ -324,7 +327,7 @@ Canvas {
 
 .encodeSlider label:not(.encodeSliderTitle),
 .encodeContrastSlider label:not(.encodeSliderTitle) {
-    font-size: 12px;
+    font-size: var(--small-font-size);
     margin-top: 5px;
 }
 
@@ -410,7 +413,7 @@ Canvas {
 
 #versionInfo {
     margin-top: 20px;
-    font-size: 18px;
+    font-size: var(--large-font-size);
     margin-bottom: 0px;
 }
 
@@ -420,7 +423,7 @@ a {
 
 .link {
     margin-top: 5px;
-    font-size: 14px;
+    font-size: var(--small-font-size);
 }
 
 #hintLink {
@@ -428,17 +431,16 @@ a {
 }
 
 #privacyButton button {
-    margin-top: 5px;
     background-color: var(--background-color);
     color: var(--link-color);
     border: 0px;
-    font-size: 14px;
+    font-size: var(--small-font-size);
 }
 
 #privacyPolicy {
     text-align: center;
     color: var(--front-color);
     max-width: min(100%, 600px);
-    font-size: 12px;
+    font-size: var(--small-font-size);
     display: none;
 }

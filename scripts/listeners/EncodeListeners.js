@@ -287,9 +287,9 @@ function encodeSetUpEventListeners() {
         document.getElementById('innerCanvas').addEventListener('drop', encodeLoadInnerImageFromDrag);
         document.getElementById('coverCanvas').addEventListener('drop', encodeLoadCoverImageFromDrag);
     } else {
-        document.getElementById('innerThresholdRange').addEventListener('touchstart', disableScroll);
-        document.getElementById('coverThresholdRange').addEventListener('touchstart', disableScroll);
-        document.getElementById('innerContrastRange').addEventListener('touchstart', disableScroll);
+        // document.getElementById('innerThresholdRange').addEventListener('touchstart', disableScroll);
+        // document.getElementById('coverThresholdRange').addEventListener('touchstart', disableScroll);
+        // document.getElementById('innerContrastRange').addEventListener('touchstart', disableScroll);
     }
 
     document.getElementById('innerThresholdRange').addEventListener('input', encodeSetInnerThreshold);
@@ -322,9 +322,9 @@ function encodeRemoveEventListeners() {
         document.getElementById('innerCanvas').removeEventListener('drop', encodeLoadInnerImageFromDrag);
         document.getElementById('coverCanvas').removeEventListener('drop', encodeLoadCoverImageFromDrag);
     } else {
-        document.getElementById('innerContrastRange').removeEventListener('touchstart', disableScroll);
-        document.getElementById('innerThresholdRange').removeEventListener('touchstart', disableScroll);
-        document.getElementById('coverThresholdRange').removeEventListener('touchstart', disableScroll);
+        // document.getElementById('innerContrastRange').removeEventListener('touchstart', disableScroll);
+        // document.getElementById('innerThresholdRange').removeEventListener('touchstart', disableScroll);
+        // document.getElementById('coverThresholdRange').removeEventListener('touchstart', disableScroll);
     }
     document.getElementById('innerThresholdRange').removeEventListener('input', encodeSetInnerThreshold);
     document.getElementById('coverThresholdRange').removeEventListener('input', encodeSetCoverThreshold);
