@@ -1,6 +1,6 @@
 :root {
-    --background-color: #fff;
-    --secondary-background-color: #ececec;
+    --secondary-background-color: #fff;
+    --background-color: #ececec;
     --secondary-notselected-background-color: #f6f6f6;
     --element-backgound-color: #f6f6f6;
     --front-color: #000;
@@ -9,8 +9,8 @@
 }
 
 [data-theme="light"] {
-    --background-color: #fff;
-    --secondary-background-color: #ececec;
+    --secondary-background-color: #fff;
+    --background-color: #ececec;
     --secondary-notselected-background-color: #f6f6f6;
     --element-backgound-color: #f6f6f6;
     --front-color: #000;
@@ -19,8 +19,8 @@
 }
 
 [data-theme="dark"] {
-    --background-color: #000;
-    --secondary-background-color: #191919;
+    --secondary-background-color: #000;
+    --background-color: #191919;
     --secondary-notselected-background-color: #101010;
     --element-backgound-color: #444;
     --front-color: #dfdfdf;
