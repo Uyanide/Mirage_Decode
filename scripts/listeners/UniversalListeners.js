@@ -97,12 +97,13 @@ function setDecodeValuesWithPNGMetadata(img) {
         let chunkList = metadata.splitChunk(binaryString);
         for (let i in chunkList) {
             let chunk = chunkList[i];
-            if (chunk.type === 'PRSM') {
+            if (chunk.type === 'tEXt' || chunk.type === 'PRSM'/*前朝余孽*/) {
                 let infoString = chunk.data;
                 const { isValid, isReverse, innerThreshold, innerContrast } = getParametersFromString(infoString);
                 if (isValid) {
                     setDecodeValues(isReverse, innerThreshold, innerContrast);
                 }
+                break;
             }
         }
     } catch (error) {
@@ -361,16 +362,27 @@ function writeMetadataJPEG(imgURL, isReverse, innerThreshold, innerContrast) {
     return inserted;
 }
 
-// 写入PRSM块（PNG）
+// 写入tEXt块（PNG）
 function writeChunkDataPNG(imgURL, isReverse, innerThreshold, innerContrast) {
-    return imgURL;
     const binaryData = atob(imgURL.split(',')[1]);
     let chunkList = metadata.splitChunk(binaryData);
     const infoString = generateInfoString(isReverse, innerThreshold, innerContrast);
-    let chunk = metadata.createChunk('PRSM', infoString);
-    const iend = chunkList.pop();
-    chunkList.push(chunk);
-    chunkList.push(iend);
+    let istEXtFound = false;
+    for (let i in chunkList) {
+        let chunk = chunkList[i];
+        if (chunk.type === 'tEXt') {
+            chunk.data = infoString;
+            chunkList[i] = chunk;
+            istEXtFound = true;
+            break;
+        }
+    }
+    if (!istEXtFound) {
+        let chunk = metadata.createChunk('tEXt', infoString);
+        const iend = chunkList.pop();
+        chunkList.push(chunk);
+        chunkList.push(iend);
+    }
     const output = metadata.joinChunk(chunkList);
     return `data:image/png;base64,${btoa(output)}`;
 }
