@@ -3,11 +3,11 @@
     justify-content: center;
     align-items: center;
     margin-top: 20px;
-    margin-left: auto;
 }
 
 .switchContainer label {
     margin-right: 10px;
+    font-size: 14px;
 }
 
 .switch {

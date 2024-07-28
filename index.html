@@ -10,7 +10,7 @@
         var PrismProcessor = PrismProcessor || {};
     </script>
     <script>
-        applicationState.version = '1.4.6';
+        applicationState.version = '1.4.6.1';
         // version check
         (() => {
             console.log('target version:', applicationState.version);
@@ -120,18 +120,18 @@
 
 <body>
 
+    <h1 class="title">光棱坦克工厂</h1>
+
+    <div class="link" id="infoLink">
+        <a href="https://tieba.baidu.com/p/9093709508" target="_blank">什么是光棱坦克？</a>
+    </div>
+
     <div class="switchContainer">
-        <label for="isDarkmodeSwitch">切换亮/暗主题</label>
+        <label for="isDarkmodeSwitch">切换明/暗主题</label>
         <label class="switch" id="isDarkmodeSwitch">
             <input type="checkbox" id="isDarkmodeCheckbox">
             <span class="slider"></span>
         </label>
-    </div>
-
-    <h1 class="title">光棱坦克工厂</h1>
-
-    <div class="link" id="infoLink">
-        <small><a href="https://tieba.baidu.com/p/9093709508" target="_blank">什么是光棱坦克？</a></small>
     </div>
 
     <div class="PageContainer">
@@ -268,19 +268,21 @@
                 </div>
             </div>
 
-            <checkbox id="isCoverGray">
-                <input type="checkbox" id="isCoverGrayCheckBox">
-                <label for="isCoverGrayCheckBox">表图是否取灰度</label>
-            </checkbox>
+            <div id="encodeCheckboxes">
+                <div id="isCoverGray">
+                    <input type="checkbox" id="isCoverGrayCheckBox">
+                    <label for="isCoverGrayCheckBox">表图是否取灰度</label>
+                </div>
 
-            <div id="isEncodeReverse">
-                <input type="checkbox" id="isEncodeReverseCheckBox">
-                <label for="isEncodeReverseCheckBox">是否反色阶隐写</label>
-            </div>
+                <div id="isEncodeReverse">
+                    <input type="checkbox" id="isEncodeReverseCheckBox">
+                    <label for="isEncodeReverseCheckBox">是否反色阶隐写</label>
+                </div>
 
-            <div id="isCoverMirage">
-                <input type="checkbox" id="isCoverMirageCheckBox">
-                <label for="isCoverMirageCheckBox">表图是否为幻坦</label>
+                <div id="isCoverMirage">
+                    <input type="checkbox" id="isCoverMirageCheckBox">
+                    <label for="isCoverMirageCheckBox">表图是否为幻坦</label>
+                </div>
             </div>
 
             <canvas id="outputCanvas"></canvas>
@@ -320,20 +322,24 @@
         <p id="versionInfo">version: <b>UNKNOWN</b></p>
 
         <div class="link" , id="hintLink">
-            <small>如发现有功能不正常可手动清理浏览器缓存后刷新</small>
+            如发现有功能不正常可手动清理浏览器缓存后刷新
         </div>
 
         <div class="link" , id="hintLink">
-            <small><a href="https://github.com/Uyanide/Mirage_Decode/issues/new" target="_blank">Bug反馈</a></small>
+            <a href="https://github.com/Uyanide/Mirage_Decode/issues/new" target="_blank">Bug反馈</a>
         </div>
 
         <div class="link" , id="profileLink">
-            <small><a href="https://github.com/Uyanide" target="_blank">Github - Uyanide (我)</a></small>
+            <a href="https://github.com/Uyanide" target="_blank">Github - Uyanide (我)</a>
         </div>
 
         <div class="link" , id="repoLink">
-            <small><a href="https://github.com/Uyanide/Mirage_Decode/tree/main" target="_blank">Github -
-                    Mirage_Decode (本项目仓库)</a></small>
+            <a href="https://github.com/Uyanide/Mirage_Decode/tree/main" target="_blank">Github -
+                Mirage_Decode (本项目仓库)</a>
+        </div>
+
+        <div class="link" , id="repoLink">
+            <a href="https://github.com/Uyanide/Mirage_Decode?tab=readme-ov-file#qa" target="_blank">常见问题Q&A</a>
         </div>
 
         <div id="privacyButton">
