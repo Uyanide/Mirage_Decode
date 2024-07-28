@@ -40,6 +40,7 @@
 
 - **styles**
   - **style.css**
+  - **switch.css**
 
 - **index.html**
 - **DefaultArguments.json** (默认参数配置)
