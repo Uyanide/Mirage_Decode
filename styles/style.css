@@ -155,7 +155,7 @@ button:hover,
 }
 
 #isReadMetadata label {
-    font-size: var(--small-font-size);
+    font-size: var(--medium-font-size);
 }
 
 #decodeMethodSelect {
