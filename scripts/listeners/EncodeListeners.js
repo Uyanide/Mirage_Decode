@@ -226,6 +226,18 @@ function encodeSetEncodeReverse(event) {
     }
 }
 
+// 设置是否表图幻影
+function encodeSetCoverMirage(event) {
+    PrismProcessor.PrismEncoder.isCoverMirage = event.target.checked;
+    if (PrismProcessor.PrismEncoder.coverImg && PrismProcessor.PrismEncoder.innerImg) {
+        PrismProcessor.PrismEncoder.processImage();
+    }
+    if (event.target.checked) {
+        document.getElementById('isPngCheckBox').checked = true;
+        applicationState.isPng = true;
+    }
+}
+
 // 设置像素混合方式
 function encodeSetMethod(event) {
     PrismProcessor.PrismEncoder.method = event.target.value;
@@ -315,6 +327,7 @@ function encodeSetUpEventListeners() {
 
     document.getElementById('isCoverGrayCheckBox').addEventListener('change', encodeSetCoverGray);
     document.getElementById('isEncodeReverseCheckBox').addEventListener('change', encodeSetEncodeReverse);
+    document.getElementById('isCoverMirageCheckBox').addEventListener('change', encodeSetCoverMirage);
 
     document.getElementById('encodeMethodSelect').addEventListener('change', encodeSetMethod);
     document.getElementById('encodeSizeInput').addEventListener('input', encodeSetSize);
@@ -350,6 +363,7 @@ function encodeRemoveEventListeners() {
     document.getElementById('coverResetContrastButton').removeEventListener('click', resetCoverContrast);
     document.getElementById('isCoverGrayCheckBox').removeEventListener('change', encodeSetCoverGray);
     document.getElementById('isEncodeReverseCheckBox').removeEventListener('change', encodeSetEncodeReverse);
+    document.getElementById('isCoverMirageCheckBox').removeEventListener('change', encodeSetCoverMirage);
     document.getElementById('encodeMethodSelect').removeEventListener('change', encodeSetMethod);
     document.getElementById('encodeSizeInput').removeEventListener('input', encodeSetSize);
     document.getElementById('isPngCheckBox').removeEventListener('change', setSaveType);

@@ -14,6 +14,7 @@ class PrismEncoder {
         this.heigt = 0;
         this.isCoverGray = defaultArguments.isCoverGray;
         this.isEncodeReverse = defaultArguments.isEncodeReverse;
+        this.isCoverMirage = defaultArguments.isCoverMirage;
         this.method = defaultArguments.encodeMethod;
         this.size = defaultArguments.size;
 
@@ -150,6 +151,13 @@ class PrismEncoder {
         targ[i + 3] = data[i + 3];
     }
 
+    compressClone(targ, data, i) {
+        targ[i] = data[i];
+        targ[i + 1] = data[i + 1];
+        targ[i + 2] = data[i + 2];
+        targ[i + 3] = data[i + 3];
+    }
+
     isInnerPixel_slash(col, row, base) {
         return (col + row) % base === 0;
     }
@@ -172,12 +180,12 @@ class PrismEncoder {
         let innerCompress, coverCompress, innerLimit, coverLimit;
         if (this.isEncodeReverse === false) {
             innerCompress = this.compressLow;
-            coverCompress = this.compressHigh;
+            coverCompress = this.isCoverMirage ? this.compressClone : this.compressHigh;
             innerLimit = 0;
             coverLimit = this.coverThreshold;
         } else {
             innerCompress = this.compressHigh;
-            coverCompress = this.compressLow;
+            coverCompress = this.isCoverMirage ? this.compressClone : this.compressLow;
             innerLimit = 255 - this.innerThreshold;
             coverLimit = 0;
         }

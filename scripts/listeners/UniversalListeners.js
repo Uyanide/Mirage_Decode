@@ -324,6 +324,9 @@ function generateUrlFromCanvas(canvasId, isPng = true, writeInMetadata = false) 
 }
 function saveImageFromCanvas(canvasId, isPng = true, writeInMetadata = false) {
     const timestamp = new Date().getTime();
+    if (PrismProcessor.PrismEncoder.isCoverMirage && !isPng) {
+        alert('JPEG格式不支持幻影坦克！请谨慎选择。');
+    }
     const fileName = `output_${timestamp}.${isPng ? 'png' : 'jpg'}`;
     downloadFromLink(generateUrlFromCanvas(canvasId, isPng, writeInMetadata), fileName);
 }
