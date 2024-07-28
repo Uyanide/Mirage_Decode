@@ -257,7 +257,7 @@ async function dragDropLoadImage(event, callback) {
 // 禁用滚动
 applicationState.scrollPosition = 0;
 function disableScroll() {
-    document.addEventListener('mouseup', enableScroll);
+    document.addEventListener('touchend', enableScroll);
     applicationState.scrollPosition = window.scrollY;
     window.onscroll = function () {
         window.scrollTo(0, applicationState.scrollPosition);
@@ -267,7 +267,7 @@ function disableScroll() {
 // 恢复滚动
 function enableScroll() {
     window.onscroll = null;
-    document.removeEventListener('mouseup', enableScroll);
+    document.removeEventListener('touchend', enableScroll);
 }
 
 // 保存图像

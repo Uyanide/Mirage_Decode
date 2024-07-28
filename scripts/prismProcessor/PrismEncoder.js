@@ -5,9 +5,7 @@ class PrismEncoder {
         this.innerImgdata = null;
         this.coverImgdata = null;
         this.innerImgdataContrast = null;
-        this.coverImgdataContrast = null;
         this.innerContrast = defaultArguments.innerContrast;
-        this.coverContrast = defaultArguments.coverContrast;
         this.innerThreshold = defaultArguments.innerThreshold;
         this.coverThreshold = defaultArguments.coverThreshold;
         this.width = 0;
@@ -109,9 +107,6 @@ class PrismEncoder {
             if (this.isCoverGray) {
                 this.processCoverGray();
             }
-            if (this.coverContrast !== 50) {
-                this.adjustCoverContrast();
-            }
             this.processImage();
         } else {
             const ctx = this.coverCanvas.getContext('2d');
@@ -172,7 +167,7 @@ class PrismEncoder {
 
     processImage() {
         var innerData = this.innerContrast === 50 ? this.innerImgdata.data : this.innerImgdataContrast.data;
-        var coverData = this.coverContrast === 50 ? this.coverImgdata.data : this.coverImgdataContrast.data;
+        var coverData = this.coverImgdata.data;
         var outputData = new Uint8ClampedArray(innerData.length);
 
         const innerRate = this.innerThreshold / 255;
@@ -243,12 +238,6 @@ class PrismEncoder {
         this.innerImgdataContrast = cloneImageData(this.innerImgdata);
         adjustContrastImgData(this.innerImgdataContrast, this.innerContrast);
         this.showImage(this.innerImgdataContrast, this.innerCanvas);
-    }
-
-    adjustCoverContrast() {
-        this.coverImgdataContrast = cloneImageData(this.coverImgdata);
-        adjustContrastImgData(this.coverImgdataContrast, this.coverContrast);
-        this.showImage(this.coverImgdataContrast, this.coverCanvas);
     }
 }
 

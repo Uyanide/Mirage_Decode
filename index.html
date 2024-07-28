@@ -10,7 +10,7 @@
         var PrismProcessor = PrismProcessor || {};
     </script>
     <script>
-        applicationState.version = '1.4.6.1';
+        applicationState.version = '1.4.6.4';
         // version check
         (() => {
             console.log('target version:', applicationState.version);
@@ -258,30 +258,22 @@
                         <label for="coverThresholdInput">或输入: </label>
                         <input type="number" id="coverThresholdInput">
                     </div>
-                    <slider class="encodeContrastSlider">
-                        <label for="coverContrastRange" class="encodeSliderTitle">2. 表图对比度: </label>
-                        <label for="coverContrastRange">(表图对比度酌情调整)</label>
-                        <label for="coverContrastRange">(此值不会影响显形)</label>
-                        <input type="range" id="coverContrastRange" min="0" max="100">
-                        <button id="coverResetContrastButton">重置对比度</button>
-                    </slider>
-                </div>
-            </div>
+                    <div id="encodeCheckboxes">
+                        <div id="isCoverGray">
+                            <input type="checkbox" id="isCoverGrayCheckBox">
+                            <label for="isCoverGrayCheckBox">表图是否取灰度</label>
+                        </div>
 
-            <div id="encodeCheckboxes">
-                <div id="isCoverGray">
-                    <input type="checkbox" id="isCoverGrayCheckBox">
-                    <label for="isCoverGrayCheckBox">表图是否取灰度</label>
-                </div>
+                        <div id="isEncodeReverse">
+                            <input type="checkbox" id="isEncodeReverseCheckBox">
+                            <label for="isEncodeReverseCheckBox">是否反色阶隐写</label>
+                        </div>
 
-                <div id="isEncodeReverse">
-                    <input type="checkbox" id="isEncodeReverseCheckBox">
-                    <label for="isEncodeReverseCheckBox">是否反色阶隐写</label>
-                </div>
-
-                <div id="isCoverMirage">
-                    <input type="checkbox" id="isCoverMirageCheckBox">
-                    <label for="isCoverMirageCheckBox">表图是否为幻坦</label>
+                        <div id="isCoverMirage">
+                            <input type="checkbox" id="isCoverMirageCheckBox">
+                            <label for="isCoverMirageCheckBox">表图是否为幻坦</label>
+                        </div>
+                    </div>
                 </div>
             </div>
 

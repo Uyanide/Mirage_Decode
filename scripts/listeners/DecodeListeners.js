@@ -134,8 +134,8 @@ function decodeSetupEventListeners() {
     document.getElementById('decodeSaveSrcImageButton').addEventListener('click', decodeSaveSrcImage);
 
     // 禁用滚动
-    document.getElementById('decodeThresholdRange').addEventListener('mousedown', disableScroll);
-    document.getElementById('decodeContrastRange').addEventListener('mousedown', disableScroll);
+    document.getElementById('decodeThresholdRange').addEventListener('touchstart', disableScroll);
+    document.getElementById('decodeContrastRange').addEventListener('touchstart', disableScroll);
 
     // 切换页面
     document.getElementById('encodeButton').addEventListener('click', switchPage);
@@ -159,8 +159,8 @@ function decodeRemoveEventListeners() {
     document.getElementById('decodeResetContrastButton').removeEventListener('click', decodeResetContrast);
     document.getElementById('decodeSaveImageButton').removeEventListener('click', decodeSaveImage);
     document.getElementById('decodeSaveSrcImageButton').removeEventListener('click', decodeSaveSrcImage);
-    document.getElementById('decodeThresholdRange').removeEventListener('mousedown', disableScroll);
-    document.getElementById('decodeContrastRange').removeEventListener('mousedown', disableScroll);
+    document.getElementById('decodeThresholdRange').removeEventListener('touchstart', disableScroll);
+    document.getElementById('decodeContrastRange').removeEventListener('touchstart', disableScroll);
     document.getElementById('encodeButton').removeEventListener('click', switchPage);
 }
 

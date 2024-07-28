@@ -345,7 +345,15 @@ Canvas {
 #isPng {
     display: flex;
     align-items: center;
+    margin-top: 15px;
+}
+
+#encodeCheckboxes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-top: 10px;
+    margin-bottom: 15px;
 }
 
 .encodeContrastSlider {
