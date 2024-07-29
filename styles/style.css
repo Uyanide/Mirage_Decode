@@ -36,6 +36,7 @@
 
 * {
     user-select: none;
+    transition: background-color 0.3s ease-in-out;
 }
 
 body {
@@ -89,6 +90,7 @@ button:hover,
     display: flex;
     flex-direction: column;
     align-items: center;
+    font-size: var(--small-font-size);
 }
 
 #infoLink p {
@@ -103,7 +105,7 @@ button:hover,
     flex-direction: column;
     width: 90%;
     max-width: 1000px;
-    min-width: 320px;
+    min-width: 300px;
     padding: 20px;
 }
 
@@ -136,10 +138,12 @@ button:hover,
 .PageSwitchButton:hover {
     transform: none;
     background-color: var(--secondary-background-color);
+    transition: background-color 0.2s;
 }
 
 .DisplayArea {
     background-color: var(--secondary-background-color);
+
     color: var(--front-color);
     border-radius: 0 0 15px 15px;
     margin-top: 0px;
