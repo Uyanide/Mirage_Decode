@@ -58,6 +58,11 @@ const coverSlider = document.getElementById('coverThresholdRange');
 const innerInput = document.getElementById('innerThresholdInput');
 const coverInput = document.getElementById('coverThresholdInput');
 
+// 获取前景色
+function getFrontColor() {
+    return getComputedStyle(document.documentElement).getPropertyValue('--front-color').trim();
+}
+
 // 设置里图色阶
 function encodeSetInnerThreshold() {
     const slider = innerSlider
@@ -70,9 +75,7 @@ function encodeSetInnerThreshold() {
         text.value = PrismProcessor.PrismEncoder.coverThreshold;
         text.style.color = '#ff5e5e';
     } else {
-        const rootStyles = getComputedStyle(document.documentElement);
-        const frontColor = rootStyles.getPropertyValue('--front-color').trim();
-        text.style.color = frontColor;
+        text.style.color = getFrontColor();
     }
     if (PrismProcessor.PrismEncoder.innerImg && PrismProcessor.PrismEncoder.coverImg) {
         PrismProcessor.PrismEncoder.processImage();
@@ -91,9 +94,7 @@ function encodeSetCoverThreshold() {
         text.value = PrismProcessor.PrismEncoder.innerThreshold;
         text.style.color = '#ff5e5e';
     } else {
-        const rootStyles = getComputedStyle(document.documentElement);
-        const frontColor = rootStyles.getPropertyValue('--front-color').trim();
-        text.style.color = frontColor;
+        text.style.color = getFrontColor();
     }
     if (PrismProcessor.PrismEncoder.innerImg && PrismProcessor.PrismEncoder.coverImg) {
         PrismProcessor.PrismEncoder.processImage();
@@ -107,7 +108,7 @@ function encodeSetInnerThresholdInput() {
     setTimeout(function () {
         const input = innerInput;
         const slider = innerSlider;
-        input.style.color = rootStyles.getPropertyValue('--front-color').trim();
+        input.style.color = getFrontColor();
         const inputVal = parseInt(input.value, 10);
         if (isNaN(inputVal)) {
             return;
@@ -139,7 +140,7 @@ function encodeSetCoverThresholdInput() {
     setTimeout(function () {
         const input = coverInput;
         const slider = coverSlider;
-        input.style.color = rootStyles.getPropertyValue('--front-color').trim();
+        input.style.color = getFrontColor();
         const inputVal = parseInt(input.value, 10);
         if (isNaN(inputVal)) {
             return;
