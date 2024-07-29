@@ -10,7 +10,7 @@
         var PrismProcessor = PrismProcessor || {};
     </script>
     <script>
-        applicationState.version = '1.4.7.2';
+        applicationState.version = '1.4.9';
         // version check
         (() => {
             console.log('target version:', applicationState.version);
@@ -345,7 +345,56 @@
                     href="https://policies.google.com/privacy" target="_blank">Google
                     Analytics的隐私政策</a>。</p>
         </div>
-    </div>
+
+        <div id="versionRecordButton">
+            <button id="toggleVersionRecord">显示主要更新记录</button>
+        </div>
+
+        <div id="versionRecord">
+            <table id="versionRecordTable">
+                <tbody>
+                    <tr>
+                        <td>1.0</td>
+                        <td>实施版本号记录，用于优化缓存处理；<br>
+                            添加从剪贴板粘贴图片功能；<br>
+                            在显形界面添加“保存原始图像”功能。
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1.1</td>
+                        <td>可以根据系统设置进行明暗主题切换；<br>
+                            添加“表图是否取灰度”功能；
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1.2</td>
+                        <td>引入jpeg-js库部分源码，统一不同浏览器编码jpeg时的行为；<br>
+                            引入piexif库部分源码，用于读取jpeg图片的元数据；<br>
+                            支持jpeg图片在生成时写入参数以在显形时自动填写；<br>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1.3</td>
+                        <td>使用jsDelievr CDN加速加载静态资源；<br>
+                            引入png-metadata库部分源码，用于读取png图片的元数据；<br>
+                            支持png图片在生成时写入参数以自动显形；<br>
+                            添加表里图对比度调整功能；<br>
+                            里图对比度可写入元数据。
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>1.4</td>
+                        <td>放弃使用jsDelievr，使用Cloudflare代理个人域名；<br>
+                            识别小米默认浏览器，修复其无法正常下载图片的问题；<br>
+                            识别贴吧内置浏览器，阻止其直接访问；<br>
+                            支持幻影坦克作为表图；<br>
+                            添加手动切换明暗主题功能，方便观察幻影坦克；<br>
+                            删除表图对比度调整功能。
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 </body>
 
 </html>

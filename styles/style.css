@@ -443,15 +443,16 @@ a {
 }
 
 .link {
-    margin-top: 5px;
+    margin-top: 10px;
     font-size: var(--small-font-size);
 }
 
-#bugReportLink {
-    margin-top: 10px;
+#privacyButton {
+    margin-top: 5px;
 }
 
-#privacyButton button {
+#privacyButton button,
+#versionRecordButton button {
     background-color: var(--background-color);
     color: var(--link-color);
     border: 0px;
@@ -464,4 +465,18 @@ a {
     max-width: min(100%, 600px);
     font-size: var(--small-font-size);
     display: none;
+}
+
+#versionRecordTable {
+    border: 1px solid var(--element-border-color);
+    border-collapse: collapse;
+    font-size: var(--small-font-size);
+    max-width: min(100%, 600px);
+    margin-top: 20px;
+    display: none;
+}
+
+#versionRecordTable td {
+    border: 1px solid var(--element-border-color);
+    padding: 10px;
 }
