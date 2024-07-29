@@ -458,23 +458,30 @@ a {
 }
 
 #privacyPolicy {
+    background-color: var(--secondary-background-color);
     text-align: center;
     color: var(--front-color);
     max-width: min(100%, 600px);
     font-size: var(--small-font-size);
     display: none;
+    padding: 10px;
+    border-radius: 20px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 #versionRecordTable {
-    border: 1px solid var(--element-border-color);
+    background-color: var(--secondary-background-color);
     border-collapse: collapse;
     font-size: var(--small-font-size);
     max-width: min(100%, 600px);
-    margin-top: 20px;
+    padding: 10px;
+    border-radius: 20px;
     display: none;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 #versionRecordTable td {
-    border: 1px solid var(--element-border-color);
     padding: 10px;
 }
