@@ -54,9 +54,24 @@ function getParametersFromString(str) {
     switch (str.length) {
         case 5:
             innerContrast = parseInt(str.slice(3, 5), 16);
+            if (isNaN(innerContrast)) {
+                return {
+                    isValid: false
+                };
+            }
         case 3:
             innerThreshold = parseInt(str.slice(1, 3), 16);
+            if (isNaN(innerThreshold)) {
+                return {
+                    isValid: false
+                };
+            }
         case 1:
+            if (str[0] !== '0' && str[0] !== '1') {
+                return {
+                    isValid: false
+                };
+            }
             isReverse = str[0] === '1';
             break;
         default:

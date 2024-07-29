@@ -107,7 +107,7 @@ function encodeSetInnerThresholdInput() {
     setTimeout(function () {
         const input = innerInput;
         const slider = innerSlider;
-        input.style.color = '#dfdfdf';
+        input.style.color = rootStyles.getPropertyValue('--front-color').trim();
         const inputVal = parseInt(input.value, 10);
         if (isNaN(inputVal)) {
             return;
@@ -139,7 +139,7 @@ function encodeSetCoverThresholdInput() {
     setTimeout(function () {
         const input = coverInput;
         const slider = coverSlider;
-        input.style.color = '#dfdfdf';
+        input.style.color = rootStyles.getPropertyValue('--front-color').trim();
         const inputVal = parseInt(input.value, 10);
         if (isNaN(inputVal)) {
             return;
