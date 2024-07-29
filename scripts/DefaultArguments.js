@@ -20,6 +20,7 @@ class DefaultArguments {
             this.isPng = defaultArguments.isPng;
             this.encodeMethod = defaultArguments.encodeMethod;
             this.innerContrast = defaultArguments.innerContrast;
+            this.coverContrast = defaultArguments.coverContrast;
             this.size = defaultArguments.size;
             this.minSize = defaultArguments.minSize;
             this.maxSize = defaultArguments.maxSize;
@@ -43,6 +44,7 @@ class DefaultArguments {
         document.getElementById('coverThresholdInput').value = this.coverThreshold;
 
         document.getElementById('innerContrastRange').value = this.innerContrast;
+        document.getElementById('coverContrastRange').value = this.coverContrast;
 
         document.getElementById('isCoverGrayCheckBox').checked = this.isCoverGray;
         document.getElementById('isEncodeReverseCheckBox').checked = this.isEncodeReverse;
