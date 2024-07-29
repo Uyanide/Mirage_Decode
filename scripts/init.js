@@ -1,5 +1,3 @@
-errorHandling.isInitLoaded = true;
-
 errorHandling.userAgent = navigator.userAgent.toLowerCase();
 applicationState.isOnPhone = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(errorHandling.userAgent);
 applicationState.isDownloadNotSupported = applicationState.isOnPhone && /xiaomi|miui/i.test(errorHandling.userAgent);
