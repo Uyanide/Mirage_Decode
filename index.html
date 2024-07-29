@@ -10,7 +10,7 @@
         var PrismProcessor = PrismProcessor || {};
     </script>
     <script>
-        applicationState.version = '1.4.9';
+        applicationState.version = '1.4.9.1';
         // version check
         (() => {
             console.log('target version:', applicationState.version);
@@ -259,22 +259,30 @@
                         <label for="coverThresholdInput">或输入: </label>
                         <input type="number" id="coverThresholdInput">
                     </div>
-                    <div id="encodeCheckboxes">
-                        <div id="isCoverGray">
-                            <input type="checkbox" id="isCoverGrayCheckBox">
-                            <label for="isCoverGrayCheckBox">表图是否取灰度</label>
-                        </div>
+                    <slider class="encodeContrastSlider">
+                        <label for="coverContrastRange" class="encodeSliderTitle">2. 表图对比度: </label>
+                        <label for="coverContrastRange">(表图对比度酌情调整)</label>
+                        <label for="coverContrastRange">(此值不会影响显形)</label>
+                        <input type="range" id="coverContrastRange" min="0" max="100">
+                        <button id="coverResetContrastButton">重置对比度</button>
+                    </slider>
+                </div>
+            </div>
 
-                        <div id="isEncodeReverse">
-                            <input type="checkbox" id="isEncodeReverseCheckBox">
-                            <label for="isEncodeReverseCheckBox">是否反色阶隐写</label>
-                        </div>
+            <div id="encodeCheckboxes">
+                <div id="isCoverGray">
+                    <input type="checkbox" id="isCoverGrayCheckBox">
+                    <label for="isCoverGrayCheckBox">表图是否取灰度</label>
+                </div>
 
-                        <div id="isCoverMirage">
-                            <input type="checkbox" id="isCoverMirageCheckBox">
-                            <label for="isCoverMirageCheckBox">表图是否为幻坦<br><small>(实验性功能)</small></label>
-                        </div>
-                    </div>
+                <div id="isEncodeReverse">
+                    <input type="checkbox" id="isEncodeReverseCheckBox">
+                    <label for="isEncodeReverseCheckBox">是否反色阶隐写</label>
+                </div>
+
+                <div id="isCoverMirage">
+                    <input type="checkbox" id="isCoverMirageCheckBox">
+                    <label for="isCoverMirageCheckBox">表图是否为幻坦<br><small>(实验性功能)</small></label>
                 </div>
             </div>
 
@@ -388,8 +396,7 @@
                             识别小米默认浏览器，修复其无法正常下载图片的问题；<br>
                             识别贴吧内置浏览器，阻止其直接访问；<br>
                             支持幻影坦克作为表图；<br>
-                            添加手动切换明暗主题功能，方便观察幻影坦克；<br>
-                            删除表图对比度调整功能。
+                            添加手动切换明暗主题功能，方便观察幻影坦克。
                         </td>
                     </tr>
                 </tbody>

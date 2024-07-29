@@ -12,6 +12,7 @@
     "isPng": false,
     "encodeMethod": "chess",
     "innerContrast": 50,
+    "coverContrast": 50,
     "size": 1200,
     "minSize": 100,
     "maxSize": 4000,
