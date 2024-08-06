@@ -74,6 +74,7 @@ class PrismDecoder {
                     data[i] = (data[i - 4] + data[i - widthTimes4] + data[i - widthTimes4 - 4]) / 3;
                     data[i + 1] = (data[i - 3] + data[i - widthTimes4 + 1] + data[i - widthTimes4 - 3]) / 3;
                     data[i + 2] = (data[i - 2] + data[i - widthTimes4 + 2] + data[i - widthTimes4 - 2]) / 3;
+                    data[i + 3] = (data[i - 1] + data[i - widthTimes4 + 3] + data[i - widthTimes4 - 1]) / 3;
                     break;
                 } else { /* fall through */ }
             case 'lcopy':
@@ -81,6 +82,7 @@ class PrismDecoder {
                     data[i] = data[i - 4];
                     data[i + 1] = data[i - 3];
                     data[i + 2] = data[i - 2];
+                    data[i + 3] = data[i - 1];
                     break;
                 } else { /* fall through */ }
             case 'ucopy':
@@ -88,6 +90,7 @@ class PrismDecoder {
                     data[i] = data[i - widthTimes4];
                     data[i + 1] = data[i - widthTimes4 + 1];
                     data[i + 2] = data[i - widthTimes4 + 2];
+                    data[i + 3] = data[i - widthTimes4 + 3];
                     break;
                 } else { /* fall through */ }
             case 'trans':
@@ -97,11 +100,13 @@ class PrismDecoder {
                 data[i] = 0;
                 data[i + 1] = 0;
                 data[i + 2] = 0;
+                data[i + 3] = 255;
                 break;
             case 'white':
                 data[i] = 255;
                 data[i + 1] = 255;
                 data[i + 2] = 255;
+                data[i + 3] = 255;
                 break;
         }
     }

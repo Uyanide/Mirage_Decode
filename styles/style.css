@@ -186,6 +186,7 @@ button:hover,
 #decodeMethodHint {
     margin-top: 5px;
     font-size: var(--small-font-size);
+    display: none;
 }
 
 #decodeImageSelect {
