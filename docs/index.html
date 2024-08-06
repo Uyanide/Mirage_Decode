@@ -10,7 +10,7 @@
         var PrismProcessor = PrismProcessor || {};
     </script>
     <script>
-        applicationState.version = '1.4.9';
+        applicationState.version = '1.4.10';
         // version check
         (() => {
             console.log('target version:', applicationState.version);
@@ -71,6 +71,7 @@
                 'DefaultArguments',
                 'PrismDecoder',
                 'PrismEncoder',
+                'ImageLoader',
                 'DecodeListeners',
                 'EncodeListeners',
                 'UniversalListeners',
@@ -97,25 +98,16 @@
         gtag('config', 'G-43TMHBXPHM');
     </script>
 
-    <link rel="icon" href="resources/neko.ico" type="image/x-icon">
+    <link rel="icon" href="res/neko.ico" type="image/x-icon">
 
     <title>光棱坦克工厂</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta charset="utf-8">
-    <link rel="stylesheet" type="text/css" href="styles/style.css">
-    <link rel="stylesheet" type="text/css" href="styles/switch.css">
-    <script src="scripts/lib/encoder.js" defer></script>
-    <script src="scripts/lib/piexif.js" defer></script>
-    <script src="scripts/lib/png-metadata.js" defer data-version></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/switch.css">
     <script id="jsonPath" data-json-path="DefaultArguments.json" defer></script>
-    <script src="scripts/DefaultArguments.js" defer data-version></script>
-    <script src="scripts/prismProcessor/PrismDecoder.js" defer data-version></script>
-    <script src="scripts/prismProcessor/PrismEncoder.js" defer data-version></script>
-    <script src="scripts/listeners/DecodeListeners.js" defer data-version></script>
-    <script src="scripts/listeners/EncodeListeners.js" defer data-version></script>
-    <script src="scripts/listeners/UniversalListeners.js" defer data-version></script>
-    <script src="scripts/init.js" defer data-version></script>
+    <script src="src/main.js" defer data-version></script>
 </head>
 
 <body>

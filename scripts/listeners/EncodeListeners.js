@@ -1,8 +1,34 @@
+// (function (root, factory) {
+//     if (typeof define === 'function' && define.amd) {
+//         define([
+//             './ImageLoader.js',
+//             './DecodeListeners.js'
+//         ], factory);
+//     }
+//     else if (typeof module === 'object' && module.exports) {
+//         module.exports = factory(
+//             require(
+//                 './ImageLoader.js',
+//                 './DecodeListeners.js'
+//             )
+//         );
+//     }
+//     else {
+//         root.EncodeListeners = factory(
+//             root.ImageLoader,
+//             root.DecodeListeners
+//         );
+//     }
+// }(typeof self !== 'undefined' ? self : this, function (ImageLoader, DecodeListeners) {
+
+import ImageLoader from './ImageLoader.js';
+import DecodeListeners from './DecodeListeners.js';
+
 // 从文件加载里图
 function encodeLoadInnerImageFile(event) {
     errorHandling.currCanvasIndex = 1;
     const file = event.target.files[0];
-    updateImageFromFile(file, (img) => {
+    ImageLoader.updateImageFromFile(file, (img) => {
         PrismProcessor.PrismEncoder.updateInnerImage(img);
     });
     event.target.value = '';
@@ -12,7 +38,7 @@ function encodeLoadInnerImageFile(event) {
 function encodeLoadCoverImageFile(event) {
     errorHandling.currCanvasIndex = 2;
     const file = event.target.files[0];
-    updateImageFromFile(file, (img) => {
+    ImageLoader.updateImageFromFile(file, (img) => {
         PrismProcessor.PrismEncoder.updateCoverImage(img);
     });
     event.target.value = '';
@@ -26,12 +52,12 @@ function updateMousePosition(event) {
 function encodeLoadImageFromClipboard(event) {
     if (mouseX < window.innerWidth / 2) {
         errorHandling.currCanvasIndex = 1;
-        updateImageFromClipboard(event, (img) => {
+        ImageLoader.updateImageFromClipboard(event, (img) => {
             PrismProcessor.PrismEncoder.updateInnerImage(img);
         });
     } else {
         errorHandling.currCanvasIndex = 2;
-        updateImageFromClipboard(event, (img) => {
+        ImageLoader.updateImageFromClipboard(event, (img) => {
             PrismProcessor.PrismEncoder.updateCoverImage(img);
         });
     }
@@ -40,7 +66,7 @@ function encodeLoadImageFromClipboard(event) {
 // 从拖动加载里图
 function encodeLoadInnerImageFromDrag(event) {
     errorHandling.currCanvasIndex = 1;
-    dragDropLoadImage(event, (img) => {
+    ImageLoader.dragDropLoadImage(event, (img) => {
         PrismProcessor.PrismEncoder.updateInnerImage(img);
     });
 }
@@ -48,7 +74,7 @@ function encodeLoadInnerImageFromDrag(event) {
 // 从拖动加载表图
 function encodeLoadCoverImageFromDrag(event) {
     errorHandling.currCanvasIndex = 2;
-    dragDropLoadImage(event, (img) => {
+    ImageLoader.dragDropLoadImage(event, (img) => {
         PrismProcessor.PrismEncoder.updateCoverImage(img);
     });
 }
@@ -277,19 +303,19 @@ function setSaveType(event) {
 
 // 保存图像
 function encodeSaveImage() {
-    saveImageFromCanvas('outputCanvas', applicationState.isPng, true);
+    ImageLoader.saveImageFromCanvas('outputCanvas', applicationState.isPng, true);
 }
 
 // 以当前结果跳转显形界面
 function jumpToDecode() {
     if (PrismProcessor.PrismEncoder.innerImg && PrismProcessor.PrismEncoder.coverImg) {
-        setDecodeValues(
+        ImageLoader.setDecodeValues(
             PrismProcessor.PrismEncoder.isEncodeReverse,
             PrismProcessor.PrismEncoder.innerThreshold,
             PrismProcessor.PrismEncoder.innerContrast
         );
         const img = new Image();
-        img.src = generateUrlFromCanvas('outputCanvas', applicationState.isPng, false);
+        img.src = ImageLoader.generateUrlFromCanvas('outputCanvas', applicationState.isPng, false);
         img.onload = function () {
             PrismProcessor.PrismDecoder.updateImage(img);
             switchPage();
@@ -297,10 +323,41 @@ function jumpToDecode() {
     }
 }
 
+// 切换页面显示
+function switchPage() {
+    var decodePage = document.getElementById('decodePage');
+    var encodePage = document.getElementById('encodePage');
+    var decodeButton = document.getElementById('decodeButton');
+    var encodeButton = document.getElementById('encodeButton');
+    if (applicationState.currPageId === 'decodePage') {
+        encodePage.style.display = 'flex';
+        decodePage.style.display = 'none';
+        decodeButton.classList.remove('PageSwitchButtonSelected');
+        decodeButton.classList.add('PageSwitchButtonUnselected');
+        encodeButton.classList.remove('PageSwitchButtonUnselected');
+        encodeButton.classList.add('PageSwitchButtonSelected');
+        DecodeListeners.decodeRemoveEventListeners();
+        encodeSetUpEventListeners();
+        applicationState.currPageId = 'encodePage';
+        document.getElementById('decodeButton').addEventListener('click', switchPage);
+        document.getElementById('encodeButton').removeEventListener('click', switchPage);
+    } else {
+        decodePage.style.display = 'flex';
+        encodePage.style.display = 'none';
+        decodeButton.classList.remove('PageSwitchButtonUnselected');
+        decodeButton.classList.add('PageSwitchButtonSelected');
+        encodeButton.classList.remove('PageSwitchButtonSelected');
+        encodeButton.classList.add('PageSwitchButtonUnselected');
+        DecodeListeners.decodeSetupEventListeners();
+        encodeRemoveEventListeners();
+        applicationState.currPageId = 'decodePage';
+        document.getElementById('encodeButton').addEventListener('click', switchPage);
+        document.getElementById('decodeButton').removeEventListener('click', switchPage);
+    }
+}
+
 // 设置编码事件监听器
 function encodeSetUpEventListeners() {
-
-    document.getElementById('decodeButton').addEventListener('click', switchPage);
 
     document.getElementById('innerSourceFileInput').addEventListener('change', encodeLoadInnerImageFile);
     document.getElementById('coverSourceFileInput').addEventListener('change', encodeLoadCoverImageFile);
@@ -335,7 +392,6 @@ function encodeSetUpEventListeners() {
 
 // 移除编码事件监听器
 function encodeRemoveEventListeners() {
-    document.getElementById('decodeButton').removeEventListener('click', switchPage);
     document.getElementById('innerSourceFileInput').removeEventListener('change', encodeLoadInnerImageFile);
     document.getElementById('coverSourceFileInput').removeEventListener('change', encodeLoadCoverImageFile);
     if (!applicationState.isOnPhone) {
@@ -361,5 +417,21 @@ function encodeRemoveEventListeners() {
     document.getElementById('jumpToDecodeButton').removeEventListener('click', jumpToDecode);
     document.getElementById('encodeSaveImageButton').removeEventListener('click', encodeSaveImage);
 }
+
+//     return {
+//         switchPage,
+//         encodeSetUpEventListeners,
+//         encodeRemoveEventListeners
+//     };
+
+// }));
+
+const EncodeListeners = {
+    switchPage,
+    encodeSetUpEventListeners,
+    encodeRemoveEventListeners
+};
+
+export default EncodeListeners;
 
 errorHandling.scriptsLoaded.EncodeListeners = true;

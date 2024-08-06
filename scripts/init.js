@@ -1,3 +1,48 @@
+// (function (root, factory) {
+//     if (typeof define === 'function' && define.amd) {
+//         define([
+//             './prismProcessor/PrismDecoder.js',
+//             './prismProcessor/PrismEncoder.js',
+//             './listeners/UniversalListeners.js',
+//             './listeners/DecodeListeners.js',
+//             './listeners/EncodeListeners.js',
+//             './DefaultArguments.js'
+//         ], factory);
+//     } else if (typeof module === 'object' && module.exports) {
+//         module.exports = factory(
+//             require('./prismProcessor/PrismDecoder.js'),
+//             require('./prismProcessor/PrismEncoder.js'),
+//             require('./listeners/UniversalListeners.js'),
+//             require('./listeners/DecodeListeners.js'),
+//             require('./listeners/EncodeListeners.js'),
+//             require('./DefaultArguments.js')
+//         );
+//     } else {
+//         root.init = factory(
+//             root.PrismDecoder,
+//             root.PrismEncoder,
+//             root.UniversalListeners,
+//             root.DecodeListeners,
+//             root.EncodeListeners,
+//             root.DefaultArguments
+//         );
+//     }
+// }(typeof self !== 'undefined' ? self : this, function (
+//     PrismDecoder,
+//     PrismEncoder,
+//     UniversalListeners,
+//     DecodeListeners,
+//     EncodeListeners,
+//     DefaultArguments
+// ) {
+
+import PrismDecoder from './prismProcessor/PrismDecoder.js';
+import PrismEncoder from './prismProcessor/PrismEncoder.js';
+import UniversalListeners from './listeners/UniversalListeners.js';
+import DecodeListeners from './listeners/DecodeListeners.js';
+import EncodeListeners from './listeners/EncodeListeners.js';
+import DefaultArguments from './DefaultArguments.js';
+
 errorHandling.userAgent = navigator.userAgent.toLowerCase();
 applicationState.isOnPhone = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(errorHandling.userAgent);
 applicationState.isDownloadNotSupported = applicationState.isOnPhone && /xiaomi|miui/i.test(errorHandling.userAgent);
@@ -64,23 +109,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // 设置全局事件监听器
-        universalSetupEventListeners();
+        UniversalListeners.universalSetupEventListeners();
 
         // 显示默认页面
         switch (applicationState.defaultArguments.defaultPageId) {
             case 'encodePage':
-                encodeSetUpEventListeners();
                 document.getElementById('decodePage').style.display = 'none';
                 document.getElementById('encodePage').style.display = 'flex';
                 document.getElementById('encodeButton').classList.add('PageSwitchButtonSelected');
                 document.getElementById('decodeButton').classList.add('PageSwitchButtonUnselected');
+                EncodeListeners.encodeSetUpEventListeners();
+                document.getElementById('decodeButton').addEventListener('click', EncodeListeners.switchPage);
                 break;
             case 'decodePage':
-                decodeSetupEventListeners();
                 document.getElementById('encodePage').style.display = 'none';
                 document.getElementById('decodePage').style.display = 'flex';
                 document.getElementById('decodeButton').classList.add('PageSwitchButtonSelected');
                 document.getElementById('encodeButton').classList.add('PageSwitchButtonUnselected');
+                DecodeListeners.decodeSetupEventListeners();
+                document.getElementById('encodeButton').addEventListener('click', EncodeListeners.switchPage);
                 break;
         }
 
@@ -112,5 +159,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert('初始化失败: ' + error);
     }
 });
+// }));
 
 errorHandling.scriptsLoaded.init = true;

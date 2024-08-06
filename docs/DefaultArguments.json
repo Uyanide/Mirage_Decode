@@ -18,8 +18,8 @@
     "maxSize": 4000,
     "defaultPageId": "decodePage",
     "defaultSrc": [
-        "resources/default.png",
-        "resources/neko.jpg",
-        "resources/buta.jpg"
+        "./res/default.png",
+        "./res/neko.jpg",
+        "./res/buta.jpg"
     ]
 }
