@@ -1,3 +1,16 @@
+// (function (root, factory) {
+//     if (typeof define === 'function' && define.amd) {
+//         define([], factory);
+//     }
+//     else if (typeof module === 'object' && module.exports) {
+//         module.exports = factory(
+//             require(),
+//         );
+//     }
+//     else {
+//         root.DefaultArguments = factory();
+//     }
+// }(typeof self !== 'undefined' ? self : this, function (ImageLoader) {
 class DefaultArguments {
     async loadDefaultArguments(jsonPath) {
         try {
@@ -54,5 +67,11 @@ class DefaultArguments {
         document.getElementById('encodeSizeInput').value = this.size;
     }
 }
+
+// return DefaultArguments;
+
+// }));
+
+export default DefaultArguments;
 
 errorHandling.scriptsLoaded.DefaultArguments = true;

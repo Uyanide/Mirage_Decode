@@ -1,3 +1,25 @@
+// (function (root, factory) {
+//     if (typeof define === 'function' && define.amd) {
+//         define([
+//             '../listeners/ImageLoader.js'
+//         ], factory);
+//     }
+//     else if (typeof module === 'object' && module.exports) {
+//         module.exports = factory(
+//             require(
+//                 '../listeners/ImageLoader.js'
+//             ),
+//         );
+//     }
+//     else {
+//         root.PrismEncoder = factory(
+//             root.ImageLoader
+//         );
+//     }
+// }(typeof self !== 'undefined' ? self : this, function (ImageLoader) {
+
+import ImageLoader from '../listeners/ImageLoader.js';
+
 class PrismEncoder {
     constructor(innerCanvasId, coverCanvasId, outputCanvasId, defaultArguments) {
         this.innerImg = null;
@@ -240,16 +262,21 @@ class PrismEncoder {
     }
 
     adjustInnerContrast() {
-        this.innerImgdataContrast = cloneImageData(this.innerImgdata);
-        adjustContrastImgData(this.innerImgdataContrast, this.innerContrast);
+        this.innerImgdataContrast = ImageLoader.cloneImageData(this.innerImgdata);
+        ImageLoader.adjustContrastImgData(this.innerImgdataContrast, this.innerContrast);
         this.showImage(this.innerImgdataContrast, this.innerCanvas);
     }
 
     adjustCoverContrast() {
-        this.coverImgdataContrast = cloneImageData(this.coverImgdata);
-        adjustContrastImgData(this.coverImgdataContrast, this.coverContrast);
+        this.coverImgdataContrast = ImageLoader.cloneImageData(this.coverImgdata);
+        ImageLoader.adjustContrastImgData(this.coverImgdataContrast, this.coverContrast);
         this.showImage(this.coverImgdataContrast, this.coverCanvas);
     }
 }
+
+// return PrismEncoder;
+// }));
+
+export default PrismEncoder;
 
 errorHandling.scriptsLoaded.PrismEncoder = true;

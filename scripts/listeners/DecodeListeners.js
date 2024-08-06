@@ -1,3 +1,25 @@
+// (function (root, factory) {
+//     if (typeof define === 'function' && define.amd) {
+//         define([
+//             './ImageLoader.js'
+//         ], factory);
+//     }
+//     else if (typeof module === 'object' && module.exports) {
+//         module.exports = factory(
+//             require(
+//                 './ImageLoader.js'
+//             )
+//         );
+//     }
+//     else {
+//         root.DecodeListeners = factory(
+//             root.ImageLoader
+//         );
+//     }
+// }(typeof self !== 'undefined' ? self : this, function (ImageLoader) {
+
+import ImageLoader from './ImageLoader.js';
+
 // 设置是否读取元数据
 function setReadMetadata(event) {
     applicationState.isReadMetadata = event.target.checked;
@@ -7,7 +29,7 @@ function setReadMetadata(event) {
 function decodeLoadImageFile(event) {
     const file = event.target.files[0];
     errorHandling.currCanvasIndex = 0;
-    updateImageFromFile(file, (img) => {
+    ImageLoader.updateImageFromFile(file, (img) => {
         PrismProcessor.PrismDecoder.updateImage(img);
     });
     event.target.value = '';
@@ -16,7 +38,7 @@ function decodeLoadImageFile(event) {
 // 从URL加载图像
 function decodeLoadImageURL(event) {
     errorHandling.currCanvasIndex = 0;
-    updateImageFromURL(event, (img) => {
+    ImageLoader.updateImageFromURL(event, (img) => {
         PrismProcessor.PrismDecoder.updateImage(img);
     });
     event.target.previousElementSibling.value = '';
@@ -25,7 +47,7 @@ function decodeLoadImageURL(event) {
 // 从剪贴板加载图像
 function decodeLoadImageFromClipboard(event) {
     errorHandling.currCanvasIndex = 0;
-    updateImageFromClipboard(event, (img) => {
+    ImageLoader.updateImageFromClipboard(event, (img) => {
         PrismProcessor.PrismDecoder.updateImage(img);
     });
 }
@@ -35,7 +57,7 @@ function decodeLoadImageFromPasteButton() {
     errorHandling.currCanvasIndex = 0;
     document.body.focus();
     const pasteEvent = new ClipboardEvent('paste');
-    updateImageFromClipboardDirect((img) => {
+    ImageLoader.updateImageFromClipboardDirect((img) => {
         PrismProcessor.PrismDecoder.updateImage(img);
     });
 }
@@ -43,7 +65,7 @@ function decodeLoadImageFromPasteButton() {
 // 从拖动加载图像
 function decodeLoadImageFromDrag(event) {
     errorHandling.currCanvasIndex = 0;
-    dragDropLoadImage(event, (img) => {
+    ImageLoader.dragDropLoadImage(event, (img) => {
         PrismProcessor.PrismDecoder.updateImage(img);
     });
 }
@@ -91,7 +113,7 @@ function decodeSetReverse(event) {
 
 // 保存图像
 function decodeSaveImage() {
-    saveImageFromCanvas('decodeCanvas');
+    ImageLoader.saveImageFromCanvas('decodeCanvas');
 }
 
 // 保存原始图像
@@ -104,7 +126,7 @@ function decodeSaveSrcImage() {
     const ctx = canvas.getContext('2d');
     ctx.drawImage(PrismProcessor.PrismDecoder.img, 0, 0);
     document.body.appendChild(canvas);
-    saveImageFromCanvas('temp_srcCanvas', applicationState.isPng, false);
+    ImageLoader.saveImageFromCanvas('temp_srcCanvas', applicationState.isPng, false);
     canvas.remove();
 }
 
@@ -136,9 +158,6 @@ function decodeSetupEventListeners() {
     // 保存图像
     document.getElementById('decodeSaveImageButton').addEventListener('click', decodeSaveImage);
     document.getElementById('decodeSaveSrcImageButton').addEventListener('click', decodeSaveSrcImage);
-
-    // 切换页面
-    document.getElementById('encodeButton').addEventListener('click', switchPage);
 }
 
 // 移除解码事件监听器
@@ -161,7 +180,19 @@ function decodeRemoveEventListeners() {
     document.getElementById('decodeResetContrastButton').removeEventListener('click', decodeResetContrast);
     document.getElementById('decodeSaveImageButton').removeEventListener('click', decodeSaveImage);
     document.getElementById('decodeSaveSrcImageButton').removeEventListener('click', decodeSaveSrcImage);
-    document.getElementById('encodeButton').removeEventListener('click', switchPage);
 }
+
+// return {
+//     decodeSetupEventListeners,
+//     decodeRemoveEventListeners
+// };
+// }));
+
+const DecodeListeners = {
+    decodeSetupEventListeners,
+    decodeRemoveEventListeners
+};
+
+export default DecodeListeners;
 
 errorHandling.scriptsLoaded.DecodeListeners = true;

@@ -1,3 +1,25 @@
+// (function (root, factory) {
+//     if (typeof define === 'function' && define.amd) {
+//         define([
+//             '../listeners/ImageLoader.js'
+//         ], factory);
+//     }
+//     else if (typeof module === 'object' && module.exports) {
+//         module.exports = factory(
+//             require(
+//                 '../listeners/ImageLoader.js'
+//             ),
+//         );
+//     }
+//     else {
+//         root.PrismDecoder = factory(
+//             root.ImageLoader
+//         );
+//     }
+// }(typeof self !== 'undefined' ? self : this, function (ImageLoader) {
+
+import ImageLoader from '../listeners/ImageLoader.js';
+
 class PrismDecoder {
     constructor(decodeCanvasId, defaultArguments) {
         this.img = null;
@@ -28,7 +50,7 @@ class PrismDecoder {
     }
 
     processImage() {
-        this.decodedImgData = cloneImageData(this.imgData);
+        this.decodedImgData = ImageLoader.cloneImageData(this.imgData);
         var data = this.decodedImgData.data;
         if (!this.reverse) {
             var ratio = 255 / this.threshold;
@@ -112,10 +134,16 @@ class PrismDecoder {
     }
 
     adjustContrast() {
-        let imgDataCopy = cloneImageData(this.decodedImgData);
-        adjustContrastImgData(imgDataCopy, this.contrast);
+        let imgDataCopy = ImageLoader.cloneImageData(this.decodedImgData);
+        ImageLoader.adjustContrastImgData(imgDataCopy, this.contrast);
         this.showImage(imgDataCopy);
     }
 }
+
+//     return PrismDecoder;
+
+// }));
+
+export default PrismDecoder;
 
 errorHandling.scriptsLoaded.PrismDecoder = true;
