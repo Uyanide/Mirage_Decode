@@ -1,23 +1,3 @@
-// (function (root, factory) {
-//     if (typeof define === 'function' && define.amd) {
-//         define([
-//             './ImageLoader.js'
-//         ], factory);
-//     }
-//     else if (typeof module === 'object' && module.exports) {
-//         module.exports = factory(
-//             require(
-//                 './ImageLoader.js'
-//             )
-//         );
-//     }
-//     else {
-//         root.DecodeListeners = factory(
-//             root.ImageLoader
-//         );
-//     }
-// }(typeof self !== 'undefined' ? self : this, function (ImageLoader) {
-
 import ImageLoader from './ImageLoader.js';
 
 // 设置是否读取元数据
@@ -194,5 +174,3 @@ const DecodeListeners = {
 };
 
 export default DecodeListeners;
-
-errorHandling.scriptsLoaded.DecodeListeners = true;

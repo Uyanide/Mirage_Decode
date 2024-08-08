@@ -1,26 +1,3 @@
-// (function (root, factory) {
-//     if (typeof define === 'function' && define.amd) {
-//         define([
-//             './ImageLoader.js',
-//             './DecodeListeners.js'
-//         ], factory);
-//     }
-//     else if (typeof module === 'object' && module.exports) {
-//         module.exports = factory(
-//             require(
-//                 './ImageLoader.js',
-//                 './DecodeListeners.js'
-//             )
-//         );
-//     }
-//     else {
-//         root.EncodeListeners = factory(
-//             root.ImageLoader,
-//             root.DecodeListeners
-//         );
-//     }
-// }(typeof self !== 'undefined' ? self : this, function (ImageLoader, DecodeListeners) {
-
 import ImageLoader from './ImageLoader.js';
 import DecodeListeners from './DecodeListeners.js';
 
@@ -433,5 +410,3 @@ const EncodeListeners = {
 };
 
 export default EncodeListeners;
-
-errorHandling.scriptsLoaded.EncodeListeners = true;

@@ -215,9 +215,15 @@ button:hover,
     margin-right: 5px;
 }
 
-#decodeUrlInput input[type=text] {
+#decodeImageUrlInput {
     margin-right: 5px;
     width: 100px;
+    background-color: var(--element-backgound-color);
+    color: var(--front-color);
+    padding: 5px;
+    border: 1px solid var(--element-border-color);
+    border-radius: 5px;
+    font-size: var(--medium-font-size);
 }
 
 #decodePasteInput {

@@ -1,26 +1,3 @@
-// (function (root, factory) {
-//     if (typeof define === 'function' && define.amd) {
-//         define([
-//             './DecodeListeners.js',
-//             './EncodeListeners.js'
-//         ], factory);
-//     }
-//     else if (typeof module === 'object' && module.exports) {
-//         module.exports = factory(
-//             require(
-//                 './DecodeListeners.js',
-//                 './EncodeListeners.js'
-//             ),
-//         );
-//     }
-//     else {
-//         root.UniversalListeners = factory(
-//             root.DecodeListeners,
-//             root.EncodeListeners
-//         );
-//     }
-// }(typeof self !== 'undefined' ? self : this, function (DecodeListeners, EncodeListeners) {
-
 function universalSetupEventListeners() {
     // 隐私政策按钮事件监听
     document.getElementById('togglePrivacyPolicy').addEventListener('click', (event) => {
@@ -62,16 +39,8 @@ function universalSetupEventListeners() {
     });
 }
 
-//     return {
-//         universalSetupEventListeners,
-//     };
-
-// }));
-
 const UniversalListeners = {
     universalSetupEventListeners,
 };
 
 export default UniversalListeners;
-
-errorHandling.scriptsLoaded.UniversalListeners = true;
