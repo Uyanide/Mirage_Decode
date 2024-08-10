@@ -61,9 +61,11 @@ function setDecodeValues(isReverse, threshold, contrast) {
     if (threshold !== undefined) {
         if (isReverse) {
             document.getElementById('decodeThresholdRange').value = 255 - threshold;
+            document.getElementById('decodeThresholdInput').value = 255 - threshold;
             PrismProcessor.PrismDecoder.threshold = 255 - threshold;
         } else {
             document.getElementById('decodeThresholdRange').value = threshold;
+            document.getElementById('decodeThresholdInput').value = threshold;
             PrismProcessor.PrismDecoder.threshold = threshold;
         }
     }
