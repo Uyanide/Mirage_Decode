@@ -39,21 +39,7 @@
     transition: background-color 0.3s ease-in-out;
 }
 
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin-top: 30px;
-    background-color: var(--background-color);
-    color: var(--front-color);
-}
-
-input[type=text],
-input[type=number],
-button,
-.fileInputLabel,
-select {
+.inputReact {
     background-color: var(--element-backgound-color);
     color: var(--front-color);
     padding: 5px;
@@ -66,65 +52,19 @@ input[type=file] {
     display: none;
 }
 
-button:hover,
-.link:hover,
-.fileInputLabel:hover,
-input[type="checkbox"]:hover {
-    transform: scale(1.05);
-    transition: transform 0.2s;
-}
-
-button:hover,
-.fileInputLabel:hover {
-    background-color: var(--element-backgound-color);
+Canvas {
+    border: 1px solid var(--element-border-color);
 }
 
 /**********************************************/
 
 .title {
     font-size: clamp(30px, 5vw, 50px);
-    margin-bottom: 10px;
-}
-
-#infoLink {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    font-size: var(--small-font-size);
-}
-
-#infoLink p {
-    margin-top: 5px;
-    margin-bottom: 5px;
 }
 
 .PageContainer {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: 90%;
     max-width: 1000px;
     min-width: 300px;
-    padding: 20px;
-}
-
-.TitleContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-direction: row;
-    gap: 5px;
-    width: 100%;
-}
-
-.PageSwitchButton {
-    padding: 15px;
-    width: 100%;
-    border: none;
-    border-radius: 10px 10px 0 0;
-    font-size: var(--medium-font-size);
-    background-color: var(--background-color);
 }
 
 .PageSwitchButtonUnselected {
@@ -135,370 +75,35 @@ button:hover,
     background-color: var(--secondary-background-color);
 }
 
-.PageSwitchButton:hover {
-    transform: none;
-    background-color: var(--secondary-background-color);
-    transition: background-color 0.2s;
-}
-
-.DisplayArea {
-    background-color: var(--secondary-background-color);
-
-    color: var(--front-color);
-    border-radius: 0 0 15px 15px;
-    margin-top: 0px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    width: 100%;
-    position: relative;
-}
-
-#decodePage {
-    display: flex;
-}
-
-#encodePage {
-    display: none;
-}
-
 /**********************************************/
-
-#isReadMetadata {
-    margin-top: 20px;
-}
-
-#isReadMetadata label {
-    font-size: var(--small-font-size);
-}
-
-#decodeMethodSelect {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-}
-
-#decodeMethodSelect select {
-    margin-left: 5px;
-}
-
-#decodeMethodHint {
-    margin-top: 5px;
-    font-size: var(--small-font-size);
-    display: none;
-}
-
-#decodeImageSelect {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-}
-
-#decodeFileInput {
-    display: flex;
-    align-items: center;
-}
-
-#decodeFileInput label {
-    margin-left: 5px;
-}
-
-#decodeUrlInput {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-}
-
-#decodeUrlInput label {
-    margin-right: 5px;
-}
 
 #decodeImageUrlInput {
-    margin-right: 5px;
     width: 100px;
-    background-color: var(--element-backgound-color);
-    color: var(--front-color);
-    padding: 5px;
-    border: 1px solid var(--element-border-color);
-    border-radius: 5px;
-    font-size: var(--medium-font-size);
 }
 
-#decodePasteInput {
-    display: flex;
-    align-items: center;
-    margin-top: 10px;
-}
-
-#decodePasteButton {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-top: 10px;
-}
-
-#decodePasteButton button {
-    margin-left: 5px;
-}
-
-#decodeDragInputHint {
-    margin-top: 10px;
-}
-
-#decodeCanvas {
-    max-width: min(90%, 600px);
-    margin-top: 20px;
-}
-
-.decodeSlider {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 90%;
-    max-width: 600px;
-    margin-top: 20px;
-}
-
-.decodeSlider input[type=range] {
-    margin-top: 5px;
-    width: 80%;
-}
-
-.decodeSlider button {
-    margin-top: 5px;
-}
-
-.decodeThresInput {
-    display: flex;
-    align-items: center;
-    margin-top: 5px;
-}
-
-.decodeThresInput input {
+#decodeThresholdInput {
     width: 50px;
-    margin-left: 5px;
-}
-
-.checkbox {
-    display: flex;
-    max-width: 90%;
-}
-
-#decodeReverseCheckbox {
-    margin-top: 5px;
-}
-
-Canvas {
-    border: 1px solid var(--element-border-color);
-}
-
-.saveButton {
-    margin-top: 20px;
-}
-
-.saveHint {
-    margin-top: 5px;
-    font-size: var(--small-font-size);
-    margin-bottom: 20px;
 }
 
 /**********************************************/
 
-#encodeSourceInput {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    margin-top: 20px;
-    width: 90%;
-}
-
-.encodeFileInput {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 50%;
-}
-
-.fileInputLabel {
-    background-color: var(--element-backgound-color);
-    color: var(--front-color);
-    border: 1px solid var(--element-border-color);
-    border-radius: 5px;
-    padding: 5px;
-    cursor: pointer;
-}
-
-.encodeDrag {
-    margin-top: 10px;
-    font-size: var(--small-font-size);
-}
-
-#innerCanvas,
-#coverCanvas {
-    /* max-width: min(90%, 400px); */
-    width: 90%;
-    margin-top: 20px;
-}
-
-.encodeSlider {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-    width: 90%;
-}
-
-.encodeSlider input[type=range] {
-    width: 90%;
+#innerThresholdRange,
+#coverThresholdRange,
+#innerContrastRange,
+#coverContrastRange {
     max-width: 320px;
-    margin-top: 5px;
 }
 
-.encodeSlider label:not(.encodeSliderTitle),
-.encodeContrastSlider label:not(.encodeSliderTitle) {
-    font-size: var(--small-font-size);
-    margin-top: 5px;
-}
-
-.thresInput {
-    display: flex;
-    align-items: center;
-    margin-top: 5px;
-}
-
-.thresInput input {
+#innerThresholdInput,
+#coverThresholdInput {
     width: 50px;
-    margin-left: 5px;
 }
 
-#isCoverGray,
-#isEncodeReverse,
-#isCoverMirage,
-#isPng {
-    display: flex;
-    align-items: center;
-    margin-top: 9px;
-}
-
-#encodeCheckboxes {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.encodeContrastSlider {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 10px;
-    width: 90%;
-}
-
-.encodeContrastSlider input[type=range] {
-    width: 90%;
-    max-width: 320px;
-    margin-top: 5px;
-}
-
-.encodeContrastSlider button {
-    margin-top: 5px;
-}
-
-#outputCanvas {
-    /* max-width: min(85%, 850px); */
-    width: 75%;
-    margin-top: 20px;
-}
-
-#encodeOutputSizeLimit {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    margin-top: 10px;
-}
-
-#encodeOutputSizeLimit input[type=number] {
+#encodeSizeInput {
     width: 60px;
-    margin-left: 5px;
-}
-
-#encodeMethod {
-    display: flex;
-    align-items: center;
-    margin-top: 20px;
-}
-
-#encodeMethod select {
-    margin-left: 5px;
-}
-
-#jumpButton {
-    margin-top: 20px;
 }
 
 /**********************************************/
-
-#versionInfo {
-    margin-top: 20px;
-    font-size: var(--large-font-size);
-    margin-bottom: 0px;
-}
-
-#refreshHint {
-    margin-top: 5px;
-    font-size: var(--small-font-size);
-    margin-bottom: 10px;
-}
-
-a {
-    color: var(--link-color);
-}
-
-.link {
-    margin-top: 10px;
-    font-size: var(--small-font-size);
-}
-
-#privacyButton {
-    margin-top: 5px;
-}
-
-#privacyButton button,
-#versionRecordButton button {
-    background-color: var(--background-color);
-    color: var(--link-color);
-    border: 0px;
-    font-size: var(--small-font-size);
-}
-
-#privacyPolicy {
-    background-color: var(--secondary-background-color);
-    text-align: center;
-    color: var(--front-color);
-    max-width: min(100%, 600px);
-    font-size: var(--small-font-size);
-    display: none;
-    padding: 10px;
-    border-radius: 20px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
-
-#versionRecordTable {
-    background-color: var(--secondary-background-color);
-    border-collapse: collapse;
-    font-size: var(--small-font-size);
-    max-width: min(100%, 600px);
-    padding: 10px;
-    border-radius: 20px;
-    display: none;
-    margin-top: 10px;
-    margin-bottom: 10px;
-}
 
 #versionRecordTable td {
     padding: 10px;

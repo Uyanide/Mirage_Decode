@@ -1,0 +1,74 @@
+:root {
+    --sidebar-width: 200px;
+    --sidebar-padding: 30px;
+}
+
+.sidebarContainer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: var(--sidebar-width);
+    height: 100%;
+    background-color: var(--secondary-background-color);
+    border-left: 5px solid var(--element-backgound-color);
+    box-shadow: -5px 0 10px rgba(0, 0, 0, 0.1);
+    padding: var(--sidebar-padding);
+    z-index: 100;
+    transition: transform 0.5s, background-color 0.3s ease-in-out;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.sidebarHide {
+    transform: translateX(calc(var(--sidebar-width) + var(--sidebar-padding)));
+}
+
+.sidebarShow {
+    transform: translateX(0);
+}
+
+.sidebarContent {
+    width: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.sidebarContent Canvas {
+    width: 90%;
+    margin-top: 20px;
+}
+
+.sidebarToggle {
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    box-shadow: -5px 0 10px rgba(0, 0, 0, 0.1);
+    transform: translateY(-50%);
+    transform: translateX(-50%);
+    width: 40px;
+    height: 40px;
+    background-color: var(--element-backgound-color);
+    color: var(--front-color);
+    font-size: var(--large-font-size);
+    border: 0px solid;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 101;
+}
+
+#sidebarClearButton {
+    margin-top: 10px;
+}
+
+#sidebarHint {
+    font-size: var(--small-font-size);
+}
+
+.canvasSelected {
+    border: var(--front-color) 5px solid;
+}

@@ -2,6 +2,8 @@ import piexif from '../lib/piexif.js';
 import JPEGEncoder from '../lib/encoder.js';
 import metadata from '../lib/png-metadata.js';
 
+/************************Image Process***********************/
+
 function copyImage(img) {
     const canvas = document.createElement('canvas');
     canvas.width = img.width;
@@ -35,19 +37,15 @@ function cloneImageData(imageData) {
     return new ImageData(new Uint8ClampedArray(imageData.data), imageData.width, imageData.height);
 }
 
-applicationState.currCanvasIndex = 0;
-function handleImageLoadError(error, callback) {
-    alert('无法加载图像, 请确定文件类型和状态。' + error);
-    if (errorHandling.defaultImg[errorHandling.currCanvasIndex].src) {
-        const img = new Image();
-        img.src = copyImage(errorHandling.defaultImg[errorHandling.currCanvasIndex]);
-        img.onload = () => {
-            callback(img);
-        };
-    }
-}
+/************************Metadata Process***********************/
 
-function setDecodeValues(isReverse, threshold, contrast) {
+function setDecodeValues(parameters) {
+    if (!parameters || !parameters.isValid) {
+        return;
+    }
+    const isReverse = parameters.isReverse;
+    const threshold = parameters.innerThreshold;
+    const contrast = parameters.innerContrast;
     if (contrast !== undefined) {
         document.getElementById('decodeContrastRange').value = 100 - contrast;
         PrismProcessor.PrismDecoder.contrast = 100 - contrast;
@@ -115,44 +113,36 @@ function getParametersFromString(str) {
     };
 }
 
-function setDecodeValuesWithJPEGMetadata(img) {
-    if (!applicationState.isReadMetadata) {
-        return;
-    }
-    try {
+function getParametersFromMetadata(img) {
+    if (img.src.startsWith('data:image/jpeg;base64,')) {
         const exif = piexif.load(img.src);
         const infoString = exif['0th'][piexif.ImageIFD.Make];
-        const { isValid, isReverse, innerThreshold, innerContrast } = getParametersFromString(infoString);
-        if (isValid) {
-            setDecodeValues(isReverse, innerThreshold, innerContrast);
-        }
-    } catch (error) {
-        throw error;
-    }
-}
-
-function setDecodeValuesWithPNGMetadata(img) {
-    if (!applicationState.isReadMetadata) {
-        return;
-    }
-    try {
+        return getParametersFromString(infoString);
+    } else if (img.src.startsWith('data:image/png;base64,')) {
         const binaryString = atob(img.src.split(',')[1]);
         let chunkList = metadata.splitChunk(binaryString);
         for (let i in chunkList) {
             let chunk = chunkList[i];
             if (chunk.type === 'tEXt' || chunk.type === 'PRSM'/*前朝余孽*/) {
                 let infoString = chunk.data;
-                const { isValid, isReverse, innerThreshold, innerContrast } = getParametersFromString(infoString);
-                if (isValid) {
-                    setDecodeValues(isReverse, innerThreshold, innerContrast);
-                }
-                break;
+                return getParametersFromString(infoString);
             }
         }
-    } catch (error) {
-        throw error;
+    } else {
+        return {
+            isValid: false
+        };
     }
 }
+
+function setDecodeValuesWithMetadata(img) {
+    if (!applicationState.isReadMetadata) {
+        return;
+    }
+    setDecodeValues(getParametersFromMetadata(img));
+}
+
+/************************Image Loader***********************/
 
 function convertBlobToBase64(blob) {
     return new Promise((resolve, reject) => {
@@ -167,6 +157,18 @@ function convertBlobToBase64(blob) {
     });
 }
 
+applicationState.currCanvasIndex = 0;
+function handleImageLoadError(error, callback) {
+    alert('无法加载图像, 请确定文件类型和状态。' + error);
+    if (errorHandling.defaultImg[errorHandling.currCanvasIndex].src) {
+        const img = new Image();
+        img.src = copyImage(errorHandling.defaultImg[errorHandling.currCanvasIndex]);
+        img.onload = () => {
+            callback(img);
+        };
+    }
+}
+
 // 从源加载图像并返回
 async function loadImage(input, timeout = 5000) {
     return new Promise((resolve, reject) => {
@@ -177,11 +179,7 @@ async function loadImage(input, timeout = 5000) {
             clearTimeout(timer);
             if (errorHandling.currCanvasIndex === 0) {
                 try {
-                    if (img.src.startsWith('data:image/jpeg;base64,')) {
-                        setDecodeValuesWithJPEGMetadata(img);
-                    } else if (img.src.startsWith('data:image/png;base64,')) {
-                        setDecodeValuesWithPNGMetadata(img);
-                    }
+                    setDecodeValuesWithMetadata(img);
                 } catch (error) {
                     console.error('failed to read metadata: ' + error);
                 }
@@ -418,6 +416,7 @@ const ImageLoader = {
     copyImage,
     adjustContrastImgData,
     cloneImageData,
+    getParametersFromMetadata,
     setDecodeValues,
     updateImageFromFile,
     updateImageFromURL,

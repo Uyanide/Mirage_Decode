@@ -1,53 +1,197 @@
 import ImageLoader from './ImageLoader.js';
 
+// 调整侧边栏宽度
+function disableHorizontalScroll() {
+    document.documentElement.style.overflowX = 'hidden';
+}
+function enableHorizontalScroll() {
+    document.documentElement.style.overflowX = 'auto';
+}
+function hideSidebarFullscreen(event) {
+    if (!document.getElementById('isDarkmodeContainer').contains(event.target) && (event.target.id == 'sidebarToggleButton' || !document.getElementById('sidebar').contains(event.target))) {
+        hideSidebar();
+    }
+}
+const showSidebar = () => {
+    applicationState.sidebarVisible = true;
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.remove('sidebarHide');
+    sidebar.classList.add('sidebarShow');
+    setTimeout(() => {
+        document.addEventListener('click', hideSidebarFullscreen);
+    }, 500);
+    sidebar.removeEventListener('click', showSidebar);
+}
+const hideSidebar = () => {
+    if (applicationState.dontCareSidebarClick) {
+        applicationState.dontCareSidebarClick = false;
+        return;
+    }
+    applicationState.sidebarVisible = false;
+    const sidebar = document.getElementById('sidebar');
+    sidebar.classList.remove('sidebarShow');
+    sidebar.classList.add('sidebarHide');
+    document.removeEventListener('click', hideSidebarFullscreen);
+    setTimeout(() => {
+        sidebar.addEventListener('click', showSidebar);
+    }, 500);
+}
+function adjustSidebarWidth(event) {
+    if (!applicationState.sidebarVisible) {
+        showSidebar();
+        return;
+    }
+    disableHorizontalScroll();
+    const initWidth = getComputedStyle(document.documentElement).getPropertyValue('--sidebar-width');
+    const initX = event.clientX || event.touches[0].clientX;
+    const parentWidth = document.documentElement.getBoundingClientRect().width;
+    const minWidth = parentWidth * 0.1;
+    const maxWidth = parentWidth * 0.7;
+    let offset = 0;
+
+    const adjustMouse = (event) => {
+        applicationState.dontCareSidebarClick = true;
+        offset = event.clientX - initX;
+        const newWidth = Math.min((Math.max((parseInt(initWidth) - offset), minWidth)), maxWidth);
+        document.documentElement.style.setProperty('--sidebar-width', `${newWidth}px`);
+    };
+
+    const adjustTouch = (event) => {
+        applicationState.dontCareSidebarClick = true;
+        offset = event.touches[0].clientX - initX;
+        const newWidth = Math.min((Math.max((parseInt(initWidth) - offset), minWidth)), maxWidth);
+        document.documentElement.style.setProperty('--sidebar-width', `${newWidth}px`);
+    };
+
+    const adjustEnd = () => {
+        document.removeEventListener('mousemove', adjustMouse);
+        document.removeEventListener('mouseup', adjustEnd);
+        document.removeEventListener('touchmove', adjustTouch);
+        document.removeEventListener('touchend', adjustEnd);
+        enableHorizontalScroll();
+    }
+
+    applicationState.dontCareSidebarClick = false;
+    if (!applicationState.isOnPhone) {
+        document.addEventListener('mousemove', adjustMouse);
+        document.addEventListener('mouseup', adjustEnd);
+    } else {
+        document.addEventListener('touchmove', adjustTouch);
+        document.addEventListener('touchend', adjustEnd);
+    }
+}
+
 // 设置是否读取元数据
 function setReadMetadata(event) {
     applicationState.isReadMetadata = event.target.checked;
 }
 
-// 从文件加载图像
-function decodeLoadImageFile(event) {
-    const file = event.target.files[0];
-    errorHandling.currCanvasIndex = 0;
-    ImageLoader.updateImageFromFile(file, (img) => {
-        PrismProcessor.PrismDecoder.updateImage(img);
+// 处理文件队列
+async function decodeProcessList(fileList) {
+    let first = PrismProcessor.DecodeList.getListLength();
+    if (first >= applicationState.defaultArguments.maxListSize) {
+        PrismProcessor.DecodeList.clear();
+        first = 0;
+    }
+    const promises = fileList.map((file) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                const img = new Image();
+                img.onload = () => {
+                    PrismProcessor.DecodeList.appendList(img);
+                    resolve();
+                };
+                img.onerror = reject;
+                img.src = event.target.result;
+            };
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+        });
     });
-    event.target.value = '';
+
+    await Promise.all(promises);
+    if (fileList.length > 1) {
+        showSidebar();
+    }
+
+    const canvas = document.getElementById(`nr${first}`);
+    if (canvas) {
+        canvas.dispatchEvent(new Event('click'));
+    } else {
+        PrismProcessor.PrismDecoder.clearCanvas();
+    }
+}
+
+// 从文件加载图像
+async function decodeLoadImageFile(event) {
+    const fileList = event.target.files;
+    if (fileList.length === 0) {
+        return;
+    }
+    try {
+        await decodeProcessList(Array.from(fileList));
+        event.target.value = '';
+    } catch (error) {
+        console.error('Failed to load image:', error.stack, error.message);
+        alert('加载图像失败！' + error.message);
+    }
 }
 
 // 从URL加载图像
 function decodeLoadImageURL(event) {
     errorHandling.currCanvasIndex = 0;
     ImageLoader.updateImageFromURL(event, (img) => {
-        PrismProcessor.PrismDecoder.updateImage(img);
+        PrismProcessor.DecodeList.appendList(img);
+        document.getElementById(`nr${PrismProcessor.DecodeList.getListLength() - 1}`).dispatchEvent(new Event('click'));
     });
     event.target.previousElementSibling.value = '';
 }
 
 // 从剪贴板加载图像
-function decodeLoadImageFromClipboard(event) {
-    errorHandling.currCanvasIndex = 0;
-    ImageLoader.updateImageFromClipboard(event, (img) => {
-        PrismProcessor.PrismDecoder.updateImage(img);
-    });
+async function decodeLoadImageFromClipboard(event) {
+    try {
+        const files = [];
+        const items = (event.clipboardData || event.originalEvent.clipboardData).items;
+        for (const item of items) {
+            if (item.type.indexOf('image') !== -1) {
+                const blob = item.getAsFile();
+                files.push(blob);
+            }
+        }
+        if (files.length === 0) {
+            return;
+        }
+        await decodeProcessList(files);
+    } catch (error) {
+        alert('图像加载失败：' + error.message);
+        console.error('Failed to load image:', error.stack, error.message);
+    }
 }
 
 // 从粘贴按钮加载图像
 function decodeLoadImageFromPasteButton() {
     errorHandling.currCanvasIndex = 0;
     document.body.focus();
-    const pasteEvent = new ClipboardEvent('paste');
     ImageLoader.updateImageFromClipboardDirect((img) => {
-        PrismProcessor.PrismDecoder.updateImage(img);
+        PrismProcessor.DecodeList.appendList(img);
+        document.getElementById(`nr${PrismProcessor.DecodeList.getListLength() - 1}`).dispatchEvent(new Event('click'));
     });
 }
 
 // 从拖动加载图像
-function decodeLoadImageFromDrag(event) {
-    errorHandling.currCanvasIndex = 0;
-    ImageLoader.dragDropLoadImage(event, (img) => {
-        PrismProcessor.PrismDecoder.updateImage(img);
-    });
+async function decodeLoadImageFromDrag(event) {
+    try {
+        event.preventDefault();
+        const files = event.dataTransfer.files;
+        if (files.length === 0) {
+            return;
+        }
+        await decodeProcessList(Array.from(files));
+    } catch (error) {
+        alert('图像加载失败：' + error.message);
+        console.error('Failed to load image:', error.stack, error.message);
+    }
 }
 
 // 设置阈值
@@ -160,7 +304,7 @@ function decodeSetupEventListeners() {
     // 参数调整事件监听
     document.getElementById('decodeThresholdRange').addEventListener('input', decodeSetThreshold);
     document.getElementById('decodeThresholdInput').addEventListener('input', decodeSetThresholdInput);
-    document.getElementById('decodeMethodSelect').addEventListener('change', decodeSetCoverMethod);
+    document.getElementById('optionSelect').addEventListener('change', decodeSetCoverMethod);
     document.getElementById('decodeReverseInput').addEventListener('change', decodeSetReverse);
     document.getElementById('decodeContrastRange').addEventListener('input', decodeSetContrast);
     document.getElementById('decodeResetContrastButton').addEventListener('click', decodeResetContrast);
@@ -185,7 +329,7 @@ function decodeRemoveEventListeners() {
     }
     document.getElementById('decodeThresholdRange').removeEventListener('input', decodeSetThreshold);
     document.getElementById('decodeThresholdInput').removeEventListener('input', decodeSetThresholdInput);
-    document.getElementById('decodeMethodSelect').removeEventListener('change', decodeSetCoverMethod);
+    document.getElementById('optionSelect').removeEventListener('change', decodeSetCoverMethod);
     document.getElementById('decodeReverseInput').removeEventListener('change', decodeSetReverse);
     document.getElementById('decodeContrastRange').removeEventListener('input', decodeSetContrast);
     document.getElementById('decodeResetContrastButton').removeEventListener('click', decodeResetContrast);
@@ -201,7 +345,10 @@ function decodeRemoveEventListeners() {
 
 const DecodeListeners = {
     decodeSetupEventListeners,
-    decodeRemoveEventListeners
+    decodeRemoveEventListeners,
+    adjustSidebarWidth,
+    showSidebar,
+    hideSidebar
 };
 
 export default DecodeListeners;

@@ -62,7 +62,7 @@ module.exports = {
         minimize: true,
         minimizer: [new TerserPlugin()],
         splitChunks: {
-            chunks: 'all', // 分割所有类型的代码
+            chunks: 'all',
             cacheGroups: {
                 vendors: {
                     test: /[\\/]node_modules[\\/]/,
@@ -77,11 +77,6 @@ module.exports = {
                 jpegEncoder: {
                     test: /[\\/]lib[\\/]encoder\.js$/,
                     name: 'jpegEncoder',
-                    chunks: 'all',
-                },
-                metadata: {
-                    test: /[\\/]lib[\\/]png-metadata\.js$/,
-                    name: 'metadata',
                     chunks: 'all',
                 },
             },

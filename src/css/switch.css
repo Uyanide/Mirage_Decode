@@ -1,7 +1,16 @@
 .switchContainer {
+    position: fixed;
+    left: 10px;
+    bottom: 10px;
     display: flex;
-    justify-content: center;
     align-items: center;
+    padding: 5px 20px;
+    cursor: pointer;
+    background-color: var(--secondary-background-color);
+    border-radius: 40px;
+    border: 1px solid var(--element-border-color);
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.1);
+    z-index: 1;
 }
 
 .switchContainer p {

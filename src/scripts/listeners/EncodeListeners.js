@@ -287,9 +287,12 @@ function encodeSaveImage() {
 function jumpToDecode() {
     if (PrismProcessor.PrismEncoder.innerImg && PrismProcessor.PrismEncoder.coverImg) {
         ImageLoader.setDecodeValues(
-            PrismProcessor.PrismEncoder.isEncodeReverse,
-            PrismProcessor.PrismEncoder.innerThreshold,
-            PrismProcessor.PrismEncoder.innerContrast
+            {
+                isValid: true,
+                isReverse: PrismProcessor.PrismEncoder.isEncodeReverse,
+                innerThreshold: PrismProcessor.PrismEncoder.innerThreshold,
+                innerContrast: PrismProcessor.PrismEncoder.innerContrast
+            }
         );
         const img = new Image();
         img.src = ImageLoader.generateUrlFromCanvas('outputCanvas', applicationState.isPng, false);
@@ -307,8 +310,8 @@ function switchPage() {
     var decodeButton = document.getElementById('decodeButton');
     var encodeButton = document.getElementById('encodeButton');
     if (applicationState.currPageId === 'decodePage') {
-        encodePage.style.display = 'flex';
-        decodePage.style.display = 'none';
+        encodePage.classList.add('displayFlex');
+        decodePage.classList.remove('displayFlex');
         decodeButton.classList.remove('PageSwitchButtonSelected');
         decodeButton.classList.add('PageSwitchButtonUnselected');
         encodeButton.classList.remove('PageSwitchButtonUnselected');
@@ -319,8 +322,8 @@ function switchPage() {
         document.getElementById('decodeButton').addEventListener('click', switchPage);
         document.getElementById('encodeButton').removeEventListener('click', switchPage);
     } else {
-        decodePage.style.display = 'flex';
-        encodePage.style.display = 'none';
+        decodePage.classList.add('displayFlex');
+        encodePage.classList.remove('displayFlex');
         decodeButton.classList.remove('PageSwitchButtonUnselected');
         decodeButton.classList.add('PageSwitchButtonSelected');
         encodeButton.classList.remove('PageSwitchButtonSelected');

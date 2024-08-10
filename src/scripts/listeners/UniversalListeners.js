@@ -1,3 +1,5 @@
+import DecodeListeners from "./DecodeListeners";
+
 function universalSetupEventListeners() {
     // 隐私政策按钮事件监听
     document.getElementById('togglePrivacyPolicy').addEventListener('click', (event) => {
@@ -37,6 +39,9 @@ function universalSetupEventListeners() {
         const theme = event.target.checked ? 'dark' : 'light';
         applyTheme(theme);
     });
+
+    document.getElementById('sidebarToggleButton').addEventListener(applicationState.isOnPhone ? 'touchstart' : 'mousedown', DecodeListeners.adjustSidebarWidth);
+    document.getElementById('sidebar').addEventListener('click', DecodeListeners.showSidebar);
 }
 
 const UniversalListeners = {

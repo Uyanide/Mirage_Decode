@@ -16,5 +16,6 @@
     "size": 1200,
     "minSize": 100,
     "maxSize": 4000,
-    "defaultPageId": "decodePage"
+    "defaultPageId": "decodePage",
+    "maxListSize": 20
 }

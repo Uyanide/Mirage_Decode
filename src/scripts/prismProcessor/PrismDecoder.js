@@ -118,10 +118,10 @@ class PrismDecoder {
         ImageLoader.adjustContrastImgData(imgDataCopy, this.contrast);
         this.showImage(imgDataCopy);
     }
+
+    clearCanvas = () => {
+        this.decodeCanvas.width = this.decodeCanvas.width;
+    }
 }
-
-//     return PrismDecoder;
-
-// }));
 
 export default PrismDecoder;

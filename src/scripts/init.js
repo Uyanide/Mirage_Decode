@@ -1,8 +1,11 @@
 import '../css/style.css';
+import '../css/classes.css';
 import '../css/switch.css';
+import '../css/sidebar.css';
 
 import PrismDecoder from './prismProcessor/PrismDecoder.js';
 import PrismEncoder from './prismProcessor/PrismEncoder.js';
+import DecodeList from './listeners/DecodeList.js';
 import UniversalListeners from './listeners/UniversalListeners.js';
 import EncodeListeners from './listeners/EncodeListeners.js';
 import DefaultArguments from './DefaultArguments.js';
@@ -44,15 +47,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // 加载默认参数
-        applicationState.defaultArguments = new DefaultArguments();
-        await applicationState.defaultArguments.loadDefaultArguments();
-        applicationState.defaultArguments.setDefaultValues();
+        applicationState.defaultArguments = DefaultArguments.loadDefaultArguments();
+        DefaultArguments.setDefaultValues();
         applicationState.isPng = applicationState.defaultArguments.isPng;
         applicationState.isReadMetadata = applicationState.defaultArguments.isReadMetadata;
 
         // 实例化解码器和编码器
         PrismProcessor.PrismDecoder = new PrismDecoder('decodeCanvas', applicationState.defaultArguments);
         PrismProcessor.PrismEncoder = new PrismEncoder('innerCanvas', 'coverCanvas', 'outputCanvas', applicationState.defaultArguments);
+        PrismProcessor.DecodeList = new DecodeList('sidebarContent', 'sidebarAmountLabel', 'sidebarClearButton');
 
         // 加载默认图像
         errorHandling.defaultImg = [];
@@ -118,6 +121,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     } catch (error) {
         console.error('Failed to initialize: ' + error);
-        alert('初始化失败: ' + error);
+        alert('初始化失败: ' + error.message);
+        console.error('Failed to initialize: ' + error.stack, error.message);
     }
 });
