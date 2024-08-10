@@ -223,6 +223,10 @@
     width: 90%;
 }
 
+.refWidthMedium {
+    width: 70%;
+}
+
 .refWidthFull {
     width: 100%;
 }
