@@ -766,27 +766,6 @@ function JPEGEncoder(quality) {
 
 };
 
-// if (typeof module !== 'undefined') {
-//     module.exports = encode;
-// } else if (typeof window !== 'undefined') {
-//     window['jpeg-js'] = window['jpeg-js'] || {};
-//     window['jpeg-js'].encode = encode;
-// }
-
-// (function (root, factory) {
-//     if (typeof define === 'function' && define.amd) {
-//         define([], factory);
-//     }
-//     else if (typeof module === 'object' && module.exports) {
-//         module.exports = factory();
-//     }
-//     else {
-//         root.JPEGEncoder = factory();
-//     }
-// }(typeof self !== 'undefined' ? self : this, function () {
-//     return JPEGEncoder;
-// }));
-
 export default JPEGEncoder;
 
 function encode(imgData, qu) {
@@ -811,5 +790,3 @@ function getImageDataFromImage(idOrElement) {
 
     return (ctx.getImageData(0, 0, cvs.width, cvs.height));
 }
-
-errorHandling.scriptsLoaded.encoder = true;

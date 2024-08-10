@@ -2462,30 +2462,4 @@ that.GPSHelper = {
     }
 };
 
-
-// if (typeof exports !== 'undefined') {
-//     if (typeof module !== 'undefined' && module.exports) {
-//         exports = module.exports = that;
-//     }
-//     exports.piexif = that;
-// } else {
-//     window.piexif = that;
-// }
-
-// (function (root, factory) {
-//     if (typeof define === 'function' && define.amd) {
-//         define([], factory);
-//     }
-//     else if (typeof module === 'object' && module.exports) {
-//         module.exports = factory();
-//     }
-//     else {
-//         root.piexif = factory();
-//     }
-// }(typeof self !== 'undefined' ? self : this, function () {
-//     return that;
-// }));
-
 export default that;
-
-errorHandling.scriptsLoaded.piexif = true;

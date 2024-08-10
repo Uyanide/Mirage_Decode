@@ -149,21 +149,4 @@ function crc32(str) {
     return (crc ^ (-1)) >>> 0;
 }
 
-// (function (root, factory) {
-//     if (typeof define === 'function' && define.amd) {
-//         define([], factory);
-//     }
-//     else if (typeof module === 'object' && module.exports) {
-//         module.exports = factory();
-//     }
-//     else {
-//         root.png_metadata = factory();
-//     }
-// }(typeof self !== 'undefined' ? self : this, function () {
-//     return metadata;
-// }));
-
 export default metadata;
-
-
-errorHandling.scriptsLoaded.png_metadata = true;

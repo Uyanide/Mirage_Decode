@@ -16,10 +16,5 @@
     "size": 1200,
     "minSize": 100,
     "maxSize": 4000,
-    "defaultPageId": "decodePage",
-    "defaultSrc": [
-        "./res/default.png",
-        "./res/neko.jpg",
-        "./res/buta.jpg"
-    ]
+    "defaultPageId": "decodePage"
 }

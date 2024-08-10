@@ -1,29 +1,3 @@
-// (function (root, factory) {
-//     if (typeof define === 'function' && define.amd) {
-//         define([
-//             '../lib/piexif.js',
-//             '../lib/encoder.js',
-//             '../lib/png-metadata.js'
-//         ], factory);
-//     }
-//     else if (typeof module === 'object' && module.exports) {
-//         module.exports = factory(
-//             require(
-//                 '../lib/piexif.js',
-//                 '../lib/encoder.js',
-//                 '../lib/png-metadata.js'
-//             )
-//         );
-//     }
-//     else {
-//         root.ImageLoader = factory(
-//             root.piexif,
-//             root.JPEGEncoder,
-//             root.png_metadata
-//         );
-//     }
-// }(typeof self !== 'undefined' ? self : this, function (piexif, JPEGEncoder, metadata) {
-
 import piexif from '../lib/piexif.js';
 import JPEGEncoder from '../lib/encoder.js';
 import metadata from '../lib/png-metadata.js';
@@ -438,22 +412,6 @@ function writeChunkDataPNG(imgURL, isReverse, innerThreshold, innerContrast) {
     return `data:image/png;base64,${btoa(output)}`;
 }
 
-// return {
-//     copyImage,
-//     adjustContrastImgData,
-//     cloneImageData,
-//     setDecodeValues,
-//     updateImageFromFile,
-//     updateImageFromURL,
-//     updateImageFromClipboard,
-//     updateImageFromClipboardDirect,
-//     dragDropLoadImage,
-//     downloadFromLink,
-//     saveImageFromCanvas,
-//     generateUrlFromCanvas
-// };
-// }));
-
 const ImageLoader = {
     copyImage,
     adjustContrastImgData,
@@ -470,5 +428,3 @@ const ImageLoader = {
 };
 
 export default ImageLoader;
-
-errorHandling.scriptsLoaded.ImageLoader = true;

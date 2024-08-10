@@ -1,11 +1,15 @@
 const path = require('path');
 const webpack = require('webpack');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
-    entry: './scripts/init.js',
+    entry: './src/scripts/init.js',
     output: {
-        filename: 'main.js',
-        path: path.resolve(__dirname, './docs/src'),
+        filename: '[name].[contenthash].js',
+        path: path.resolve(__dirname, './docs'),
     },
     module: {
         rules: [
@@ -16,15 +20,41 @@ module.exports = {
                     loader: 'babel-loader',
                     options: {
                         presets: ['@babel/preset-env'],
+                        plugins: ['@babel/plugin-syntax-dynamic-import'],
                     },
                 },
+            },
+            {
+                test: /\.(png|jpe?g|gif|ico)$/i,
+                use: [
+                    {
+                        loader: 'file-loader',
+                        options: {
+                            name: '[path][name].[ext]',
+                        },
+                    },
+                ],
+            },
+            {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
             },
         ],
     },
     plugins: [
+        new CleanWebpackPlugin(),
         new webpack.ProvidePlugin({
             Buffer: ['buffer', 'Buffer']
-        })
+        }),
+        new HtmlWebpackPlugin({
+            template: './src/index.html',
+            inject: 'head',
+        }),
+        new CopyWebpackPlugin({
+            patterns: [
+                { from: './src/CNAME', to: './' },
+            ],
+        }),
     ],
     resolve: {
         fallback: {
@@ -32,8 +62,42 @@ module.exports = {
         }
     },
     mode: 'production',
+    // mode: 'development',
     // devtool: 'source-map',
     optimization: {
-        minimize: true
-    }
+        minimize: true,
+        minimizer: [new TerserPlugin()],
+        splitChunks: {
+            chunks: 'all', // 分割所有类型的代码
+            cacheGroups: {
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all',
+                },
+                piexif: {
+                    test: /[\\/]lib[\\/]piexif\.js$/,
+                    name: 'piexif',
+                    chunks: 'all',
+                },
+                jpegEncoder: {
+                    test: /[\\/]lib[\\/]encoder\.js$/,
+                    name: 'jpegEncoder',
+                    chunks: 'all',
+                },
+                metadata: {
+                    test: /[\\/]lib[\\/]png-metadata\.js$/,
+                    name: 'metadata',
+                    chunks: 'all',
+                },
+            },
+        },
+    },
+    devServer: {
+        static: {
+            directory: path.join(__dirname, './docs'),
+        },
+        compress: true,
+        port: 9000,
+    },
 };

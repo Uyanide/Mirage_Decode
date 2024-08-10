@@ -1,23 +1,3 @@
-// (function (root, factory) {
-//     if (typeof define === 'function' && define.amd) {
-//         define([
-//             '../listeners/ImageLoader.js'
-//         ], factory);
-//     }
-//     else if (typeof module === 'object' && module.exports) {
-//         module.exports = factory(
-//             require(
-//                 '../listeners/ImageLoader.js'
-//             ),
-//         );
-//     }
-//     else {
-//         root.PrismDecoder = factory(
-//             root.ImageLoader
-//         );
-//     }
-// }(typeof self !== 'undefined' ? self : this, function (ImageLoader) {
-
 import ImageLoader from '../listeners/ImageLoader.js';
 
 class PrismDecoder {
@@ -145,5 +125,3 @@ class PrismDecoder {
 // }));
 
 export default PrismDecoder;
-
-errorHandling.scriptsLoaded.PrismDecoder = true;

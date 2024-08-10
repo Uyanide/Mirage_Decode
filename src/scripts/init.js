@@ -1,51 +1,23 @@
-// (function (root, factory) {
-//     if (typeof define === 'function' && define.amd) {
-//         define([
-//             './prismProcessor/PrismDecoder.js',
-//             './prismProcessor/PrismEncoder.js',
-//             './listeners/UniversalListeners.js',
-//             './listeners/DecodeListeners.js',
-//             './listeners/EncodeListeners.js',
-//             './DefaultArguments.js'
-//         ], factory);
-//     } else if (typeof module === 'object' && module.exports) {
-//         module.exports = factory(
-//             require('./prismProcessor/PrismDecoder.js'),
-//             require('./prismProcessor/PrismEncoder.js'),
-//             require('./listeners/UniversalListeners.js'),
-//             require('./listeners/DecodeListeners.js'),
-//             require('./listeners/EncodeListeners.js'),
-//             require('./DefaultArguments.js')
-//         );
-//     } else {
-//         root.init = factory(
-//             root.PrismDecoder,
-//             root.PrismEncoder,
-//             root.UniversalListeners,
-//             root.DecodeListeners,
-//             root.EncodeListeners,
-//             root.DefaultArguments
-//         );
-//     }
-// }(typeof self !== 'undefined' ? self : this, function (
-//     PrismDecoder,
-//     PrismEncoder,
-//     UniversalListeners,
-//     DecodeListeners,
-//     EncodeListeners,
-//     DefaultArguments
-// ) {
+import '../css/style.css';
+import '../css/switch.css';
 
 import PrismDecoder from './prismProcessor/PrismDecoder.js';
 import PrismEncoder from './prismProcessor/PrismEncoder.js';
 import UniversalListeners from './listeners/UniversalListeners.js';
-import DecodeListeners from './listeners/DecodeListeners.js';
 import EncodeListeners from './listeners/EncodeListeners.js';
 import DefaultArguments from './DefaultArguments.js';
 
+import buta from '../res/buta.jpg';
+import neko from '../res/neko.jpg';
+import neta from '../res/neta.png';
+import icon from '../res/neko.ico';
+
+applicationState.defaultSrc = [neta, neko, buta];
+
 errorHandling.userAgent = navigator.userAgent.toLowerCase();
 applicationState.isOnPhone = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(errorHandling.userAgent);
-applicationState.isDownloadNotSupported = applicationState.isOnPhone && /xiaomi|miui/i.test(errorHandling.userAgent);
+applicationState.isDownloadNotSupported = applicationState.isOnPhone && /xiaomi|miui|ucbrowser|quark/i.test(errorHandling.userAgent);
+applicationState.isDownloadNotPossible = applicationState.isOnPhone && /ucbrowser|quark/i.test(errorHandling.userAgent);
 applicationState.isOnTiebaBrowser = /tieba/i.test(errorHandling.userAgent);
 // applicationState.isOnPhone = true;
 
@@ -55,6 +27,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             document.body.innerHTML = '<h1>请点击右上角<br>用浏览器打开</h1><img src="https://gsp0.baidu.com/5aAHeD3nKhI2p27j8IqW0jdnxx1xbK/tb/editor/images/client/image_emoticon1.png"></img>';
             return;
         }
+        if (applicationState.isDownloadNotPossible) {
+            alert('由于浏览器限制，下载图片时可能会出现问题，建议使用其他浏览器，例如Chrome, Edge, Opera等');
+        }
+
+        // 显示图标
+        const link = document.createElement('link');
+        link.rel = 'shortcut icon';
+        link.href = icon;
+        document.head.appendChild(link);
+
         // 版本显示
         const versionInfoElement = document.getElementById('versionInfo');
         if (versionInfoElement) {
@@ -62,13 +44,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         // 加载默认参数
-        let path = document.getElementById('jsonPath').getAttribute('data-json-path');
-        path = path + '?v=' + applicationState.version;
         applicationState.defaultArguments = new DefaultArguments();
-        await applicationState.defaultArguments.loadDefaultArguments(path);
+        await applicationState.defaultArguments.loadDefaultArguments();
         applicationState.defaultArguments.setDefaultValues();
         applicationState.isPng = applicationState.defaultArguments.isPng;
-        applicationState.currPageId = applicationState.defaultArguments.defaultPageId;
         applicationState.isReadMetadata = applicationState.defaultArguments.isReadMetadata;
 
         // 实例化解码器和编码器
@@ -77,13 +56,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // 加载默认图像
         errorHandling.defaultImg = [];
-        for (let i = 0; i < applicationState.defaultArguments.defaultSrc.length; i++) {
+        for (let i = 0; i < applicationState.defaultSrc.length; i++) {
             errorHandling.defaultImg[i] = new Image();
-            errorHandling.defaultImg[i].crossOrigin = 'anonymous';
             const timer = setTimeout(() => {
                 errorHandling.defaultImg[i].src = '';
                 errorHandling.defaultImg[i].onerror = null;
-                console.error('加载默认图像超时: ' + applicationState.defaultArguments.defaultSrc[i]);
+                console.error('加载默认图像超时: ' + applicationState.defaultSrc[i]);
             }, 5000);
             errorHandling.defaultImg[i].onload = () => {
                 clearTimeout(timer);
@@ -101,35 +79,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             };
             errorHandling.defaultImg[i].onerror = () => {
                 clearTimeout(timer);
-                console.error('无法加载默认图像: ' + applicationState.defaultArguments.defaultSrc[i]);
+                console.error('无法加载默认图像: ' + applicationState.defaultSrc[i]);
                 errorHandling.defaultImg[i].src = '';
                 errorHandling.defaultImg[i].onerror = null;
             };
-            errorHandling.defaultImg[i].src = applicationState.defaultArguments.defaultSrc[i];
+            errorHandling.defaultImg[i].src = applicationState.defaultSrc[i];
         }
 
         // 设置全局事件监听器
         UniversalListeners.universalSetupEventListeners();
 
         // 显示默认页面
-        switch (applicationState.defaultArguments.defaultPageId) {
-            case 'encodePage':
-                document.getElementById('decodePage').style.display = 'none';
-                document.getElementById('encodePage').style.display = 'flex';
-                document.getElementById('encodeButton').classList.add('PageSwitchButtonSelected');
-                document.getElementById('decodeButton').classList.add('PageSwitchButtonUnselected');
-                EncodeListeners.encodeSetUpEventListeners();
-                document.getElementById('decodeButton').addEventListener('click', EncodeListeners.switchPage);
-                break;
-            case 'decodePage':
-                document.getElementById('encodePage').style.display = 'none';
-                document.getElementById('decodePage').style.display = 'flex';
-                document.getElementById('decodeButton').classList.add('PageSwitchButtonSelected');
-                document.getElementById('encodeButton').classList.add('PageSwitchButtonUnselected');
-                DecodeListeners.decodeSetupEventListeners();
-                document.getElementById('encodeButton').addEventListener('click', EncodeListeners.switchPage);
-                break;
-        }
+        applicationState.currPageId = applicationState.defaultArguments.defaultPageId === 'encodePage' ? 'decodePage' : 'encodePage';
+        EncodeListeners.switchPage();
 
         if (applicationState.isOnPhone) {
             document.getElementById('decodePasteInput').style.display = 'none';
@@ -159,6 +121,3 @@ document.addEventListener('DOMContentLoaded', async () => {
         alert('初始化失败: ' + error);
     }
 });
-// }));
-
-errorHandling.scriptsLoaded.init = true;
