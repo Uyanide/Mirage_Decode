@@ -53,7 +53,9 @@ export default class DecodeList {
         if (applicationState.currPageId !== 'decodePage') {
             EncodeListeners.switchPage();
         }
-        DecodeListeners.hideSidebar();
+        if (applicationState.isOnPhone) {
+            DecodeListeners.hideSidebar();
+        }
         try {
             const index = parseInt(event.target.id.slice(2));
             if (this._selected !== undefined) {

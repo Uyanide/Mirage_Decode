@@ -117,6 +117,9 @@ async function decodeProcessList(fileList) {
 
     const canvas = document.getElementById(`nr${first}`);
     if (canvas) {
+        if (applicationState.isOnPhone) {
+            applicationState.dontCareSidebarClick = true;
+        }
         canvas.dispatchEvent(new Event('click'));
     } else {
         PrismProcessor.PrismDecoder.clearCanvas();
