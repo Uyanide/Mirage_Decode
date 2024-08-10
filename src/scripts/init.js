@@ -17,7 +17,7 @@ applicationState.defaultSrc = [neta, neko, buta];
 
 errorHandling.userAgent = navigator.userAgent.toLowerCase();
 applicationState.isOnPhone = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(errorHandling.userAgent);
-applicationState.isDownloadNotSupported = applicationState.isOnPhone && /xiaomi|miui/i.test(errorHandling.userAgent);
+applicationState.isDownloadNotSupported = applicationState.isOnPhone && /xiaomi|miui|ucbrowser|quark/i.test(errorHandling.userAgent);
 applicationState.isOnTiebaBrowser = /tieba/i.test(errorHandling.userAgent);
 // applicationState.isOnPhone = true;
 
