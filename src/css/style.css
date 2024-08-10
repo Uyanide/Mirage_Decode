@@ -270,6 +270,17 @@ button:hover,
     margin-top: 5px;
 }
 
+.decodeThresInput {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+}
+
+.decodeThresInput input {
+    width: 50px;
+    margin-left: 5px;
+}
+
 .checkbox {
     display: flex;
     max-width: 90%;

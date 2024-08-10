@@ -17,7 +17,8 @@ applicationState.defaultSrc = [neta, neko, buta];
 
 errorHandling.userAgent = navigator.userAgent.toLowerCase();
 applicationState.isOnPhone = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(errorHandling.userAgent);
-applicationState.isDownloadNotSupported = applicationState.isOnPhone && /xiaomi|miui|ucbrowser|quark/i.test(errorHandling.userAgent);
+applicationState.isDownloadNotSupported = applicationState.isOnPhone && /xiaomi|miui/i.test(errorHandling.userAgent);
+applicationState.isDownloadNotPossible = applicationState.isOnPhone && /ucbrowser|quark/i.test(errorHandling.userAgent);
 applicationState.isOnTiebaBrowser = /tieba/i.test(errorHandling.userAgent);
 // applicationState.isOnPhone = true;
 
@@ -26,6 +27,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (applicationState.isOnTiebaBrowser) {
             document.body.innerHTML = '<h1>请点击右上角<br>用浏览器打开</h1><img src="https://gsp0.baidu.com/5aAHeD3nKhI2p27j8IqW0jdnxx1xbK/tb/editor/images/client/image_emoticon1.png"></img>';
             return;
+        }
+        if (applicationState.isDownloadNotPossible) {
+            alert('由于浏览器限制，下载图片时可能会出现问题，建议使用其他浏览器，例如Chrome, Edge, Opera等');
         }
 
         // 显示图标

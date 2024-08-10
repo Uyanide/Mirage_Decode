@@ -51,11 +51,37 @@ function decodeLoadImageFromDrag(event) {
 }
 
 // 设置阈值
+const thresholdInput = document.getElementById('decodeThresholdInput');
 function decodeSetThreshold(event) {
     PrismProcessor.PrismDecoder.threshold = parseInt(event.target.value, 10);
+    thresholdInput.value = event.target.value;
     if (PrismProcessor.PrismDecoder.img) {
         PrismProcessor.PrismDecoder.processImage();
     }
+}
+
+let thresInputTimeout = null;
+const thresholdRange = document.getElementById('decodeThresholdRange');
+function decodeSetThresholdInput(event) {
+    if (thresInputTimeout) {
+        clearTimeout(thresInputTimeout);
+    }
+
+    thresInputTimeout = setTimeout(() => {
+        let value = parseInt(event.target.value, 10);
+        if (value < 0) {
+            value = 0;
+            event.target.value = 0;
+        } else if (value > 255) {
+            value = 255;
+            event.target.value = 255;
+        }
+        PrismProcessor.PrismDecoder.threshold = value;
+        thresholdRange.value = value;
+        if (PrismProcessor.PrismDecoder.img) {
+            PrismProcessor.PrismDecoder.processImage();
+        }
+    }, 500);
 }
 
 // 设置对比度
@@ -130,6 +156,7 @@ function decodeSetupEventListeners() {
     }
     // 参数调整事件监听
     document.getElementById('decodeThresholdRange').addEventListener('input', decodeSetThreshold);
+    document.getElementById('decodeThresholdInput').addEventListener('input', decodeSetThresholdInput);
     document.getElementById('decodeMethodSelect').addEventListener('change', decodeSetCoverMethod);
     document.getElementById('decodeReverseInput').addEventListener('change', decodeSetReverse);
     document.getElementById('decodeContrastRange').addEventListener('input', decodeSetContrast);
@@ -154,6 +181,7 @@ function decodeRemoveEventListeners() {
         // document.getElementById('decodeContrastRange').removeEventListener('touchstart', disableScroll);
     }
     document.getElementById('decodeThresholdRange').removeEventListener('input', decodeSetThreshold);
+    document.getElementById('decodeThresholdInput').removeEventListener('input', decodeSetThresholdInput);
     document.getElementById('decodeMethodSelect').removeEventListener('change', decodeSetCoverMethod);
     document.getElementById('decodeReverseInput').removeEventListener('change', decodeSetReverse);
     document.getElementById('decodeContrastRange').removeEventListener('input', decodeSetContrast);

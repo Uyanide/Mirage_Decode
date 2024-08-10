@@ -30,6 +30,7 @@ class DefaultArguments {
     setDefaultValues() {
         document.getElementById('isReadMetadataCheckBox').checked = this.isReadMetadata;
         document.getElementById('decodeThresholdRange').value = this.decodeThreshold;
+        document.getElementById('decodeThresholdInput').value = this.decodeThreshold;
         document.getElementById('decodeReverseInput').checked = this.isDecodeReverse;
         document.getElementById('optionSelect').value = this.decodeMethod;
         document.getElementById('decodeContrastRange').value = this.decodeContrast;

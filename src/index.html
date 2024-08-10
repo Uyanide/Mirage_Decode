@@ -138,10 +138,14 @@
                 <label for="decodeThresholdRange">3. 滑动直至图像清晰: </label>
                 <input type="range" id="decodeThresholdRange" min="0" max="255">
             </div>
+            <div class="decodeThresInput">
+                <label for="decodeThresholdInput">或输入: </label>
+                <input type="number" id="decodeThresholdInput">
+            </div>
 
             <div class="checkbox" id="decodeReverseCheckbox">
                 <input type="checkbox" id="decodeReverseInput">
-                <label for="decodeReverseInput">是否为反色阶隐写<br><small>(如果横竖都调不出来可以点点看)</small></label>
+                <label for="decodeReverseInput">是否为反色阶隐写</label>
             </div>
 
             <div class="decodeSlider">
@@ -343,7 +347,8 @@
                             识别贴吧内置浏览器，阻止其直接访问；<br>
                             支持幻影坦克作为表图；<br>
                             添加手动切换明暗主题功能，方便观察幻影坦克；<br>
-                            优化Alpha通道处理逻辑，为可能的幻影坦克整合铺路。
+                            优化Alpha通道处理逻辑，为可能的幻影坦克整合铺路；<br>
+                            添加显形界面阈值直接输入的功能。
                         </td>
                     </tr>
                 </tbody>
