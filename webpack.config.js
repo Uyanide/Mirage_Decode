@@ -67,6 +67,31 @@ module.exports = {
     optimization: {
         minimize: true,
         minimizer: [new TerserPlugin()],
+        splitChunks: {
+            chunks: 'all', // 分割所有类型的代码
+            cacheGroups: {
+                vendors: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all',
+                },
+                piexif: {
+                    test: /[\\/]lib[\\/]piexif\.js$/,
+                    name: 'piexif',
+                    chunks: 'all',
+                },
+                jpegEncoder: {
+                    test: /[\\/]lib[\\/]encoder\.js$/,
+                    name: 'jpegEncoder',
+                    chunks: 'all',
+                },
+                metadata: {
+                    test: /[\\/]lib[\\/]png-metadata\.js$/,
+                    name: 'metadata',
+                    chunks: 'all',
+                },
+            },
+        },
     },
     devServer: {
         static: {

@@ -4,7 +4,6 @@ import '../css/switch.css';
 import PrismDecoder from './prismProcessor/PrismDecoder.js';
 import PrismEncoder from './prismProcessor/PrismEncoder.js';
 import UniversalListeners from './listeners/UniversalListeners.js';
-import DecodeListeners from './listeners/DecodeListeners.js';
 import EncodeListeners from './listeners/EncodeListeners.js';
 import DefaultArguments from './DefaultArguments.js';
 
@@ -17,7 +16,7 @@ applicationState.defaultSrc = [neta, neko, buta];
 
 errorHandling.userAgent = navigator.userAgent.toLowerCase();
 applicationState.isOnPhone = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(errorHandling.userAgent);
-applicationState.isDownloadNotSupported = applicationState.isOnPhone && /xiaomi|miui/i.test(errorHandling.userAgent);
+applicationState.isDownloadNotSupported = applicationState.isOnPhone && /xiaomi|miui|ucbrowser|quark/i.test(errorHandling.userAgent);
 applicationState.isDownloadNotPossible = applicationState.isOnPhone && /ucbrowser|quark/i.test(errorHandling.userAgent);
 applicationState.isOnTiebaBrowser = /tieba/i.test(errorHandling.userAgent);
 // applicationState.isOnPhone = true;
@@ -49,7 +48,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         await applicationState.defaultArguments.loadDefaultArguments();
         applicationState.defaultArguments.setDefaultValues();
         applicationState.isPng = applicationState.defaultArguments.isPng;
-        applicationState.currPageId = applicationState.defaultArguments.defaultPageId;
         applicationState.isReadMetadata = applicationState.defaultArguments.isReadMetadata;
 
         // 实例化解码器和编码器
@@ -60,7 +58,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         errorHandling.defaultImg = [];
         for (let i = 0; i < applicationState.defaultSrc.length; i++) {
             errorHandling.defaultImg[i] = new Image();
-            errorHandling.defaultImg[i].crossOrigin = 'anonymous';
             const timer = setTimeout(() => {
                 errorHandling.defaultImg[i].src = '';
                 errorHandling.defaultImg[i].onerror = null;
@@ -93,24 +90,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         UniversalListeners.universalSetupEventListeners();
 
         // 显示默认页面
-        switch (applicationState.defaultArguments.defaultPageId) {
-            case 'encodePage':
-                document.getElementById('decodePage').style.display = 'none';
-                document.getElementById('encodePage').style.display = 'flex';
-                document.getElementById('encodeButton').classList.add('PageSwitchButtonSelected');
-                document.getElementById('decodeButton').classList.add('PageSwitchButtonUnselected');
-                EncodeListeners.encodeSetUpEventListeners();
-                document.getElementById('decodeButton').addEventListener('click', EncodeListeners.switchPage);
-                break;
-            case 'decodePage':
-                document.getElementById('encodePage').style.display = 'none';
-                document.getElementById('decodePage').style.display = 'flex';
-                document.getElementById('decodeButton').classList.add('PageSwitchButtonSelected');
-                document.getElementById('encodeButton').classList.add('PageSwitchButtonUnselected');
-                DecodeListeners.decodeSetupEventListeners();
-                document.getElementById('encodeButton').addEventListener('click', EncodeListeners.switchPage);
-                break;
-        }
+        applicationState.currPageId = applicationState.defaultArguments.defaultPageId === 'encodePage' ? 'decodePage' : 'encodePage';
+        EncodeListeners.switchPage();
 
         if (applicationState.isOnPhone) {
             document.getElementById('decodePasteInput').style.display = 'none';

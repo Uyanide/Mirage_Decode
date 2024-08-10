@@ -68,6 +68,9 @@ function decodeSetThresholdInput(event) {
     }
 
     thresInputTimeout = setTimeout(() => {
+        if (event.target.value === '') {
+            return;
+        }
         let value = parseInt(event.target.value, 10);
         if (value < 0) {
             value = 0;
