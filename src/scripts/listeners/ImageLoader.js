@@ -71,7 +71,7 @@ function setDecodeValues(parameters) {
 
 function getParametersFromString(str) {
     console.log('reading from Metadata: ' + str);
-    if (str === undefined) {
+    if (!str) {
         return {
             isValid: false
         };
@@ -114,21 +114,28 @@ function getParametersFromString(str) {
 }
 
 function getParametersFromMetadata(img) {
-    if (img.src.startsWith('data:image/jpeg;base64,')) {
-        const exif = piexif.load(img.src);
-        const infoString = exif['0th'][piexif.ImageIFD.Make];
-        return getParametersFromString(infoString);
-    } else if (img.src.startsWith('data:image/png;base64,')) {
-        const binaryString = atob(img.src.split(',')[1]);
-        let chunkList = metadata.splitChunk(binaryString);
-        for (let i in chunkList) {
-            let chunk = chunkList[i];
-            if (chunk.type === 'tEXt' || chunk.type === 'PRSM'/*前朝余孽*/) {
-                let infoString = chunk.data;
-                return getParametersFromString(infoString);
+    try {
+        if (img.src.startsWith('data:image/jpeg;base64,')) {
+            const exif = piexif.load(img.src);
+            const infoString = exif['0th'][piexif.ImageIFD.Make];
+            return getParametersFromString(infoString);
+        } else if (img.src.startsWith('data:image/png;base64,')) {
+            const binaryString = atob(img.src.split(',')[1]);
+            let chunkList = metadata.splitChunk(binaryString);
+            for (let i in chunkList) {
+                let chunk = chunkList[i];
+                if (chunk.type === 'tEXt' || chunk.type === 'PRSM'/*前朝余孽*/) {
+                    let infoString = chunk.data;
+                    return getParametersFromString(infoString);
+                }
             }
+        } else {
+            return {
+                isValid: false
+            };
         }
-    } else {
+    } catch (error) {
+        console.log('Failed loading metadata: ', error.message, error.stack);
         return {
             isValid: false
         };
