@@ -61,6 +61,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         errorHandling.defaultImg = [];
         for (let i = 0; i < applicationState.defaultSrc.length; i++) {
             errorHandling.defaultImg[i] = new Image();
+            if (applicationState.isOffline) {
+                errorHandling.defaultImg[i] = new Image();
+                errorHandling.defaultImg[i].src = '';
+                continue;
+            }
             const timer = setTimeout(() => {
                 errorHandling.defaultImg[i].src = '';
                 errorHandling.defaultImg[i].onerror = null;

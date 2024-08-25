@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const HtmlinlineScriptPlugin = require('html-inline-script-webpack-plugin');
 
 module.exports = {
     entry: './src/scripts/init.js',
@@ -24,12 +25,23 @@ module.exports = {
                 },
             },
             {
-                test: /\.(png|jpe?g|gif|ico)$/i,
+                test: /\.(png|jpe?g)$/i,
                 use: [
                     {
                         loader: 'file-loader',
                         options: {
                             name: '[path][name].[ext]',
+                        },
+                    },
+                ],
+            },
+            {
+                test: /\.ico$/i,
+                use: [
+                    {
+                        loader: 'url-loader',
+                        options: {
+                            name: '[name].[hash].[ext]',
                         },
                     },
                 ],
@@ -48,7 +60,9 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './src/index.html',
             inject: 'head',
+            scriptLoading: 'defer',
         }),
+        new HtmlinlineScriptPlugin(),
     ],
     resolve: {
         fallback: {
@@ -61,26 +75,26 @@ module.exports = {
     optimization: {
         minimize: true,
         minimizer: [new TerserPlugin()],
-        splitChunks: {
-            chunks: 'all',
-            cacheGroups: {
-                vendors: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name: 'vendors',
-                    chunks: 'all',
-                },
-                piexif: {
-                    test: /[\\/]lib[\\/]piexif\.js$/,
-                    name: 'piexif',
-                    chunks: 'all',
-                },
-                jpegEncoder: {
-                    test: /[\\/]lib[\\/]encoder\.js$/,
-                    name: 'jpegEncoder',
-                    chunks: 'all',
-                },
-            },
-        },
+        // splitChunks: {
+        //     chunks: 'all',
+        //     cacheGroups: {
+        //         vendors: {
+        //             test: /[\\/]node_modules[\\/]/,
+        //             name: 'vendors',
+        //             chunks: 'all',
+        //         },
+        //         piexif: {
+        //             test: /[\\/]lib[\\/]piexif\.js$/,
+        //             name: 'piexif',
+        //             chunks: 'all',
+        //         },
+        //         jpegEncoder: {
+        //             test: /[\\/]lib[\\/]encoder\.js$/,
+        //             name: 'jpegEncoder',
+        //             chunks: 'all',
+        //         },
+        //     },
+        // },
     },
     devServer: {
         static: {

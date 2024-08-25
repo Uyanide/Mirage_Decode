@@ -198,17 +198,15 @@ async function decodeLoadImageFromDrag(event) {
 }
 
 // 设置阈值
-const thresholdInput = document.getElementById('decodeThresholdInput');
 function decodeSetThreshold(event) {
     PrismProcessor.PrismDecoder.threshold = parseInt(event.target.value, 10);
-    thresholdInput.value = event.target.value;
+    applicationState.decodeThresholdInput.value = event.target.value;
     if (PrismProcessor.PrismDecoder.img) {
         PrismProcessor.PrismDecoder.processImage();
     }
 }
 
 let thresInputTimeout = null;
-const thresholdRange = document.getElementById('decodeThresholdRange');
 function decodeSetThresholdInput(event) {
     if (thresInputTimeout) {
         clearTimeout(thresInputTimeout);
@@ -227,7 +225,7 @@ function decodeSetThresholdInput(event) {
             event.target.value = 255;
         }
         PrismProcessor.PrismDecoder.threshold = value;
-        thresholdRange.value = value;
+        applicationState.decodeThresholdRange.value = value;
         if (PrismProcessor.PrismDecoder.img) {
             PrismProcessor.PrismDecoder.processImage();
         }
@@ -288,6 +286,12 @@ function decodeSaveSrcImage() {
 
 // 设置解码事件监听器
 function decodeSetupEventListeners() {
+    // 滑条和输入框元素获取
+    if (!applicationState.decodeThresholdInput) {
+        applicationState.decodeThresholdRange = document.getElementById('decodeThresholdRange');
+        applicationState.decodeThresholdInput = document.getElementById('decodeThresholdInput');
+    }
+
     // 读取元数据事件监听
     document.getElementById('isReadMetadataCheckBox').addEventListener('change', setReadMetadata);
 

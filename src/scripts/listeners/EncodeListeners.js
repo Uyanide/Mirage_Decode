@@ -56,11 +56,6 @@ function encodeLoadCoverImageFromDrag(event) {
     });
 }
 
-const innerSlider = document.getElementById('innerThresholdRange');
-const coverSlider = document.getElementById('coverThresholdRange');
-const innerInput = document.getElementById('innerThresholdInput');
-const coverInput = document.getElementById('coverThresholdInput');
-
 // 获取前景色
 function getFrontColor() {
     return getComputedStyle(document.documentElement).getPropertyValue('--front-color').trim();
@@ -68,8 +63,8 @@ function getFrontColor() {
 
 // 设置里图色阶
 function encodeSetInnerThreshold() {
-    const slider = innerSlider
-    const text = innerInput;
+    const slider = applicationState.innerThresholdRange;
+    const text = applicationState.innerThresholdInput;
     PrismProcessor.PrismEncoder.innerThreshold = parseInt(slider.value, 10);
     text.value = PrismProcessor.PrismEncoder.innerThreshold;
     if (PrismProcessor.PrismEncoder.innerThreshold > PrismProcessor.PrismEncoder.coverThreshold) {
@@ -87,8 +82,8 @@ function encodeSetInnerThreshold() {
 
 // 设置表图色阶
 function encodeSetCoverThreshold() {
-    const slider = coverSlider;
-    const text = coverInput;
+    const slider = applicationState.coverThresholdRange;
+    const text = applicationState.coverThresholdInput;
     PrismProcessor.PrismEncoder.coverThreshold = parseInt(slider.value, 10);
     text.value = PrismProcessor.PrismEncoder.coverThreshold;
     if (PrismProcessor.PrismEncoder.innerThreshold > PrismProcessor.PrismEncoder.coverThreshold) {
@@ -109,8 +104,8 @@ let innerInputTimeout;
 function encodeSetInnerThresholdInput() {
     clearTimeout(innerInputTimeout);
     setTimeout(function () {
-        const input = innerInput;
-        const slider = innerSlider;
+        const input = applicationState.innerThresholdInput;
+        const slider = applicationState.innerThresholdRange;
         input.style.color = getFrontColor();
         const inputVal = parseInt(input.value, 10);
         if (isNaN(inputVal)) {
@@ -141,8 +136,9 @@ let coverInputTimeout;
 function encodeSetCoverThresholdInput() {
     clearTimeout(coverInputTimeout);
     setTimeout(function () {
-        const input = coverInput;
-        const slider = coverSlider;
+        const input = applicationState.coverThresholdInput;
+        const slider = applicationState.coverTh
+        resholdRange;
         input.style.color = getFrontColor();
         const inputVal = parseInt(input.value, 10);
         if (isNaN(inputVal)) {
@@ -338,6 +334,12 @@ function switchPage() {
 
 // 设置编码事件监听器
 function encodeSetUpEventListeners() {
+    if (!applicationState.innerThresholdInput) {
+        applicationState.innerThresholdRange = document.getElementById('innerThresholdRange');
+        applicationState.innerThresholdInput = document.getElementById('innerThresholdInput');
+        applicationState.coverThresholdRange = document.getElementById('coverThresholdRange');
+        applicationState.coverThresholdInput = document.getElementById('coverThresholdInput');
+    }
 
     document.getElementById('innerSourceFileInput').addEventListener('change', encodeLoadInnerImageFile);
     document.getElementById('coverSourceFileInput').addEventListener('change', encodeLoadCoverImageFile);

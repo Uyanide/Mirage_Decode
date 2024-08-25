@@ -141,6 +141,10 @@
     text-decoration: none;
 }
 
+.textDecorationUnderline {
+    text-decoration: underline;
+}
+
 .borderNone {
     border: none;
 }
