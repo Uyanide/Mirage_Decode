@@ -4,7 +4,7 @@
     bottom: 10px;
     display: flex;
     align-items: center;
-    padding: 5px 20px;
+    padding: 12px;
     cursor: pointer;
     background-color: var(--secondary-background-color);
     border-radius: 40px;
