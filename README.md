@@ -3,7 +3,9 @@
 # 基于色阶分离与像素交错的隐写图显形与制作工具
 
 ## 链接 (已使用Cloudflare全面代理)
-[光棱坦克工厂](https://prism.uyanide.com/)
+[光棱坦克工厂](https://prism.uyanide.com/) 
+
+(为了兼顾页面下载功能，部署文件为单html文档，非常不利于浏览器缓存，因此加载可能较慢)
 
 ## 使用方法
 一看就懂，不懂也能用 :)
@@ -15,39 +17,6 @@
 - **[jpeg-js](https://github.com/jpeg-js/jpeg-js)** (用于统一不同浏览器编码JPEG的行为)
 - **[piexifjs](https://github.com/hMatoba/piexifjs)** (用于读写JPEG Metadata)
 - **[node-png-metadata](https://github.com/kujirahand/node-png-metadata)** (用于读写PNG Chunk)
-
-## 项目结构
-- **docs** (部署目录)
-  - **css**
-    - **style.css**
-    - **switch.css**
-  - **res**
-    - **neko.ico** (图标)
-    - **default.png** (默认显形源)
-    - **buta.jpg** (默认表图)
-    - **neko.jpg** (默认里图)
-  - **src**
-    - **main.js**
-    - **main.js.LICENSE.txt**
-  - **CNAME**
-  - **DefaultArguments.json**
-  - **index.html**
-
-- **scripts** (原始脚本)
-  - **lib** (第三方库)
-    - **[encoder.js](https://github.com/jpeg-js/jpeg-js/blob/master/lib/encoder.js)**
-    - **[piexif.js](https://github.com/hMatoba/piexifjs/blob/master/piexif.js)**
-    - **[png-metadata.js](https://github.com/kujirahand/node-png-metadata/blob/master/src/lib/png-metadata.js)**
-  - **listeners** (事件监听、回调与辅助函数)
-    - **DecodeListeners.js**
-    - **EncodeListeners.js**
-    - **ImageLoader.js**
-    - **UniversalListeners.js**
-  - **prismProcessor** (图像处理)
-    - **PrismDecoder.js**
-    - **PrismEncoder.js**
-  - **DefaultArguments.js** (加载默认参数)
-  - **init.js** (初始化)
 
 # Q&A
 
