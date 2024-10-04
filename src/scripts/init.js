@@ -75,13 +75,19 @@ document.addEventListener('DOMContentLoaded', async () => {
                 clearTimeout(timer);
                 switch (i) {
                     case 0:
-                        PrismProcessor.PrismDecoder.updateImage(errorHandling.defaultImg[i]);
+                        if (PrismProcessor.PrismDecoder.img === null) {
+                            PrismProcessor.PrismDecoder.updateImage(errorHandling.defaultImg[i]);
+                        }
                         break;
                     case 1:
-                        PrismProcessor.PrismEncoder.updateInnerImage(errorHandling.defaultImg[i]);
+                        if (PrismProcessor.PrismEncoder.innerImg === null) {
+                            PrismProcessor.PrismEncoder.updateInnerImage(errorHandling.defaultImg[i]);
+                        }
                         break;
                     case 2:
-                        PrismProcessor.PrismEncoder.updateCoverImage(errorHandling.defaultImg[i]);
+                        if (PrismProcessor.PrismEncoder.coverImg === null) {
+                            PrismProcessor.PrismEncoder.updateCoverImage(errorHandling.defaultImg[i]);
+                        }
                         break;
                 }
             };
