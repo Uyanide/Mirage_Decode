@@ -168,7 +168,7 @@ function convertBlobToBase64(blob) {
 
 applicationState.currCanvasIndex = 0;
 function handleImageLoadError(error, callback) {
-    alert('无法加载图像, 请确定文件类型和状态。' + error);
+    alert('无法加载图像! 错误: ' + error);
     if (errorHandling.defaultImg[errorHandling.currCanvasIndex].src) {
         const img = new Image();
         img.src = copyImage(errorHandling.defaultImg[errorHandling.currCanvasIndex]);
@@ -240,6 +240,10 @@ async function updateImageFromFile(file, callback) {
 // 从URL加载图像，调用callback
 async function updateImageFromURL(event, callback) {
     const proxy = 'https://api.uyanide.com/proxy/?url=';
+    if (event.target.previousElementSibling.value === '') {
+        handleImageLoadError('未提供URL', callback);
+        return;
+    }
     const imageUrl = proxy + event.target.previousElementSibling.value;
     loadImage(imageUrl)
         .then((img) => {
