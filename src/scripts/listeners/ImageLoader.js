@@ -73,43 +73,45 @@ function getParametersFromString(str) {
     console.log('reading from Metadata: ' + str);
     if (!str) {
         return {
-            isValid: false
+            isValid: false,
         };
     }
-    let isReverse, innerThreshold, innerContrast = 50;
+    let isReverse,
+        innerThreshold,
+        innerContrast = 50;
     switch (str.length) {
         case 5:
             innerContrast = parseInt(str.slice(3, 5), 16);
             if (isNaN(innerContrast)) {
                 return {
-                    isValid: false
+                    isValid: false,
                 };
             }
         case 3:
             innerThreshold = parseInt(str.slice(1, 3), 16);
             if (isNaN(innerThreshold)) {
                 return {
-                    isValid: false
+                    isValid: false,
                 };
             }
         case 1:
             if (str[0] !== '0' && str[0] !== '1') {
                 return {
-                    isValid: false
+                    isValid: false,
                 };
             }
             isReverse = str[0] === '1';
             break;
         default:
             return {
-                isValid: false
+                isValid: false,
             };
     }
     return {
         isValid: true,
         isReverse: isReverse,
         innerThreshold: innerThreshold,
-        innerContrast: innerContrast
+        innerContrast: innerContrast,
     };
 }
 
@@ -124,20 +126,20 @@ function getParametersFromMetadata(img) {
             let chunkList = metadata.splitChunk(binaryString);
             for (let i in chunkList) {
                 let chunk = chunkList[i];
-                if (chunk.type === 'tEXt' || chunk.type === 'PRSM'/*前朝余孽*/) {
+                if (chunk.type === 'tEXt' || chunk.type === 'PRSM' /*前朝余孽*/) {
                     let infoString = chunk.data;
                     return getParametersFromString(infoString);
                 }
             }
         } else {
             return {
-                isValid: false
+                isValid: false,
             };
         }
     } catch (error) {
         console.log('Failed loading metadata: ', error.message, error.stack);
         return {
-            isValid: false
+            isValid: false,
         };
     }
 }
@@ -226,21 +228,26 @@ async function loadImage(input, timeout = 5000) {
 
 // 从文件加载图像，调用callback
 async function updateImageFromFile(file, callback) {
-    loadImage(file).then((img) => {
-        callback(img);
-    }).catch((error) => {
-        handleImageLoadError(error, callback);
-    });
+    loadImage(file)
+        .then((img) => {
+            callback(img);
+        })
+        .catch((error) => {
+            handleImageLoadError(error, callback);
+        });
 }
 
 // 从URL加载图像，调用callback
 async function updateImageFromURL(event, callback) {
-    const imageUrl = event.target.previousElementSibling.value;
-    loadImage(imageUrl).then((img) => {
-        callback(img);
-    }).catch((error) => {
-        handleImageLoadError(error, callback);
-    });
+    const proxy = 'https://api.uyanide.com/proxy/?url=';
+    const imageUrl = proxy + event.target.previousElementSibling.value;
+    loadImage(imageUrl)
+        .then((img) => {
+            callback(img);
+        })
+        .catch((error) => {
+            handleImageLoadError(error, callback);
+        });
 }
 
 // 从剪贴板更新图像，调用callback
@@ -249,11 +256,13 @@ async function updateImageFromClipboard(event, callback) {
     for (const item of items) {
         if (item.type.indexOf('image') !== -1) {
             const blob = item.getAsFile();
-            loadImage(blob).then((img) => {
-                callback(img);
-            }).catch((error) => {
-                handleImageLoadError(error, callback);
-            });
+            loadImage(blob)
+                .then((img) => {
+                    callback(img);
+                })
+                .catch((error) => {
+                    handleImageLoadError(error, callback);
+                });
         }
     }
 }
@@ -265,14 +274,16 @@ async function updateImageFromClipboardDirect(callback) {
         if (permission.state === 'granted' || permission.state === 'prompt') {
             const clipboardItems = await navigator.clipboard.read();
             for (const item of clipboardItems) {
-                if (item.types.some(type => type.startsWith('image/'))) {
-                    const blob = await item.getType(item.types.find(type => type.startsWith('image/')));
+                if (item.types.some((type) => type.startsWith('image/'))) {
+                    const blob = await item.getType(item.types.find((type) => type.startsWith('image/')));
                     const url = await convertBlobToBase64(blob);
-                    loadImage(url).then((img) => {
-                        callback(img);
-                    }).catch((error) => {
-                        throw error;
-                    });
+                    loadImage(url)
+                        .then((img) => {
+                            callback(img);
+                        })
+                        .catch((error) => {
+                            throw error;
+                        });
                 } else {
                     alert('剪贴板中没有图片');
                 }
@@ -292,11 +303,13 @@ async function dragDropLoadImage(event, callback) {
         for (const item of event.dataTransfer.items) {
             if (item.kind === 'file') {
                 const file = item.getAsFile();
-                loadImage(file).then((img) => {
-                    callback(img);
-                }).catch((error) => {
-                    handleImageLoadError(error, callback);
-                });
+                loadImage(file)
+                    .then((img) => {
+                        callback(img);
+                    })
+                    .catch((error) => {
+                        handleImageLoadError(error, callback);
+                    });
             }
         }
     }
@@ -337,11 +350,7 @@ function generateUrlFromCanvas(canvasId, isPng = true, writeInMetadata = false) 
     const canvas = document.getElementById(canvasId);
     if (isPng) {
         if (writeInMetadata) {
-            return writeChunkDataPNG(
-                canvas.toDataURL('image/png'),
-                isReverse,
-                threshold,
-                contrast);
+            return writeChunkDataPNG(canvas.toDataURL('image/png'), isReverse, threshold, contrast);
         } else {
             return canvas.toDataURL('image/png');
         }
@@ -357,11 +366,7 @@ function generateUrlFromCanvas(canvasId, isPng = true, writeInMetadata = false) 
             binary += String.fromCharCode(bytes[i]);
         }
         if (writeInMetadata) {
-            return writeMetadataJPEG(
-                `data:image/jpeg;base64,${btoa(binary)}`,
-                isReverse,
-                threshold,
-                contrast);
+            return writeMetadataJPEG(`data:image/jpeg;base64,${btoa(binary)}`, isReverse, threshold, contrast);
         } else {
             return `data:image/jpeg;base64,${btoa(binary)}`;
         }
@@ -432,7 +437,7 @@ const ImageLoader = {
     dragDropLoadImage,
     downloadFromLink,
     saveImageFromCanvas,
-    generateUrlFromCanvas
+    generateUrlFromCanvas,
 };
 
 export default ImageLoader;
