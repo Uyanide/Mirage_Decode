@@ -1,6 +1,6 @@
-import EncodeListeners from "./EncodeListeners";
-import ImageLoader from "./ImageLoader.js";
-import DecodeListeners from "./DecodeListeners.js";
+import EncodeListeners from './EncodeListeners';
+import ImageLoader from './ImageLoader.js';
+import DecodeListeners from './DecodeListeners.js';
 
 export default class DecodeList {
     constructor(sidebarContent, amountLabel, clearButton) {
@@ -13,24 +13,23 @@ export default class DecodeList {
 
     getListLength = () => {
         return this._list.length;
-    }
+    };
 
     appendList = (img) => {
         const canvas = document.createElement('canvas');
-        let pushed = false, append = false;
+        let pushed = false,
+            append = false;
         try {
             canvas.id = `nr${this._list.length}`;
             canvas.width = img.width;
             canvas.height = img.height;
             canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
             if (applicationState.isReadMetaData) {
-
             }
             this._list.push({
                 canvas: canvas,
                 img: img,
-                parameters: applicationState.isReadMetadata ?
-                    ImageLoader.getParametersFromMetadata(img) : undefined
+                parameters: applicationState.isReadMetadata ? ImageLoader.getParametersFromMetadata(img) : undefined,
             });
             pushed = true;
             this._sidebarContent.appendChild(canvas);
@@ -45,9 +44,9 @@ export default class DecodeList {
                 this._sidebarContent.removeChild(canvas);
             }
             console.error('Append list failed:', error.stack, error.message);
-            alert('图像加载失败！' + error.message);
+            alert('图像加载失败！' + error.message ?? '');
         }
-    }
+    };
 
     _decode = (event) => {
         if (applicationState.currPageId !== 'decodePage') {
@@ -70,9 +69,9 @@ export default class DecodeList {
             PrismProcessor.PrismDecoder.updateImage(this._list[event.target.id.slice(2)].img);
         } catch (error) {
             console.error('Decode from list failed:', error.stack, error.message);
-            alert('加载失败！' + error.message);
+            alert('加载失败！' + error.message ?? '');
         }
-    }
+    };
 
     clear = () => {
         this._list.forEach((item) => {
@@ -83,5 +82,5 @@ export default class DecodeList {
         this._list = [];
         this._amountLabel.innerText = '数量: 0';
         this._selected = undefined;
-    }
+    };
 }

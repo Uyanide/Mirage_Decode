@@ -168,7 +168,7 @@ function convertBlobToBase64(blob) {
 
 applicationState.currCanvasIndex = 0;
 function handleImageLoadError(error, callback) {
-    alert('无法加载图像! 错误: ' + error);
+    alert(`无法加载图像! ${error.message ?? ''}`);
     if (errorHandling.defaultImg[errorHandling.currCanvasIndex].src) {
         const img = new Image();
         img.src = copyImage(errorHandling.defaultImg[errorHandling.currCanvasIndex]);
@@ -221,7 +221,7 @@ async function loadImage(input, timeout = 5000) {
             reader.readAsDataURL(input);
         } else {
             clearTimeout(timer);
-            reject(new Error('不支持的输入类型'));
+            reject(new Error('不支持的类型'));
         }
     });
 }
@@ -241,7 +241,7 @@ async function updateImageFromFile(file, callback) {
 async function updateImageFromURL(event, callback) {
     const proxy = 'https://api.uyanide.com/proxy/?url=';
     if (event.target.previousElementSibling.value === '') {
-        handleImageLoadError('未提供URL', callback);
+        handleImageLoadError(Error('未提供URL'), callback);
         return;
     }
     const imageUrl = proxy + event.target.previousElementSibling.value;

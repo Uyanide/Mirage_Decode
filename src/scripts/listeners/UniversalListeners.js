@@ -1,4 +1,4 @@
-import DecodeListeners from "./DecodeListeners";
+import DecodeListeners from './DecodeListeners';
 
 function universalSetupEventListeners() {
     // 隐私政策按钮事件监听
@@ -60,7 +60,7 @@ function universalSetupEventListeners() {
         const script = newDoc.head.appendChild(newDoc.createElement('script'));
         script.innerHTML = 'applicationState.isOffline = true;';
         // 添加body属性
-        doc.body.classList.forEach(cls => newDoc.body.classList.add(cls));
+        doc.body.classList.forEach((cls) => newDoc.body.classList.add(cls));
         // 添加body内容，排除某些插件写入的元素
         newDoc.body.appendChild(newDoc.importNode(sourceElement, true));
 

@@ -44,8 +44,7 @@ class PrismDecoder {
                     this.processCoverPixel(data, i);
                 }
             }
-        }
-        else {
+        } else {
             var ratio = 255 / (255 - this.threshold);
             for (var i = 0; i < data.length; i += 4) {
                 var avg = (data[i] + data[i + 1] + data[i + 2]) / 3;
@@ -53,8 +52,7 @@ class PrismDecoder {
                     data[i] = (data[i] - this.threshold) * ratio;
                     data[i + 1] = (data[i + 1] - this.threshold) * ratio;
                     data[i + 2] = (data[i + 2] - this.threshold) * ratio;
-                }
-                else {
+                } else {
                     this.processCoverPixel(data, i);
                 }
             }
@@ -68,7 +66,7 @@ class PrismDecoder {
 
     processCoverPixel(data, i) {
         const widthTimes4 = this.imgData.width * 4;
-        const col = i % (widthTimes4);
+        const col = i % widthTimes4;
         const row = Math.floor(i / widthTimes4);
         switch (this.coverProcessMethod) {
             case 'luavg':
@@ -78,7 +76,9 @@ class PrismDecoder {
                     data[i + 2] = (data[i - 2] + data[i - widthTimes4 + 2] + data[i - widthTimes4 - 2]) / 3;
                     data[i + 3] = (data[i - 1] + data[i - widthTimes4 + 3] + data[i - widthTimes4 - 1]) / 3;
                     break;
-                } else { /* fall through */ }
+                } else {
+                    /* fall through */
+                }
             case 'lcopy':
                 if (col) {
                     data[i] = data[i - 4];
@@ -86,7 +86,9 @@ class PrismDecoder {
                     data[i + 2] = data[i - 2];
                     data[i + 3] = data[i - 1];
                     break;
-                } else { /* fall through */ }
+                } else {
+                    /* fall through */
+                }
             case 'ucopy':
                 if (row) {
                     data[i] = data[i - widthTimes4];
@@ -94,7 +96,9 @@ class PrismDecoder {
                     data[i + 2] = data[i - widthTimes4 + 2];
                     data[i + 3] = data[i - widthTimes4 + 3];
                     break;
-                } else { /* fall through */ }
+                } else {
+                    /* fall through */
+                }
             case 'trans':
                 data[i + 3] = 0;
                 break;
@@ -121,7 +125,7 @@ class PrismDecoder {
 
     clearCanvas = () => {
         this.decodeCanvas.width = this.decodeCanvas.width;
-    }
+    };
 }
 
 export default PrismDecoder;

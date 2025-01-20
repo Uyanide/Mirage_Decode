@@ -115,7 +115,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                 elements[i].style.display = 'none';
             }
         } else {
-
             document.getElementById('decodePasteButton').style.display = 'none';
         }
 
@@ -132,7 +131,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     } catch (error) {
         console.error('Failed to initialize: ' + error);
-        alert('初始化失败: ' + error.message);
+        alert('初始化失败: ' + error.message ?? '');
         console.error('Failed to initialize: ' + error.stack, error.message);
     }
 });

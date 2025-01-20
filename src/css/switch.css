@@ -39,26 +39,26 @@
     right: 0;
     bottom: 0;
     background-color: #ccc;
-    transition: .4s;
+    transition: 0.4s;
     border-radius: 22px;
 }
 
 .switchSlider:before {
     position: absolute;
-    content: "";
+    content: '';
     height: 18px;
     width: 18px;
     left: 2px;
     bottom: 2px;
     background-color: white;
-    transition: .4s;
+    transition: 0.4s;
     border-radius: 50%;
 }
 
-input:checked+.switchSlider {
+input:checked + .switchSlider {
     background-color: #002a6e;
 }
 
-input:checked+.switchSlider:before {
+input:checked + .switchSlider:before {
     transform: translateX(18px);
 }

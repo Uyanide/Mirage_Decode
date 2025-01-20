@@ -137,7 +137,7 @@ function encodeSetCoverThresholdInput() {
     clearTimeout(coverInputTimeout);
     setTimeout(function () {
         const input = applicationState.coverThresholdInput;
-        const slider = applicationState.coverTh
+        const slider = applicationState.coverTh;
         resholdRange;
         input.style.color = getFrontColor();
         const inputVal = parseInt(input.value, 10);
@@ -282,14 +282,12 @@ function encodeSaveImage() {
 // 以当前结果跳转显形界面
 function jumpToDecode() {
     if (PrismProcessor.PrismEncoder.innerImg && PrismProcessor.PrismEncoder.coverImg) {
-        ImageLoader.setDecodeValues(
-            {
-                isValid: true,
-                isReverse: PrismProcessor.PrismEncoder.isEncodeReverse,
-                innerThreshold: PrismProcessor.PrismEncoder.innerThreshold,
-                innerContrast: PrismProcessor.PrismEncoder.innerContrast
-            }
-        );
+        ImageLoader.setDecodeValues({
+            isValid: true,
+            isReverse: PrismProcessor.PrismEncoder.isEncodeReverse,
+            innerThreshold: PrismProcessor.PrismEncoder.innerThreshold,
+            innerContrast: PrismProcessor.PrismEncoder.innerContrast,
+        });
         const img = new Image();
         img.src = ImageLoader.generateUrlFromCanvas('outputCanvas', applicationState.isPng, false);
         img.onload = function () {
@@ -411,7 +409,7 @@ function encodeRemoveEventListeners() {
 const EncodeListeners = {
     switchPage,
     encodeSetUpEventListeners,
-    encodeRemoveEventListeners
+    encodeRemoveEventListeners,
 };
 
 export default EncodeListeners;

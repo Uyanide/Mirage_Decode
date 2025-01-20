@@ -13,7 +13,7 @@
     --small-font-size: 0.7rem;
 }
 
-[data-theme="light"] {
+[data-theme='light'] {
     --secondary-background-color: #fff;
     --background-color: #ececec;
     --secondary-notselected-background-color: #f6f6f6;
@@ -24,7 +24,7 @@
     --link-color: #2285d5;
 }
 
-[data-theme="dark"] {
+[data-theme='dark'] {
     --secondary-background-color: #000;
     --background-color: #191919;
     --secondary-notselected-background-color: #101010;

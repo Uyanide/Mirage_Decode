@@ -40,7 +40,7 @@ class PrismEncoder {
                 this.innerCanvas.height = img.height * ratio;
             } else {
                 this.innerCanvas.width = this.size;
-                this.innerCanvas.height = img.height * this.size / img.width;
+                this.innerCanvas.height = (img.height * this.size) / img.width;
             }
         } else {
             if (img.height > this.size) {
@@ -48,7 +48,7 @@ class PrismEncoder {
                 this.innerCanvas.width = img.width * ratio;
                 this.innerCanvas.height = this.size;
             } else {
-                this.innerCanvas.width = img.width * this.size / img.height;
+                this.innerCanvas.width = (img.width * this.size) / img.height;
                 this.innerCanvas.height = this.size;
             }
         }
@@ -95,17 +95,7 @@ class PrismEncoder {
             this.coverCanvas.height = this.height;
             const ctx = this.coverCanvas.getContext('2d');
 
-            ctx.drawImage(
-                img,
-                cropArea.x,
-                cropArea.y,
-                cropArea.width,
-                cropArea.height,
-                0,
-                0,
-                this.width,
-                this.height
-            );
+            ctx.drawImage(img, cropArea.x, cropArea.y, cropArea.width, cropArea.height, 0, 0, this.width, this.height);
 
             this.coverImgdata = ctx.getImageData(0, 0, this.coverCanvas.width, this.coverCanvas.height);
             if (this.isCoverGray) {
@@ -127,11 +117,7 @@ class PrismEncoder {
     processCoverGray() {
         var coverData = this.coverImgdata.data;
         for (let i = 0; i < coverData.length; i += 4) {
-            const avg = Math.floor(
-                coverData[i] * this.weight_r +
-                coverData[i + 1] * this.weight_g +
-                coverData[i + 2] * this.weight_b
-            );
+            const avg = Math.floor(coverData[i] * this.weight_r + coverData[i + 1] * this.weight_g + coverData[i + 2] * this.weight_b);
             coverData[i] = avg;
             coverData[i + 1] = avg;
             coverData[i + 2] = avg;

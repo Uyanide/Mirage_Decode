@@ -21,7 +21,7 @@ const showSidebar = () => {
         document.addEventListener('click', hideSidebarFullscreen);
     }, 500);
     sidebar.removeEventListener('click', showSidebar);
-}
+};
 const hideSidebar = () => {
     if (applicationState.dontCareSidebarClick) {
         applicationState.dontCareSidebarClick = false;
@@ -35,7 +35,7 @@ const hideSidebar = () => {
     setTimeout(() => {
         sidebar.addEventListener('click', showSidebar);
     }, 500);
-}
+};
 function adjustSidebarWidth(event) {
     if (!applicationState.sidebarVisible) {
         showSidebar();
@@ -52,14 +52,14 @@ function adjustSidebarWidth(event) {
     const adjustMouse = (event) => {
         applicationState.dontCareSidebarClick = true;
         offset = event.clientX - initX;
-        const newWidth = Math.min((Math.max((parseInt(initWidth) - offset), minWidth)), maxWidth);
+        const newWidth = Math.min(Math.max(parseInt(initWidth) - offset, minWidth), maxWidth);
         document.documentElement.style.setProperty('--sidebar-width', `${newWidth}px`);
     };
 
     const adjustTouch = (event) => {
         applicationState.dontCareSidebarClick = true;
         offset = event.touches[0].clientX - initX;
-        const newWidth = Math.min((Math.max((parseInt(initWidth) - offset), minWidth)), maxWidth);
+        const newWidth = Math.min(Math.max(parseInt(initWidth) - offset, minWidth), maxWidth);
         document.documentElement.style.setProperty('--sidebar-width', `${newWidth}px`);
     };
 
@@ -69,7 +69,7 @@ function adjustSidebarWidth(event) {
         document.removeEventListener('touchmove', adjustTouch);
         document.removeEventListener('touchend', adjustEnd);
         enableHorizontalScroll();
-    }
+    };
 
     applicationState.dontCareSidebarClick = false;
     if (!applicationState.isOnPhone) {
@@ -137,7 +137,7 @@ async function decodeLoadImageFile(event) {
         event.target.value = '';
     } catch (error) {
         console.error('Failed to load image:', error.stack, error.message);
-        alert('加载图像失败！' + error.message);
+        alert('图像加载失败：' + error.message ?? '');
     }
 }
 
@@ -167,7 +167,7 @@ async function decodeLoadImageFromClipboard(event) {
         }
         await decodeProcessList(files);
     } catch (error) {
-        alert('图像加载失败：' + error.message);
+        alert('图像加载失败：' + (error.message ?? ''));
         console.error('Failed to load image:', error.stack, error.message);
     }
 }
@@ -192,7 +192,7 @@ async function decodeLoadImageFromDrag(event) {
         }
         await decodeProcessList(Array.from(files));
     } catch (error) {
-        alert('图像加载失败：' + error.message);
+        alert('图像加载失败：' + (error.message ?? ''));
         console.error('Failed to load image:', error.stack, error.message);
     }
 }
@@ -355,7 +355,7 @@ const DecodeListeners = {
     decodeRemoveEventListeners,
     adjustSidebarWidth,
     showSidebar,
-    hideSidebar
+    hideSidebar,
 };
 
 export default DecodeListeners;
