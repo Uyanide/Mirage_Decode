@@ -179,7 +179,7 @@ function handleImageLoadError(error, callback) {
 }
 
 // 从源加载图像并返回
-async function loadImage(input, timeout = 5000) {
+async function loadImage(input, timeout = 20000) {
     return new Promise((resolve, reject) => {
         const img = new Image();
         let timer;
@@ -245,11 +245,14 @@ async function updateImageFromURL(event, callback) {
         return;
     }
     const imageUrl = proxy + event.target.previousElementSibling.value;
+    event.target.previousElementSibling.value = '加载中...请稍候';
     loadImage(imageUrl)
         .then((img) => {
+            event.target.previousElementSibling.value = '';
             callback(img);
         })
         .catch((error) => {
+            event.target.previousElementSibling.value = '';
             handleImageLoadError(error, callback);
         });
 }

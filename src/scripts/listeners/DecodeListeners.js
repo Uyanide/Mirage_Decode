@@ -148,7 +148,6 @@ function decodeLoadImageURL(event) {
         PrismProcessor.DecodeList.appendList(img);
         document.getElementById(`nr${PrismProcessor.DecodeList.getListLength() - 1}`).dispatchEvent(new Event('click'));
     });
-    event.target.previousElementSibling.value = '';
 }
 
 // 从剪贴板加载图像
