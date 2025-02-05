@@ -246,14 +246,17 @@ async function updateImageFromURL(event, callback) {
     }
     const imageUrl = proxy + event.target.previousElementSibling.value;
     event.target.previousElementSibling.value = '加载中...请稍候';
+    event.target.disabled = true;
     loadImage(imageUrl)
         .then((img) => {
-            event.target.previousElementSibling.value = '';
             callback(img);
         })
         .catch((error) => {
-            event.target.previousElementSibling.value = '';
             handleImageLoadError(error, callback);
+        })
+        .finally(() => {
+            event.target.previousElementSibling.value = '';
+            event.target.disabled = false;
         });
 }
 
