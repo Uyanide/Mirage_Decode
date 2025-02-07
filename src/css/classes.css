@@ -9,8 +9,8 @@
     --link-color: #2285d5;
 
     --large-font-size: 1.2rem;
-    --medium-font-size: 0.9rem;
-    --small-font-size: 0.7rem;
+    --medium-font-size: 1rem;
+    --small-font-size: 0.8rem;
 }
 
 [data-theme='light'] {
