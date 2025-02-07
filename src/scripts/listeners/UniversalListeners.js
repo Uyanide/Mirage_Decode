@@ -1,20 +1,6 @@
 import DecodeListeners from './DecodeListeners';
 
 function universalSetupEventListeners() {
-    // 隐私政策按钮事件监听
-    document.getElementById('togglePrivacyPolicy').addEventListener('click', (event) => {
-        const privacyPolicy = document.getElementById('privacyPolicy');
-        const state = window.getComputedStyle(privacyPolicy).display;
-        if (state === 'none') {
-            privacyPolicy.style.display = 'block';
-            event.target.textContent = '隐藏使用须知';
-            window.scrollTo(0, document.body.scrollHeight);
-        } else {
-            privacyPolicy.style.display = 'none';
-            event.target.textContent = '显示使用须知';
-        }
-    });
-
     // 版本记录按钮事件监听
     document.getElementById('toggleVersionRecord').addEventListener('click', (event) => {
         const changelog = document.getElementById('versionRecordTable');
@@ -42,36 +28,6 @@ function universalSetupEventListeners() {
 
     document.getElementById('sidebarToggleButton').addEventListener(applicationState.isOnPhone ? 'touchstart' : 'mousedown', DecodeListeners.adjustSidebarWidth);
     document.getElementById('sidebar').addEventListener('click', DecodeListeners.showSidebar);
-
-    //     document.getElementById('downloadHtmlLink').addEventListener('click', () => {
-    //         // 重置侧边栏
-    //         PrismProcessor.DecodeList.clear();
-    //         if (applicationState.sidebarVisible) {
-    //             DecodeListeners.hideSidebar();
-    //         }
-    //         // 生成新的 HTML 文档，复制head
-    //         const currentHtml = document.documentElement.outerHTML;
-    //         const parser = new DOMParser();
-    //         const doc = parser.parseFromString(currentHtml, 'text/html');
-    //         const sourceElement = doc.getElementById('bodyContent');
-    //         const newDoc = document.implementation.createHTMLDocument('Filtered Document');
-    //         newDoc.head.innerHTML = doc.head.innerHTML;
-    //         // 添加离线状态标记
-    //         const script = newDoc.head.appendChild(newDoc.createElement('script'));
-    //         script.innerHTML = 'applicationState.isOffline = true;';
-    //         // 添加body属性
-    //         doc.body.classList.forEach((cls) => newDoc.body.classList.add(cls));
-    //         // 添加body内容，排除某些插件写入的元素
-    //         newDoc.body.appendChild(newDoc.importNode(sourceElement, true));
-
-    //         const a = document.createElement('a');
-    //         a.download = 'prism_uyanide.html';
-    //         a.href = URL.createObjectURL(new Blob([newDoc.documentElement.outerHTML], { type: 'text/html' }));
-    //         document.body.appendChild(a);
-    //         a.click();
-    //         document.body.removeChild(a);
-    //         URL.revokeObjectURL(a.href);
-    //     });
 }
 
 const UniversalListeners = {
