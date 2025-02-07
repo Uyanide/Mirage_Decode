@@ -240,14 +240,15 @@ async function updateImageFromFile(file, callback) {
 // 从URL加载图像，调用callback
 async function updateImageFromURL(event, callback) {
     const proxy = 'https://api.uyanide.com/proxy/?url=';
-    if (event.target.previousElementSibling.value === '') {
+    const imageUrl = event.target.previousElementSibling.value.trim();
+    if (imageUrl === '') {
         handleImageLoadError(Error('未提供URL'), callback);
         return;
     }
-    const imageUrl = proxy + event.target.previousElementSibling.value;
+    const proxyUrl = `${proxy}${imageUrl}`;
     event.target.previousElementSibling.value = '加载中...请稍候';
     event.target.disabled = true;
-    loadImage(imageUrl)
+    loadImage(proxyUrl)
         .then((img) => {
             callback(img);
         })
