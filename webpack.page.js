@@ -5,6 +5,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 const path = require('path');
 
 module.exports = merge(common, {
+    entry: './src/scripts/entries/offline.js',
     mode: 'production',
     output: {
         filename: '[name].[contenthash].js',

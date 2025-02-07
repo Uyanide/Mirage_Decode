@@ -6,7 +6,7 @@ const TerserPlugin = require('terser-webpack-plugin');
 // const HtmlinlineScriptPlugin = require('html-inline-script-webpack-plugin');
 
 module.exports = {
-    entry: './src/scripts/init.js',
+    entry: './src/scripts/entries/normal.js',
     output: {
         filename: '[name].[contenthash].js',
         path: path.resolve(__dirname, './docs'),
