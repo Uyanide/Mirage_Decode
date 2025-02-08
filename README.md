@@ -12,6 +12,10 @@
 - [Vercel App](https://mirage-decode.vercel.app/)
 - [单页面版本下载](https://api.uyanide.com/prism_page)
 
+## 技术原理
+
+[百度贴吧 - 开个贴细说新式高科技坦克](https://tieba.baidu.com/p/9093709508)
+
 ## 使用方法
 
 一看就懂，不懂也能用 :)
