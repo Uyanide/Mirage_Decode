@@ -17,5 +17,6 @@
     "minSize": 100,
     "maxSize": 4000,
     "defaultPageId": "decodePage",
-    "maxListSize": 20
+    "maxListSize": 20,
+    "urlFetchTimeout": 30000
 }

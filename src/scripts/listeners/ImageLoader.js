@@ -179,7 +179,7 @@ function handleImageLoadError(error, callback) {
 }
 
 // 从源加载图像并返回
-async function loadImage(input, timeout = 20000) {
+async function loadImage(input, timeout = applicationState.defaultArguments.urlFetchTimeout) {
     return new Promise((resolve, reject) => {
         const img = new Image();
         let timer;
