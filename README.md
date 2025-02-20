@@ -4,13 +4,13 @@
 
 ## 链接
 
-**[光棱坦克工厂](https://prism.uyanide.com/)**
+- **[光棱坦克工厂](https://prism.uyanide.com/)**
 
 ## 备用链接
 
 - [Github Pages](https://uyanide.github.io/Mirage_Decode/)
 - [Vercel App](https://mirage-decode.vercel.app/)
-- [单页面版本下载](https://api.uyanide.com/prism_page)
+- [单页面版本下载](https://api.uyanide.com/prism_page) (或[本仓库中page/index.html](https://github.com/Uyanide/Mirage_Decode/blob/main/page/index.html))
 
 ## 技术原理
 
