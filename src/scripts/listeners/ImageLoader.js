@@ -354,18 +354,18 @@ function downloadFromLink(url, fileName) {
         });
     }
 }
-function generateUrlFromCanvas(canvasId, isPng = true, writeInMetadata = false) {
+function generateUrlFromCanvas(canvasId, saveFormat = 'png', writeInMetadata = false) {
     const isReverse = PrismProcessor.PrismEncoder.isEncodeReverse;
     const threshold = PrismProcessor.PrismEncoder.innerThreshold;
     const contrast = PrismProcessor.PrismEncoder.innerContrast;
     const canvas = document.getElementById(canvasId);
-    if (isPng) {
+    if (saveFormat === 'png') {
         if (writeInMetadata) {
             return writeChunkDataPNG(canvas.toDataURL('image/png'), isReverse, threshold, contrast);
         } else {
             return canvas.toDataURL('image/png');
         }
-    } else {
+    } else if (saveFormat === 'gif') {
         const ctx = canvas.getContext('2d');
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const encoder = new JPEGEncoder(100);
@@ -383,18 +383,19 @@ function generateUrlFromCanvas(canvasId, isPng = true, writeInMetadata = false) 
         }
     }
 }
-function saveImageFromCanvas(canvasId, isPng = true, writeInMetadata = false) {
+function saveImageFromCanvas(canvasId, saveFormat = 'png', writeInMetadata = false) {
     const timestamp = new Date().getTime();
-    if (PrismProcessor.PrismEncoder.isCoverMirage && !isPng) {
-        alert('JPEG格式不支持幻影坦克！请谨慎选择。');
+    if (PrismProcessor.PrismEncoder.isCoverMirage && !saveFormat == 'png') {
+        alert('幻影坦克暂不支持JPEG/GIF格式！请谨慎选择。');
     }
-    const fileName = `output_${timestamp}.${isPng ? 'png' : 'jpg'}`;
-    downloadFromLink(generateUrlFromCanvas(canvasId, isPng, writeInMetadata), fileName);
+    const fileName = `output_${timestamp}.${saveFormat}`;
+    downloadFromLink(generateUrlFromCanvas(canvasId, saveFormat, writeInMetadata), fileName);
 }
 
 // 生成infoString
 function generateInfoString(isReverse, innerThreshold, innerContrast) {
-    const infoString = (isReverse ? '1' : '0') + innerThreshold.toString(16).padStart(2, '0') + innerContrast.toString(16).padStart(2, '0');
+    const infoString =
+        (isReverse ? '1' : '0') + innerThreshold.toString(16).padStart(2, '0') + innerContrast.toString(16).padStart(2, '0');
     console.log('writing to Metadata: ' + infoString);
     return infoString;
 }

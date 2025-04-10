@@ -302,11 +302,19 @@
                         <input id="encodeSizeInput" class="marginLeftLow inputReact" type="number" value="1200" />
                     </div>
 
-                    <div class="displayFlex flexRow justifyCenter alignCenter marginTopMedium">
+                    <!-- <div class="displayFlex flexRow justifyCenter alignCenter marginTopMedium">
                         <input type="checkbox" class="inputReact transformSize" id="isPngCheckBox" />
                         <label for="isPngCheckBox"
                             >输出PNG <span class="fontSmall frontSecondaryColor">(否则为JPEG, 推荐JPEG)</span></label
                         >
+                    </div> -->
+                    <div id="saveFormat" class="displayFlex flexRow justifyCenter alignCenter marginTopHigh">
+                        <label for="saveFormatSelect">保存格式: </label>
+                        <select id="saveFormatSelect" class="inputReact marginLeftLow">
+                            <option value="jpeg">JPEG</option>
+                            <option value="png">PNG</option>
+                            <option value="gif">GIF</option>
+                        </select>
                     </div>
 
                     <button id="jumpToDecodeButton" class="marginTopHigh inputReact transformSize">

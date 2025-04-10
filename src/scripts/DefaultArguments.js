@@ -24,7 +24,7 @@ class DefaultArguments {
         document.getElementById('isCoverGrayCheckBox').checked = defaultArgumentsConfig.isCoverGray;
         document.getElementById('isEncodeReverseCheckBox').checked = defaultArgumentsConfig.isEncodeReverse;
         document.getElementById('isCoverMirageCheckBox').checked = defaultArgumentsConfig.isCoverMirage;
-        document.getElementById('isPngCheckBox').checked = defaultArgumentsConfig.isPng;
+        document.getElementById('saveFormatSelect').checked = defaultArgumentsConfig.saveFormat;
         document.getElementById('encodeMethodSelect').value = defaultArgumentsConfig.encodeMethod;
         document.getElementById('encodeSizeInput').value = defaultArgumentsConfig.size;
     }

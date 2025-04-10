@@ -9,7 +9,7 @@
     "isCoverGray": false,
     "isEncodeReverse": false,
     "isCoverMirage": false,
-    "isPng": false,
+    "saveFormat": "jpeg",
     "encodeMethod": "chess",
     "innerContrast": 50,
     "coverContrast": 50,

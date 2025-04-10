@@ -8,7 +8,10 @@ function enableHorizontalScroll() {
     document.documentElement.style.overflowX = 'auto';
 }
 function hideSidebarFullscreen(event) {
-    if (!document.getElementById('isDarkmodeContainer').contains(event.target) && (event.target.id == 'sidebarToggleButton' || !document.getElementById('sidebar').contains(event.target))) {
+    if (
+        !document.getElementById('isDarkmodeContainer').contains(event.target) &&
+        (event.target.id == 'sidebarToggleButton' || !document.getElementById('sidebar').contains(event.target))
+    ) {
         hideSidebar();
     }
 }
@@ -321,27 +324,27 @@ function decodeSetupEventListeners() {
 }
 
 // 移除解码事件监听器
-function decodeRemoveEventListeners() {
-    document.getElementById('isReadMetadataCheckBox').removeEventListener('change', setReadMetadata);
-    document.getElementById('decodeImageFileInput').removeEventListener('change', decodeLoadImageFile);
-    document.getElementById('decodeLoadImageButton').removeEventListener('click', decodeLoadImageURL);
-    if (!applicationState.isOnPhone) {
-        window.removeEventListener('paste', decodeLoadImageFromClipboard);
-        document.body.removeEventListener('drop', decodeLoadImageFromDrag);
-    } else {
-        document.getElementById('decodePasteButtonInput').removeEventListener('click', decodeLoadImageFromPasteButton);
-        // document.getElementById('decodeThresholdRange').removeEventListener('touchstart', disableScroll);
-        // document.getElementById('decodeContrastRange').removeEventListener('touchstart', disableScroll);
-    }
-    document.getElementById('decodeThresholdRange').removeEventListener('input', decodeSetThreshold);
-    document.getElementById('decodeThresholdInput').removeEventListener('input', decodeSetThresholdInput);
-    document.getElementById('optionSelect').removeEventListener('change', decodeSetCoverMethod);
-    document.getElementById('decodeReverseInput').removeEventListener('change', decodeSetReverse);
-    document.getElementById('decodeContrastRange').removeEventListener('input', decodeSetContrast);
-    document.getElementById('decodeResetContrastButton').removeEventListener('click', decodeResetContrast);
-    document.getElementById('decodeSaveImageButton').removeEventListener('click', decodeSaveImage);
-    document.getElementById('decodeSaveSrcImageButton').removeEventListener('click', decodeSaveSrcImage);
-}
+// function decodeRemoveEventListeners() {
+//     document.getElementById('isReadMetadataCheckBox').removeEventListener('change', setReadMetadata);
+//     document.getElementById('decodeImageFileInput').removeEventListener('change', decodeLoadImageFile);
+//     document.getElementById('decodeLoadImageButton').removeEventListener('click', decodeLoadImageURL);
+//     if (!applicationState.isOnPhone) {
+//         window.removeEventListener('paste', decodeLoadImageFromClipboard);
+//         document.body.removeEventListener('drop', decodeLoadImageFromDrag);
+//     } else {
+//         document.getElementById('decodePasteButtonInput').removeEventListener('click', decodeLoadImageFromPasteButton);
+//         // document.getElementById('decodeThresholdRange').removeEventListener('touchstart', disableScroll);
+//         // document.getElementById('decodeContrastRange').removeEventListener('touchstart', disableScroll);
+//     }
+//     document.getElementById('decodeThresholdRange').removeEventListener('input', decodeSetThreshold);
+//     document.getElementById('decodeThresholdInput').removeEventListener('input', decodeSetThresholdInput);
+//     document.getElementById('optionSelect').removeEventListener('change', decodeSetCoverMethod);
+//     document.getElementById('decodeReverseInput').removeEventListener('change', decodeSetReverse);
+//     document.getElementById('decodeContrastRange').removeEventListener('input', decodeSetContrast);
+//     document.getElementById('decodeResetContrastButton').removeEventListener('click', decodeResetContrast);
+//     document.getElementById('decodeSaveImageButton').removeEventListener('click', decodeSaveImage);
+//     document.getElementById('decodeSaveSrcImageButton').removeEventListener('click', decodeSaveSrcImage);
+// }
 
 // return {
 //     decodeSetupEventListeners,
@@ -351,7 +354,7 @@ function decodeRemoveEventListeners() {
 
 const DecodeListeners = {
     decodeSetupEventListeners,
-    decodeRemoveEventListeners,
+    // decodeRemoveEventListeners,
     adjustSidebarWidth,
     showSidebar,
     hideSidebar,

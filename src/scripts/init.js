@@ -14,13 +14,15 @@ import buta from '../res/buta.jpg';
 import neko from '../res/neko.jpg';
 import neta from '../res/neta.png';
 import icon from '../res/neko.ico';
+import DecodeListeners from './listeners/DecodeListeners.js';
 
 const Init = async () => {
     applicationState.defaultSrc = [neta, neko, buta];
 
     errorHandling.userAgent = navigator.userAgent.toLowerCase();
     applicationState.isOnPhone = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(errorHandling.userAgent);
-    applicationState.isDownloadNotSupported = applicationState.isOnPhone && /xiaomi|miui|ucbrowser|quark/i.test(errorHandling.userAgent);
+    applicationState.isDownloadNotSupported =
+        applicationState.isOnPhone && /xiaomi|miui|ucbrowser|quark/i.test(errorHandling.userAgent);
     applicationState.isDownloadNotPossible = applicationState.isOnPhone && /ucbrowser|quark/i.test(errorHandling.userAgent);
     applicationState.isOnTiebaBrowser = /tieba/i.test(errorHandling.userAgent);
     // applicationState.isOnPhone = true;
@@ -28,7 +30,8 @@ const Init = async () => {
     document.addEventListener('DOMContentLoaded', async () => {
         try {
             if (applicationState.isOnTiebaBrowser) {
-                document.body.innerHTML = '<h1>请点击右上角<br>用浏览器打开</h1><img src="https://gsp0.baidu.com/5aAHeD3nKhI2p27j8IqW0jdnxx1xbK/tb/editor/images/client/image_emoticon1.png"></img>';
+                document.body.innerHTML =
+                    '<h1>请点击右上角<br>用浏览器打开</h1><img src="https://gsp0.baidu.com/5aAHeD3nKhI2p27j8IqW0jdnxx1xbK/tb/editor/images/client/image_emoticon1.png"></img>';
                 return;
             }
             if (applicationState.isDownloadNotPossible) {
@@ -50,12 +53,17 @@ const Init = async () => {
             // 加载默认参数
             applicationState.defaultArguments = DefaultArguments.loadDefaultArguments();
             DefaultArguments.setDefaultValues();
-            applicationState.isPng = applicationState.defaultArguments.isPng;
+            applicationState.saveFormat = applicationState.defaultArguments.saveFormat;
             applicationState.isReadMetadata = applicationState.defaultArguments.isReadMetadata;
 
             // 实例化解码器和编码器
             PrismProcessor.PrismDecoder = new PrismDecoder('decodeCanvas', applicationState.defaultArguments);
-            PrismProcessor.PrismEncoder = new PrismEncoder('innerCanvas', 'coverCanvas', 'outputCanvas', applicationState.defaultArguments);
+            PrismProcessor.PrismEncoder = new PrismEncoder(
+                'innerCanvas',
+                'coverCanvas',
+                'outputCanvas',
+                applicationState.defaultArguments
+            );
             PrismProcessor.DecodeList = new DecodeList('sidebarContent', 'sidebarAmountLabel', 'sidebarClearButton');
 
             // 加载默认图像
@@ -103,8 +111,11 @@ const Init = async () => {
             UniversalListeners.universalSetupEventListeners();
 
             // 显示默认页面
-            applicationState.currPageId = applicationState.defaultArguments.defaultPageId === 'encodePage' ? 'decodePage' : 'encodePage';
+            applicationState.currPageId =
+                applicationState.defaultArguments.defaultPageId === 'encodePage' ? 'decodePage' : 'encodePage';
             EncodeListeners.switchPage();
+            EncodeListeners.encodeSetUpEventListeners();
+            DecodeListeners.decodeSetupEventListeners();
 
             if (applicationState.isOnPhone) {
                 document.getElementById('decodePasteInput').style.display = 'none';
@@ -117,11 +128,10 @@ const Init = async () => {
                 document.getElementById('decodePasteButton').style.display = 'none';
             }
 
-            // byd小米浏览器另辟蹊径也下不了png, 幻影也用不了, 完大蛋
             if (applicationState.isDownloadNotSupported) {
-                document.getElementById('isPng').style.display = 'none';
+                document.getElementById('saveFormat').style.display = 'none';
                 document.getElementById('isCoverMirage').style.display = 'none';
-                applicationState.isPng = false;
+                applicationState.saveFormat = 'jpeg';
                 PrismProcessor.PrismEncoder.isCoverMirage = false;
                 const saveHints = document.getElementsByClassName('saveHint');
                 for (let i = 0; i < saveHints.length; i++) {

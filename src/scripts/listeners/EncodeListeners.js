@@ -233,8 +233,8 @@ function encodeSetCoverMirage(event) {
         PrismProcessor.PrismEncoder.processImage();
     }
     if (event.target.checked) {
-        document.getElementById('isPngCheckBox').checked = true;
-        applicationState.isPng = true;
+        document.getElementById('saveFormatSelect').value = 'png';
+        applicationState.saveFormat = 'png';
     }
 }
 
@@ -271,12 +271,12 @@ function encodeSetSize(event) {
 
 // 设置保存类型
 function setSaveType(event) {
-    applicationState.isPng = event.target.checked;
+    applicationState.saveFormat = event.target.value;
 }
 
 // 保存图像
 function encodeSaveImage() {
-    ImageLoader.saveImageFromCanvas('outputCanvas', applicationState.isPng, true);
+    ImageLoader.saveImageFromCanvas('outputCanvas', applicationState.saveFormat, true);
 }
 
 // 以当前结果跳转显形界面
@@ -289,7 +289,7 @@ function jumpToDecode() {
             innerContrast: PrismProcessor.PrismEncoder.innerContrast,
         });
         const img = new Image();
-        img.src = ImageLoader.generateUrlFromCanvas('outputCanvas', applicationState.isPng, false);
+        img.src = ImageLoader.generateUrlFromCanvas('outputCanvas', applicationState.saveFormat, false);
         img.onload = function () {
             PrismProcessor.PrismDecoder.updateImage(img);
             switchPage();
@@ -310,8 +310,8 @@ function switchPage() {
         decodeButton.classList.add('PageSwitchButtonUnselected');
         encodeButton.classList.remove('PageSwitchButtonUnselected');
         encodeButton.classList.add('PageSwitchButtonSelected');
-        DecodeListeners.decodeRemoveEventListeners();
-        encodeSetUpEventListeners();
+        // DecodeListeners.decodeRemoveEventListeners();
+        // encodeSetUpEventListeners();
         applicationState.currPageId = 'encodePage';
         document.getElementById('decodeButton').addEventListener('click', switchPage);
         document.getElementById('encodeButton').removeEventListener('click', switchPage);
@@ -322,8 +322,8 @@ function switchPage() {
         decodeButton.classList.add('PageSwitchButtonSelected');
         encodeButton.classList.remove('PageSwitchButtonSelected');
         encodeButton.classList.add('PageSwitchButtonUnselected');
-        DecodeListeners.decodeSetupEventListeners();
-        encodeRemoveEventListeners();
+        // DecodeListeners.decodeSetupEventListeners();
+        // encodeRemoveEventListeners();
         applicationState.currPageId = 'decodePage';
         document.getElementById('encodeButton').addEventListener('click', switchPage);
         document.getElementById('decodeButton').removeEventListener('click', switchPage);
@@ -365,38 +365,38 @@ function encodeSetUpEventListeners() {
     document.getElementById('encodeMethodSelect').addEventListener('change', encodeSetMethod);
     document.getElementById('encodeSizeInput').addEventListener('input', encodeSetSize);
 
-    document.getElementById('isPngCheckBox').addEventListener('change', setSaveType);
+    document.getElementById('saveFormatSelect').addEventListener('change', setSaveType);
     document.getElementById('jumpToDecodeButton').addEventListener('click', jumpToDecode);
     document.getElementById('encodeSaveImageButton').addEventListener('click', encodeSaveImage);
 }
 
 // 移除编码事件监听器
-function encodeRemoveEventListeners() {
-    document.getElementById('innerSourceFileInput').removeEventListener('change', encodeLoadInnerImageFile);
-    document.getElementById('coverSourceFileInput').removeEventListener('change', encodeLoadCoverImageFile);
-    if (!applicationState.isOnPhone) {
-        window.removeEventListener('mousemove', updateMousePosition);
-        window.removeEventListener('paste', encodeLoadImageFromClipboard);
-        document.getElementById('innerCanvas').removeEventListener('drop', encodeLoadInnerImageFromDrag);
-        document.getElementById('coverCanvas').removeEventListener('drop', encodeLoadCoverImageFromDrag);
-    }
-    document.getElementById('innerThresholdRange').removeEventListener('input', encodeSetInnerThreshold);
-    document.getElementById('coverThresholdRange').removeEventListener('input', encodeSetCoverThreshold);
-    document.getElementById('innerThresholdInput').removeEventListener('input', encodeSetInnerThresholdInput);
-    document.getElementById('coverThresholdInput').removeEventListener('input', encodeSetCoverThresholdInput);
-    document.getElementById('innerContrastRange').removeEventListener('input', encodeSetInnerContrast);
-    document.getElementById('coverContrastRange').removeEventListener('input', encodeSetCoverContrast);
-    document.getElementById('innerResetContrastButton').removeEventListener('click', resetInnerContrast);
-    document.getElementById('coverResetContrastButton').removeEventListener('click', resetCoverContrast);
-    document.getElementById('isCoverGrayCheckBox').removeEventListener('change', encodeSetCoverGray);
-    document.getElementById('isEncodeReverseCheckBox').removeEventListener('change', encodeSetEncodeReverse);
-    document.getElementById('isCoverMirageCheckBox').removeEventListener('change', encodeSetCoverMirage);
-    document.getElementById('encodeMethodSelect').removeEventListener('change', encodeSetMethod);
-    document.getElementById('encodeSizeInput').removeEventListener('input', encodeSetSize);
-    document.getElementById('isPngCheckBox').removeEventListener('change', setSaveType);
-    document.getElementById('jumpToDecodeButton').removeEventListener('click', jumpToDecode);
-    document.getElementById('encodeSaveImageButton').removeEventListener('click', encodeSaveImage);
-}
+// function encodeRemoveEventListeners() {
+//     document.getElementById('innerSourceFileInput').removeEventListener('change', encodeLoadInnerImageFile);
+//     document.getElementById('coverSourceFileInput').removeEventListener('change', encodeLoadCoverImageFile);
+//     if (!applicationState.isOnPhone) {
+//         window.removeEventListener('mousemove', updateMousePosition);
+//         window.removeEventListener('paste', encodeLoadImageFromClipboard);
+//         document.getElementById('innerCanvas').removeEventListener('drop', encodeLoadInnerImageFromDrag);
+//         document.getElementById('coverCanvas').removeEventListener('drop', encodeLoadCoverImageFromDrag);
+//     }
+//     document.getElementById('innerThresholdRange').removeEventListener('input', encodeSetInnerThreshold);
+//     document.getElementById('coverThresholdRange').removeEventListener('input', encodeSetCoverThreshold);
+//     document.getElementById('innerThresholdInput').removeEventListener('input', encodeSetInnerThresholdInput);
+//     document.getElementById('coverThresholdInput').removeEventListener('input', encodeSetCoverThresholdInput);
+//     document.getElementById('innerContrastRange').removeEventListener('input', encodeSetInnerContrast);
+//     document.getElementById('coverContrastRange').removeEventListener('input', encodeSetCoverContrast);
+//     document.getElementById('innerResetContrastButton').removeEventListener('click', resetInnerContrast);
+//     document.getElementById('coverResetContrastButton').removeEventListener('click', resetCoverContrast);
+//     document.getElementById('isCoverGrayCheckBox').removeEventListener('change', encodeSetCoverGray);
+//     document.getElementById('isEncodeReverseCheckBox').removeEventListener('change', encodeSetEncodeReverse);
+//     document.getElementById('isCoverMirageCheckBox').removeEventListener('change', encodeSetCoverMirage);
+//     document.getElementById('encodeMethodSelect').removeEventListener('change', encodeSetMethod);
+//     document.getElementById('encodeSizeInput').removeEventListener('input', encodeSetSize);
+//     document.getElementById('saveFormatSelect').removeEventListener('change', setSaveType);
+//     document.getElementById('jumpToDecodeButton').removeEventListener('click', jumpToDecode);
+//     document.getElementById('encodeSaveImageButton').removeEventListener('click', encodeSaveImage);
+// }
 
 //     return {
 //         switchPage,
@@ -409,7 +409,7 @@ function encodeRemoveEventListeners() {
 const EncodeListeners = {
     switchPage,
     encodeSetUpEventListeners,
-    encodeRemoveEventListeners,
+    // encodeRemoveEventListeners,
 };
 
 export default EncodeListeners;
