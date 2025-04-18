@@ -1,6 +1,7 @@
 import piexif from '../lib/piexif.js';
 import JPEGEncoder from '../lib/encoder.js';
 import metadata from '../lib/png-metadata.js';
+import GIF from 'gif.js';
 
 /************************Image Process***********************/
 
@@ -347,14 +348,24 @@ function downloadFromLink(url, fileName) {
 
         const objectURL = URL.createObjectURL(blob);
         const newTab = window.open();
-        newTab.document.write('<img src="' + objectURL + '" alt="' + fileName + '">');
+        newTab.document.body.innerHTML = `<img src="${objectURL}" alt="${fileName}">`;
+        newTab.document.title = fileName;
         newTab.document.close();
         newTab.addEventListener('beforeunload', () => {
             URL.revokeObjectURL(objectURL);
         });
     }
 }
-function generateUrlFromCanvas(canvasId, saveFormat = 'png', writeInMetadata = false) {
+async function u8ArrayToBase64(u8Array) {
+    return new Promise((resolve, reject) => {
+        const blob = new Blob([u8Array]); // 将 Uint8Array 转为 Blob
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result.split(',')[1]); // 提取 Base64 部分
+        reader.onerror = (error) => reject(error);
+        reader.readAsDataURL(blob); // 将 Blob 转为 Base64
+    });
+}
+async function generateUrlFromCanvas(canvasId, saveFormat = 'png', writeInMetadata = false) {
     const isReverse = PrismProcessor.PrismEncoder.isEncodeReverse;
     const threshold = PrismProcessor.PrismEncoder.innerThreshold;
     const contrast = PrismProcessor.PrismEncoder.innerContrast;
@@ -365,31 +376,56 @@ function generateUrlFromCanvas(canvasId, saveFormat = 'png', writeInMetadata = f
         } else {
             return canvas.toDataURL('image/png');
         }
-    } else if (saveFormat === 'gif') {
+    } else if (saveFormat === 'jpeg') {
         const ctx = canvas.getContext('2d');
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
         const encoder = new JPEGEncoder(100);
         const jpegData = encoder.encode(imageData, 100);
-        let binary = '';
-        const bytes = new Uint8Array(jpegData);
-        const len = bytes.byteLength;
-        for (let i = 0; i < len; i++) {
-            binary += String.fromCharCode(bytes[i]);
-        }
+
+        let base64 = await u8ArrayToBase64(jpegData);
         if (writeInMetadata) {
-            return writeMetadataJPEG(`data:image/jpeg;base64,${btoa(binary)}`, isReverse, threshold, contrast);
-        } else {
-            return `data:image/jpeg;base64,${btoa(binary)}`;
+            return writeMetadataJPEG(`data:image/jpeg;base64,${base64}`, isReverse, threshold, contrast);
         }
+        return `data:image/jpeg;base64,${base64}`;
+    } else if (saveFormat === 'gif') {
+        return new Promise((r, e) => {
+            var gif = new GIF({
+                workers: 2,
+                repeat: 1,
+                width: canvas.width,
+                height: canvas.height,
+                debug: true,
+            });
+
+            const ctx = canvas.getContext('2d');
+            gif.addFrame(ctx, {
+                x: 0,
+                y: 0,
+                width: canvas.width,
+                height: canvas.height,
+                copy: true,
+            });
+
+            gif.on('finished', (blob) => {
+                console.log('GIF blob:', blob);
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    r(reader.result);
+                };
+                reader.readAsDataURL(blob);
+            });
+
+            gif.render();
+        });
     }
 }
-function saveImageFromCanvas(canvasId, saveFormat = 'png', writeInMetadata = false) {
+async function saveImageFromCanvas(canvasId, saveFormat = 'png', writeInMetadata = false) {
     const timestamp = new Date().getTime();
     if (PrismProcessor.PrismEncoder.isCoverMirage && !saveFormat == 'png') {
         alert('幻影坦克暂不支持JPEG/GIF格式！请谨慎选择。');
     }
     const fileName = `output_${timestamp}.${saveFormat}`;
-    downloadFromLink(generateUrlFromCanvas(canvasId, saveFormat, writeInMetadata), fileName);
+    downloadFromLink(await generateUrlFromCanvas(canvasId, saveFormat, writeInMetadata), fileName);
 }
 
 // 生成infoString

@@ -114,8 +114,6 @@ const Init = async () => {
             applicationState.currPageId =
                 applicationState.defaultArguments.defaultPageId === 'encodePage' ? 'decodePage' : 'encodePage';
             EncodeListeners.switchPage();
-            EncodeListeners.encodeSetUpEventListeners();
-            DecodeListeners.decodeSetupEventListeners();
 
             if (applicationState.isOnPhone) {
                 document.getElementById('decodePasteInput').style.display = 'none';

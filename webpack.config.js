@@ -70,9 +70,9 @@ module.exports = {
             buffer: require.resolve('buffer/'),
         },
     },
-    mode: 'production',
-    // mode: 'development',
-    // devtool: 'source-map',
+    // mode: 'production',
+    mode: 'development',
+    devtool: 'source-map',
     optimization: {
         minimize: true,
         minimizer: [new TerserPlugin()],
