@@ -289,11 +289,14 @@ function jumpToDecode() {
             innerContrast: PrismProcessor.PrismEncoder.innerContrast,
         });
         const img = new Image();
-        img.src = ImageLoader.generateUrlFromCanvas('outputCanvas', applicationState.isPng, false);
         img.onload = function () {
             PrismProcessor.PrismDecoder.updateImage(img);
             switchPage();
         };
+        img.onerror = function () {
+            console.error('图像加载失败');
+        };
+        img.src = ImageLoader.generateUrlFromCanvas('outputCanvas', applicationState.isPng, false);
     }
 }
 

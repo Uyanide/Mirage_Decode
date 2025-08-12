@@ -8,7 +8,10 @@ function enableHorizontalScroll() {
     document.documentElement.style.overflowX = 'auto';
 }
 function hideSidebarFullscreen(event) {
-    if (!document.getElementById('isDarkmodeContainer').contains(event.target) && (event.target.id == 'sidebarToggleButton' || !document.getElementById('sidebar').contains(event.target))) {
+    if (
+        !document.getElementById('isDarkmodeContainer').contains(event.target) &&
+        (event.target.id == 'sidebarToggleButton' || !document.getElementById('sidebar').contains(event.target))
+    ) {
         hideSidebar();
     }
 }
@@ -95,18 +98,16 @@ async function decodeProcessList(fileList) {
     }
     const promises = fileList.map((file) => {
         return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const img = new Image();
-                img.onload = () => {
-                    PrismProcessor.DecodeList.appendList(img);
+            ImageLoader.parseImage(file)
+                .then((obj) => {
+                    PrismProcessor.DecodeList.appendList(obj.image, obj.parameters);
                     resolve();
-                };
-                img.onerror = reject;
-                img.src = event.target.result;
-            };
-            reader.onerror = reject;
-            reader.readAsDataURL(file);
+                })
+                .catch((error) => {
+                    console.error('Failed to parse image:', error.stack, error.message);
+                    alert('图像解析失败：' + (error.message ?? ''));
+                    reject(error);
+                });
         });
     });
 
@@ -132,13 +133,13 @@ async function decodeLoadImageFile(event) {
     if (fileList.length === 0) {
         return;
     }
-    try {
-        await decodeProcessList(Array.from(fileList));
-        event.target.value = '';
-    } catch (error) {
-        console.error('Failed to load image:', error.stack, error.message);
-        alert('图像加载失败：' + error.message ?? '');
-    }
+    // try {
+    await decodeProcessList(Array.from(fileList));
+    event.target.value = '';
+    // } catch (error) {
+    //     console.error('Failed to load image:', error.stack, error.message);
+    //     alert('图像加载失败：' + error.message ?? '');
+    // }
 }
 
 // 从URL加载图像

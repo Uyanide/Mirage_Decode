@@ -1,6 +1,7 @@
 import piexif from '../lib/piexif.js';
-import JPEGEncoder from '../lib/encoder.js';
+import JPEG from 'jpeg-js';
 import metadata from '../lib/png-metadata.js';
+import UPNG from 'upng-js';
 
 /************************Image Process***********************/
 
@@ -115,14 +116,13 @@ function getParametersFromString(str) {
     };
 }
 
-function getParametersFromMetadata(img) {
+function getParametersFromMetadata(binaryString) {
     try {
-        if (img.src.startsWith('data:image/jpeg;base64,')) {
-            const exif = piexif.load(img.src);
+        if (binaryString.slice(0, 2) === '\xFF\xD8') {
+            const exif = piexif.load(binaryString);
             const infoString = exif['0th'][piexif.ImageIFD.Make];
             return getParametersFromString(infoString);
-        } else if (img.src.startsWith('data:image/png;base64,')) {
-            const binaryString = atob(img.src.split(',')[1]);
+        } else if (binaryString.slice(0, 8) === '\x89PNG\x0D\x0A\x1A\x0A') {
             let chunkList = metadata.splitChunk(binaryString);
             for (let i in chunkList) {
                 let chunk = chunkList[i];
@@ -178,51 +178,192 @@ function handleImageLoadError(error, callback) {
     }
 }
 
-// 从源加载图像并返回
-async function loadImage(input, timeout = 20000) {
+async function parseImageFromPixels(pixles, width, height) {
     return new Promise((resolve, reject) => {
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        const imageData = new ImageData(new Uint8ClampedArray(pixles), width, height);
+        ctx.putImageData(imageData, 0, 0);
         const img = new Image();
-        let timer;
-
         img.onload = () => {
-            clearTimeout(timer);
-            if (errorHandling.currCanvasIndex === 0) {
-                try {
-                    setDecodeValuesWithMetadata(img);
-                } catch (error) {
-                    console.error('failed to read metadata: ' + error);
-                }
-            }
             resolve(img);
         };
-
         img.onerror = (error) => {
-            clearTimeout(timer);
+            reject(error);
+        };
+        img.src = canvas.toDataURL();
+        canvas.remove();
+    });
+}
+
+function arrayBufferToString(arrayBuffer) {
+    const uint8Array = new Uint8Array(arrayBuffer);
+    let binaryString = '';
+    const chunkSize = 8192;
+
+    for (let i = 0; i < uint8Array.length; i += chunkSize) {
+        const chunk = uint8Array.subarray(i, i + chunkSize);
+        binaryString += String.fromCharCode.apply(null, chunk);
+    }
+
+    return binaryString;
+}
+
+async function parseJPEG(arrayBuffer) {
+    const pixels = JPEG.decode(new Uint8Array(arrayBuffer));
+    const img = await parseImageFromPixels(pixels.data, pixels.width, pixels.height);
+    const params = getParametersFromMetadata(arrayBufferToString(arrayBuffer));
+    return {
+        image: img,
+        parameters: params,
+    };
+}
+
+async function parsePNG(arrayBuffer) {
+    const pixels = UPNG.decode(arrayBuffer);
+    const rgba = UPNG.toRGBA8(pixels)[0];
+    const img = await parseImageFromPixels(rgba, pixels.width, pixels.height);
+    const params = getParametersFromMetadata(arrayBufferToString(arrayBuffer));
+    return {
+        image: img,
+        parameters: params,
+    };
+}
+
+async function parseImage(input) {
+    return new Promise((resolve, reject) => {
+        const onload = (img) => {
+            resolve({
+                image: img,
+                parameters: {
+                    isValid: false,
+                },
+            });
+        };
+        const onloadObj = (obj) => {
+            resolve(obj);
+        };
+        const onerror = (error) => {
             reject(error);
         };
 
-        timer = setTimeout(() => {
-            img.src = '';
-            reject(new Error('加载图像超时'));
-        }, timeout);
+        (async () => {
+            if (typeof input === 'string') {
+                let arrayBuffer;
+                if (input.startsWith('data:image/jpeg;base64,') || input.startsWith('data:image/png;base64,')) {
+                    const base64 = input.split(',')[1];
+                    const binaryString = atob(base64);
+                    arrayBuffer = new ArrayBuffer(binaryString.length);
+                    const uint8Array = new Uint8Array(arrayBuffer);
+                    for (let i = 0; i < binaryString.length; i++) {
+                        uint8Array[i] = binaryString.charCodeAt(i);
+                    }
 
-        if (typeof input === 'string') {
-            img.crossOrigin = 'anonymous';
-            img.src = input;
-        } else if (input instanceof File) {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                img.src = e.target.result;
+                    if (input.startsWith('data:image/jpeg;base64,')) {
+                        parseJPEG(arrayBuffer).then(onloadObj).catch(onerror);
+                    } else if (input.startsWith('data:image/png;base64,')) {
+                        parsePNG(arrayBuffer).then(onloadObj).catch(onerror);
+                    } else {
+                        const img = new Image();
+                        img.onload = () => onload(img);
+                        img.onerror = onerror;
+                        img.src = input;
+                    }
+                } else if (input.startsWith('http://') || input.startsWith('https://')) {
+                    const response = await fetch(input, { mode: 'cors' });
+                    if (!response.ok) {
+                        throw new Error(`网络请求失败: ${response.status} ${response.statusText}`);
+                    }
+                    arrayBuffer = await response.arrayBuffer();
+                    const uint8list = new Uint8Array(arrayBuffer);
+                    if (uint8list[0] === 0xff && uint8list[1] === 0xd8) {
+                        const img = await parseJPEG(arrayBuffer);
+                        img.image.crossOrigin = 'anonymous';
+                        onloadObj(img);
+                        return;
+                    } else if (
+                        uint8list[0] === 0x89 &&
+                        uint8list[1] === 0x50 &&
+                        uint8list[2] === 0x4e &&
+                        uint8list[3] === 0x47 &&
+                        uint8list[4] === 0x0d &&
+                        uint8list[5] === 0x0a &&
+                        uint8list[6] === 0x1a &&
+                        uint8list[7] === 0x0a
+                    ) {
+                        const img = await parsePNG(arrayBuffer).image;
+                        img.image.crossOrigin = 'anonymous';
+                        onloadObj(img);
+                        return;
+                    }
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
+                    img.onload = () => onload(img);
+                    img.onerror = onerror;
+                    img.src = input;
+                } else {
+                    const img = new Image();
+                    img.onload = () => onload(img);
+                    img.onerror = onerror;
+                    img.src = input;
+                }
+            } else if (input instanceof File) {
+                const arrayBuffer = await input.arrayBuffer();
+                const uint8list = new Uint8Array(arrayBuffer);
+                if (uint8list[0] === 0xff && uint8list[1] === 0xd8) {
+                    parseJPEG(arrayBuffer).then(onloadObj).catch(onerror);
+                } else if (
+                    uint8list[0] === 0x89 &&
+                    uint8list[1] === 0x50 &&
+                    uint8list[2] === 0x4e &&
+                    uint8list[3] === 0x47 &&
+                    uint8list[4] === 0x0d &&
+                    uint8list[5] === 0x0a &&
+                    uint8list[6] === 0x1a &&
+                    uint8list[7] === 0x0a
+                ) {
+                    parsePNG(arrayBuffer).then(onloadObj).catch(onerror);
+                } else {
+                    const img = new Image();
+                    img.onload = () => onload(img);
+                    img.onerror = onerror;
+                    img.src = await convertBlobToBase64(input);
+                }
+            } else {
+                clearTimeout(timer);
+                reject(new Error('不支持的类型'));
+            }
+        })();
+    });
+}
+
+// 从源加载图像并返回
+async function loadImage(input, timeout = 20000) {
+    return new Promise((resolve, reject) => {
+        (async () => {
+            let timer;
+
+            const onload = (obj) => {
+                clearTimeout(timer);
+                if (errorHandling.currCanvasIndex === 0) {
+                    setDecodeValues(obj.parameters);
+                }
+                resolve(obj.image);
             };
-            reader.onerror = (error) => {
+
+            const onerror = (error) => {
                 clearTimeout(timer);
                 reject(error);
             };
-            reader.readAsDataURL(input);
-        } else {
-            clearTimeout(timer);
-            reject(new Error('不支持的类型'));
-        }
+
+            timer = setTimeout(() => {
+                reject(new Error('加载图像超时'));
+            }, timeout);
+
+            parseImage(input).then(onload).catch(onerror);
+        })();
     });
 }
 
@@ -368,12 +509,10 @@ function generateUrlFromCanvas(canvasId, isPng = true, writeInMetadata = false) 
     } else {
         const ctx = canvas.getContext('2d');
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const encoder = new JPEGEncoder(100);
-        const jpegData = encoder.encode(imageData, 100);
+        const jpegData = JPEG.encode(imageData, 100);
+        const bytes = new Uint8Array(jpegData.data); // 添加.data
         let binary = '';
-        const bytes = new Uint8Array(jpegData);
-        const len = bytes.byteLength;
-        for (let i = 0; i < len; i++) {
+        for (let i = 0; i < bytes.length; i++) {
             binary += String.fromCharCode(bytes[i]);
         }
         if (writeInMetadata) {
@@ -394,7 +533,8 @@ function saveImageFromCanvas(canvasId, isPng = true, writeInMetadata = false) {
 
 // 生成infoString
 function generateInfoString(isReverse, innerThreshold, innerContrast) {
-    const infoString = (isReverse ? '1' : '0') + innerThreshold.toString(16).padStart(2, '0') + innerContrast.toString(16).padStart(2, '0');
+    const infoString =
+        (isReverse ? '1' : '0') + innerThreshold.toString(16).padStart(2, '0') + innerContrast.toString(16).padStart(2, '0');
     console.log('writing to Metadata: ' + infoString);
     return infoString;
 }
@@ -449,6 +589,7 @@ const ImageLoader = {
     downloadFromLink,
     saveImageFromCanvas,
     generateUrlFromCanvas,
+    parseImage,
 };
 
 export default ImageLoader;

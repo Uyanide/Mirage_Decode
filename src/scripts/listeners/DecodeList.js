@@ -15,7 +15,7 @@ export default class DecodeList {
         return this._list.length;
     };
 
-    appendList = (img) => {
+    appendList = (img, params) => {
         const canvas = document.createElement('canvas');
         let pushed = false,
             append = false;
@@ -29,7 +29,7 @@ export default class DecodeList {
             this._list.push({
                 canvas: canvas,
                 img: img,
-                parameters: applicationState.isReadMetadata ? ImageLoader.getParametersFromMetadata(img) : undefined,
+                parameters: params,
             });
             pushed = true;
             this._sidebarContent.appendChild(canvas);
