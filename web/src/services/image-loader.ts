@@ -1,0 +1,248 @@
+import { corsProxyUrl } from '../constants/default-arg';
+import { constructError } from '../utils/general';
+
+export const LoadImageFileData = {
+  async fromFileSelect(multi = false) {
+    return new Promise<ArrayBuffer[]>((rs, rj) => {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.multiple = multi;
+      input.onchange = (event) => {
+        const files = (event.target as HTMLInputElement).files;
+        if (files && files.length > 0) {
+          if (files.length > 1 && !multi) {
+            const file = files[0];
+            file
+              .arrayBuffer()
+              .then((buffer) => {
+                rs([buffer]);
+              })
+              .catch((error: unknown) => {
+                rj(constructError(error));
+              });
+            return;
+          }
+          const promises = Array.from(files).map((file) => file.arrayBuffer());
+          Promise.all(promises)
+            .then((buffers) => {
+              rs(buffers);
+            })
+            .catch((error: unknown) => {
+              rj(constructError(error));
+            });
+        } else {
+          rs([]);
+        }
+      };
+      input.oncancel = () => {
+        rs([]);
+      };
+      input.click();
+    });
+  },
+
+  async _fromString(text: string): Promise<ArrayBuffer | null> {
+    try {
+      if (text.startsWith('http://') || text.startsWith('https://')) {
+        return await LoadImageFileData._fromFetch(text);
+      } else if (text.startsWith('data:image/')) {
+        const base64Data = text.split(',')[1];
+        const binaryString = atob(base64Data);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+          bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
+      }
+      return null;
+    } catch (error: unknown) {
+      console.error('Error parsing string as image data:', error);
+      return null;
+    }
+  },
+
+  async _rasePromise(promises: Promise<ArrayBuffer | null>[]) {
+    return new Promise<ArrayBuffer[]>((rs) => {
+      let resolvedCount = 0;
+      const totalPromises = promises.length;
+
+      promises.forEach((promise) => {
+        promise
+          .then((buffer) => {
+            if (buffer !== null) {
+              rs([buffer]);
+              return;
+            }
+            resolvedCount++;
+            if (resolvedCount === totalPromises) {
+              rs([]);
+            }
+          })
+          .catch(() => {
+            resolvedCount++;
+            if (resolvedCount === totalPromises) {
+              rs([]);
+            }
+          });
+      });
+    });
+  },
+
+  async fromPasteDirect(multi = false) {
+    return new Promise<ArrayBuffer[]>((rs, rj) => {
+      (async () => {
+        const clipboardItems = await navigator.clipboard.read();
+
+        const parseSingleItem = async (item: ClipboardItem): Promise<ArrayBuffer | null> => {
+          try {
+            for (const type of item.types) {
+              if (type.startsWith('image/')) {
+                const blob = await item.getType(type);
+                const arrayBuffer = await blob.arrayBuffer();
+                return arrayBuffer;
+              } else if (type === 'text/plain') {
+                const textBlob = await item.getType(type);
+                const text = await textBlob.text();
+                return await LoadImageFileData._fromString(text);
+              }
+            }
+            return null;
+          } catch (error: unknown) {
+            console.error('Error reading clipboard item:', error);
+            return null;
+          }
+        };
+
+        if (!multi) {
+          const promises = Array.from(clipboardItems).map(parseSingleItem);
+          rs(await LoadImageFileData._rasePromise(promises));
+        } else {
+          const promises = Array.from(clipboardItems).map(parseSingleItem);
+          const res = (await Promise.all(promises)).filter((buffer) => buffer !== null);
+          rs(res);
+        }
+      })().catch((error: unknown) => {
+        if (error instanceof DOMException) {
+          if (error.name === 'NotAllowedError') {
+            rj(new Error('没有剪贴板读取权限'));
+          } else if (error.name === 'NotFoundError') {
+            rj(new Error('剪贴板中没有内容'));
+          } else {
+            rj(new Error('读取剪贴板失败'));
+          }
+        } else {
+          rj(constructError(error));
+        }
+      });
+    });
+  },
+
+  async _fromFetch(uri: string, timeout = 60000) {
+    return new Promise<ArrayBuffer>((rs, rj) => {
+      (async () => {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => {
+          controller.abort();
+        }, timeout);
+
+        let response: Response;
+        try {
+          response = await fetch(uri, { signal: controller.signal });
+          if (!response.ok) {
+            rj(new Error(`网络请求失败: ${response.status.toString()} ${response.statusText}`));
+            return;
+          }
+          const arrayBuffer = await response.arrayBuffer();
+          rs(arrayBuffer);
+        } catch (error) {
+          if (error instanceof DOMException && error.name === 'AbortError') {
+            rj(new Error('请求超时'));
+          } else {
+            rj(constructError(error));
+          }
+          return;
+        } finally {
+          clearTimeout(timeoutId);
+        }
+      })().catch((error: unknown) => {
+        rj(constructError(error));
+      });
+    });
+  },
+
+  async fromFetch(url: string, timeout = 60000, proxy = corsProxyUrl) {
+    return new Promise<ArrayBuffer[]>((rs, rj) => {
+      if (!url.startsWith('http://') && !url.startsWith('https://')) {
+        rj(new Error('无效的URL'));
+        return;
+      }
+      const uri = encodeURIComponent(url);
+      const proxyUrl = proxy + uri;
+      LoadImageFileData._fromFetch(proxyUrl, timeout)
+        .then((buffer) => {
+          rs([buffer]);
+        })
+        .catch((error: unknown) => {
+          rj(constructError(error));
+        });
+    });
+  },
+
+  async fromAssets(url: string, timeout = 60000) {
+    return [await LoadImageFileData._fromFetch(url, timeout)];
+  },
+
+  async fromDropItems(items: DataTransferItemList, multi = false) {
+    return new Promise<ArrayBuffer[]>((rs, rj) => {
+      (async () => {
+        const promises: Promise<ArrayBuffer | null>[] = [];
+        for (const item of items) {
+          if (item.kind === 'file') {
+            const file = item.getAsFile();
+            if (file) {
+              promises.push(file.arrayBuffer());
+            }
+          } else if (item.kind === 'string' && item.type === 'text/plain') {
+            promises.push(
+              new Promise((rs) => {
+                try {
+                  item.getAsString((text) => {
+                    LoadImageFileData._fromString(text)
+                      .then((buffer) => {
+                        rs(buffer);
+                      })
+                      .catch((error: unknown) => {
+                        console.error('Error parsing string as image data:', error);
+                        rs(null);
+                      });
+                  });
+                } catch (error: unknown) {
+                  console.error('Error getting string from drop item:', error);
+                  rs(null);
+                }
+              })
+            );
+          }
+        }
+
+        if (multi) {
+          Promise.all(promises)
+            .then((buffers) => {
+              rs(buffers.filter((buffer) => buffer !== null));
+            })
+            .catch((error: unknown) => {
+              console.error('Error processing drop items:', error);
+              rj(constructError(error));
+            });
+        } else {
+          rs(await LoadImageFileData._rasePromise(promises));
+        }
+      })().catch((error: unknown) => {
+        console.error('Error processing drop items:', error);
+        rj(constructError(error));
+      });
+    });
+  },
+};

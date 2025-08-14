@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -7,6 +7,22 @@
     <title>Vite + React + TS</title>
   </head>
   <body>
+    <script>
+      try {
+        const themeMode = localStorage.getItem('theme-mode');
+        if (themeMode === 'dark') {
+          if (!document.body.classList.contains('dark')) {
+            document.body.classList.add('dark');
+          }
+        } else {
+          if (document.body.classList.contains('dark')) {
+            document.body.classList.remove('dark');
+          }
+        }
+      } catch (e) {
+        console.error('Error initializing theme mode:', e);
+      }
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
