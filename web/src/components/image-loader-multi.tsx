@@ -11,9 +11,10 @@ interface ImageLoaderMultiProps {
   onLoad: (images: PrismImage[]) => void;
   children?: React.ReactNode;
   defaultImage?: string;
+  disabled?: boolean;
 }
 
-export function ImageLoaderMulti({ onLoad, children, defaultImage }: ImageLoaderMultiProps) {
+export function ImageLoaderMulti({ onLoad, children, defaultImage, disabled }: ImageLoaderMultiProps) {
   const [loading, setLoading] = useState(false);
 
   const wrapImageLoad = useCallback(
@@ -94,7 +95,7 @@ export function ImageLoaderMulti({ onLoad, children, defaultImage }: ImageLoader
               onLoad([i]);
             }}
             label="加载单张"
-            disabled={loading}
+            disabled={loading || disabled}
             defaultImage={defaultImage}
           />
         </Box>
@@ -107,7 +108,7 @@ export function ImageLoaderMulti({ onLoad, children, defaultImage }: ImageLoader
               wrapImageLoad(handelFileSelect);
             }}
             fullWidth
-            disabled={loading}
+            disabled={loading || disabled}
           >
             加载多张
           </Button>
@@ -117,7 +118,7 @@ export function ImageLoaderMulti({ onLoad, children, defaultImage }: ImageLoader
         onDrop={(i) => {
           wrapImageLoad(() => handleDrop(i));
         }}
-        disabled={loading}
+        disabled={loading || disabled}
       >
         {children}
       </DropArea>

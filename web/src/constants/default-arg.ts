@@ -6,7 +6,7 @@ export const decodeDefaultArgs: Record<string, any> = {
   lowerThreshold: 0,
   higherThreshold: 24,
   method: 'ltavg',
-  contrast: 24,
+  contrast: 50,
   saveFormat: 'PNG',
 };
 

@@ -39,7 +39,7 @@ export class DecodeCanvas extends PrismCanvas {
     this.unsubscribers.push(
       usePrismDecodeStore.subscribe(
         (state) => state.contrast,
-        () => this.adjust()
+        () => this.adjust(true)
       )
     );
 
@@ -73,7 +73,6 @@ export class DecodeCanvas extends PrismCanvas {
       console.warn('No original image data or image data to decode');
       return;
     }
-    console.log(this.origData, this.imageData);
     const { lowerThreshold, higherThreshold, method } = usePrismDecodeStore.getState();
     prismDecode(this.origData, this.imageData, {
       lowerThreshold,
@@ -86,9 +85,11 @@ export class DecodeCanvas extends PrismCanvas {
     }
   };
 
-  adjust(): boolean {
+  adjust(forceUpdate?: boolean): boolean {
     const { contrast } = usePrismDecodeStore.getState();
-    if (contrast !== 50) {
+    // 'forceUpdate' cuz changing from other values to 50
+    // also needs updating
+    if (forceUpdate || contrast !== 50) {
       super.adjustContrast(contrast);
       return true;
     }
@@ -96,7 +97,7 @@ export class DecodeCanvas extends PrismCanvas {
   }
 }
 
-export const useDecodeCanvasStorage = create<{
+export const useDecodeCanvasStore = create<{
   decodeCanvas: DecodeCanvas | null;
   setDecodeCanvas: (canvas: DecodeCanvas) => void;
 }>((set) => ({

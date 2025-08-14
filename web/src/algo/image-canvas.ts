@@ -31,7 +31,6 @@ export class PrismCanvas {
   }
 
   putImageData(imageData: ImageData) {
-    console.log('Putting image data to canvas');
     this.canvas.width = imageData.width;
     this.canvas.height = imageData.height;
     const ctx = this.canvas.getContext('2d');

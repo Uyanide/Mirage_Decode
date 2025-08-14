@@ -1,16 +1,21 @@
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ImageLoaderMulti } from '../components/image-loader-multi';
 import { defaultImages } from '../constants/default-arg';
 import { usePrismDecodeImagesStore, usePrismDecodeStore, type PrismDecodeMethod } from '../providers/process/decode';
-import type { PrismImage } from '../models/image';
+import { PrismImage } from '../models/image';
 import { useSidebarStore } from '../providers/sidebar';
 import { Box, Button, Input, MenuItem, Select, Slider, Typography } from '@mui/material';
-import { DecodeCanvas, useDecodeCanvasStorage } from '../algo/decode/canvas';
+import { DecodeCanvas, useDecodeCanvasStore } from '../algo/decode/canvas';
 import { InputContainer } from '../components/input-container';
 import { HelpButton } from '../components/help-button';
 import type { ImageEncodeFormat } from '../services/image-encoder';
+import { CanvasFallback } from '../components/canvas-fallback';
+import { LoadImageFileData } from '../services/image-loader';
+import { showErrorSnackbar } from '../providers/snackbar';
 
 export default function DecodePage() {
+  const [loading, setLoading] = useState(false);
+
   const setImages = usePrismDecodeImagesStore((state) => state.setImages);
 
   const setSidebarShow = useSidebarStore((state) => state.setShow);
@@ -25,8 +30,29 @@ export default function DecodePage() {
     [setImages, setSidebarShow]
   );
 
+  const handleLoadDefault = useCallback(() => {
+    setLoading(true);
+    (async () => {
+      const arrayBuffers = await LoadImageFileData.fromAssets(defaultImages.decode);
+      if (arrayBuffers.length === 0) {
+        showErrorSnackbar('加载默认图片失败');
+        return;
+      }
+      const image = await PrismImage.fromArrayBuffer(arrayBuffers[0]);
+      setImages([image]);
+    })()
+      .catch((error: unknown) => {
+        showErrorSnackbar('加载默认图片失败');
+        console.error('加载默认图片失败:', error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [setImages]);
+
   const decodeCanvasRef = useRef<HTMLCanvasElement>(null);
-  const setDecodeCanvas = useDecodeCanvasStorage((state) => state.setDecodeCanvas);
+  const setDecodeCanvas = useDecodeCanvasStore((state) => state.setDecodeCanvas);
+  const currImage = usePrismDecodeImagesStore((state) => state.currImage);
 
   useEffect(() => {
     if (decodeCanvasRef.current) {
@@ -51,16 +77,23 @@ export default function DecodePage() {
         width: '100%',
       }}
     >
-      <ImageLoaderMulti onLoad={handleImagesLoaded} defaultImage={defaultImages.decode}>
+      <ImageLoaderMulti onLoad={handleImagesLoaded} defaultImage={defaultImages.decode} disabled={loading}>
         <canvas
           ref={decodeCanvasRef}
           style={{
             width: '100%',
             height: '100%',
-            border: '1px solid',
-            borderRadius: '0',
+            display: currImage ? 'block' : 'none',
           }}
         ></canvas>
+        {!currImage && (
+          <CanvasFallback
+            text={loading ? '加载中...' : '只是一张画布'}
+            action="加载示例图片"
+            onClick={handleLoadDefault}
+            disabled={loading}
+          ></CanvasFallback>
+        )}
       </ImageLoaderMulti>
       <InputContainer>
         <ThresholdSlider />
