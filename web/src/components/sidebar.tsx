@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback, type RefObject, type ReactNode } from 'react';
 import { Box, Typography } from '@mui/material';
 import { useThemeStore } from '../providers/theme';
+import { zIndex } from '../constants/layout';
 
 interface SidebarProps {
   show: boolean;
@@ -143,7 +144,7 @@ export function DraggableSidebar({ minWidth, children = null, hideFullscreenExcl
         height: '100%',
         boxShadow: '-5px 0 10px rgba(0, 0, 0, 0.1)',
         padding: '30px',
-        zIndex: 100,
+        zIndex: zIndex.sidebar,
         overflowY: 'auto',
         display: 'flex',
         flexDirection: 'column',

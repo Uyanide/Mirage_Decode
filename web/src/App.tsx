@@ -9,6 +9,7 @@ import { DecodeList } from './pages/decode-list';
 import { useSidebarStore } from './providers/sidebar';
 import { version as appVersion } from '../package.json';
 import { changeLog } from './constants/change-log';
+import { zIndex } from './constants/layout';
 
 function App() {
   const themeMode = useThemeStore((state) => state.mode);
@@ -36,7 +37,7 @@ function App() {
           position: 'fixed',
           left: 10,
           bottom: 10,
-          zIndex: 102, // zIndex of DraggableSidebar is 100 & 101
+          zIndex: zIndex.action,
           backgroundColor: palette.SecondaryBackground,
           padding: 0.8,
           borderRadius: '50% / 100%',

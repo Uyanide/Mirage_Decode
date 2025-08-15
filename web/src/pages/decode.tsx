@@ -12,6 +12,7 @@ import type { ImageEncodeFormat } from '../services/image-encoder';
 import { CanvasFallback } from '../components/canvas-fallback';
 import { LoadImageFileData } from '../services/image-loader';
 import { showErrorSnackbar, showSuccessSnackbar } from '../providers/snackbar';
+import { LoadingOverlay } from '../components/loading';
 
 export default function DecodePage() {
   const [loading, setLoading] = useState(false);
@@ -33,6 +34,7 @@ export default function DecodePage() {
   const handleLoadDefault = useCallback(() => {
     setLoading(true);
     (async () => {
+      // await new Promise((resolve) => setTimeout(resolve, 10000)); // Simulate loading delay
       const arrayBuffers = await LoadImageFileData.fromAssets(defaultImages.decode);
       if (arrayBuffers.length === 0) {
         showErrorSnackbar('加载默认图片失败');
@@ -77,6 +79,7 @@ export default function DecodePage() {
         width: '100%',
       }}
     >
+      {loading && <LoadingOverlay />}
       <ImageLoaderMulti onLoad={handleImagesLoaded} defaultImage={defaultImages.decode} disabled={loading}>
         <canvas
           ref={decodeCanvasRef}

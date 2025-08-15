@@ -273,7 +273,13 @@ export const DayNightToggle = ({ value, size, onChange }: DayNightToggleProps) =
   );
 
   return (
-    <div className={`${styles['container']} container`} style={{ fontSize: `${(size / 3).toFixed(2)}px` }} ref={rootRef}>
+    <div
+      className={`${styles['container']} container`}
+      style={{
+        fontSize: `${(size / 3).toFixed(2)}px`,
+      }}
+      ref={rootRef}
+    >
       <div className={`${styles['component']} component`} onClick={onChange} ref={componentRef}>
         <div
           className={`${styles['main-button']} main-button`}

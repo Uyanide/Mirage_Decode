@@ -1,7 +1,7 @@
 import { Box, Button, Dialog, TextField } from '@mui/material';
 import { PrismImage } from '../models/image';
 import { Check } from '@mui/icons-material';
-import { itemHeight } from '../constants/layout';
+import { itemHeight, zIndex } from '../constants/layout';
 import { useCallback, useState } from 'react';
 import { ImageDisplay } from './image-display';
 import { useThemeStore } from '../providers/theme';
@@ -243,7 +243,7 @@ export function ImageLoaderDialog({ onconfirm, label, disabled, defaultImage }: 
       <Button variant="contained" onClick={handleToggleOpen} fullWidth disabled={disabled}>
         {label ?? '加载图片'}
       </Button>
-      <Dialog open={open} onClose={() => {}} maxWidth="sm" fullWidth>
+      <Dialog open={open} onClose={() => {}} maxWidth="sm" fullWidth sx={{ zIndex: zIndex.dialog }}>
         <ImageLoader oncancel={handleCancel} onconfirm={handleConfirm} defaultImage={defaultImage} />
       </Dialog>
     </>
