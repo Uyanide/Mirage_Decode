@@ -1,62 +1,87 @@
-export function decodeMetadata(binaryString: string): string {
-  let str = binaryString.slice(8);
-  while (str.length > 0) {
-    const size = stoi(str.slice(0, 4));
+export function decodeMetadata(data: Uint8Array): string {
+  let pos = 8; // Skip the PNG header
+  while (pos < data.length) {
+    const size = stoi(data, pos, 4);
     if (size < 0) {
       return '';
     }
-    const type = str.slice(4, 8);
-    if (type === 'tEXt') {
-      const data = str.slice(8, 8 + size);
-      return data.split('\0')[0];
+    const type = data.slice(pos + 4, pos + 8);
+    if (type.join('') === 'tEXt') {
+      // const data = str.slice(8, 8 + size);
+      // return data.split('\0')[0];
+      return new TextDecoder('').decode(data.slice(pos + 8, pos + 8 + size));
     }
-    str = str.slice(size + 12);
+    pos += size + 12; // 4 bytes for size, 4 bytes for type, 4 bytes for CRC
   }
   return '';
 }
 
-export function encodeMetadata(binaryString: string, metadata: string): string {
-  let ret = '';
-  let str = binaryString.slice(8);
-  while (str.length > 0) {
-    const size = stoi(str.slice(0, 4));
+export function encodeMetadata(data: Uint8Array, metadata: string): Uint8Array {
+  const textEncoder = new TextEncoder();
+  // const chunks: Uint8Array[] = [];
+  // chunks.push(data.slice(0, 8)); // PNG header
+  const encodedMetadata = textEncoder.encode(metadata);
+  const ret = new Uint8Array(data.length + 12 + metadata.length);
+  ret.set(data.slice(0, 8), 0); // PNG header
+  let pos = 8; // Skip the PNG header
+  let retPos = 8;
+  while (pos < data.length) {
+    const size = stoi(data, pos, 4);
     if (size < 0) {
-      return binaryString;
+      return new Uint8Array(data);
     }
-    const type = str.slice(4, 8);
+    const type = data.slice(pos + 4, pos + 8).join('');
     // end
     if (type === 'IEND') {
-      ret += itos(metadata.length, 4);
-      ret += 'tEXt';
-      ret += metadata;
-      ret += itos(crc32('tEXt' + metadata), 4);
-      ret += itos(0, 4);
-      ret += 'IEND';
+      ret.set(itos(metadata.length, 4), retPos);
+      retPos += 4;
+      ret.set(textEncoder.encode('tEXt'), retPos);
+      retPos += 4;
+      ret.set(encodedMetadata, retPos);
+      retPos += metadata.length;
+      ret.set(itos(crc32('tEXt' + metadata), 4), retPos);
+      retPos += 4;
+      ret.set(itos(0, 4), retPos);
+      retPos += 4;
+      ret.set(textEncoder.encode('IEND'), retPos);
+      retPos += 4;
+      ret.set(textEncoder.encode('\xAE\x42\x60\x82'), retPos);
+      retPos += 4;
+      break;
     }
     // push all chunks except tEXt
     else if (type !== 'tEXt') {
-      ret += str.slice(0, size + 12);
-      str = str.slice(size + 12);
+      ret.set(data.slice(pos, pos + size + 12), retPos);
+      retPos += size + 12;
     }
+    pos += size + 12;
+  }
+  // no IEND found, likely corrupted
+  if (pos >= data.length) {
+    return new Uint8Array(data);
+  }
+  // shrink
+  if (retPos < ret.length) {
+    return ret.slice(0, retPos);
   }
   return ret;
 }
 
-function stoi(binaryString: string): number {
+function stoi(data: Uint8Array, start: number, length: number): number {
   let ret = 0;
-  for (let i = 0; i < binaryString.length; i++) {
-    const code = binaryString.charCodeAt(i);
+  for (let i = start; i < length; i++) {
+    const code = data[i];
     ret = (ret << 8) | (code & 0xff);
   }
   return ret;
 }
 
-function itos(value: number, size: number): string {
-  let ret = '';
+function itos(value: number, size: number): Uint8Array {
+  const ret: number[] = [];
   for (let i = 0; i < size; i++) {
-    ret += String.fromCharCode((value >> ((size - i - 1) * 8)) & 0xff);
+    ret.push((value >> ((size - i - 1) * 8)) & 0xff);
   }
-  return ret;
+  return new Uint8Array(ret);
 }
 
 const hexTable = [

@@ -30,15 +30,15 @@ export function ImageLoader({ onconfirm, oncancel, defaultImage }: ImageLoaderPr
 
   const themeMode = useThemeStore((state) => state.mode);
 
-  const wrapImageLoad = useCallback((getFileData: () => Promise<ArrayBuffer[]>) => {
+  const wrapImageLoad = useCallback((getFileData: () => Promise<Uint8Array[]>) => {
     (async () => {
       setLoading(true);
-      const arrayBuffer = await getFileData();
-      if (arrayBuffer.length === 0) {
+      const data = await getFileData();
+      if (data.length === 0) {
         showWarningSnackbar('没有图片被成功加载');
         return;
       }
-      const selectedImage = await PrismImage.fromArrayBuffer(arrayBuffer[0]);
+      const selectedImage = await PrismImage.fromFileData(data[0]);
       showSuccessSnackbar('成功加载 1 张图片');
       setImage(selectedImage);
     })()
@@ -67,7 +67,7 @@ export function ImageLoader({ onconfirm, oncancel, defaultImage }: ImageLoaderPr
     return LoadImageFileData.fromPasteDirect(false);
   };
 
-  const handleDefaultImage = (): Promise<ArrayBuffer[]> => {
+  const handleDefaultImage = (): Promise<Uint8Array[]> => {
     if (defaultImage) {
       return LoadImageFileData.fromAssets(defaultImage);
     }

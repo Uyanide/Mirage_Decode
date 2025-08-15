@@ -1,2 +1,2 @@
-export function decodeMetadata(binaryString: string): string;
-export function encodeMetadata(binaryString: string, metadata: string): string;
+export function decodeMetadata(fileData: Uint8Array): string;
+export function encodeMetadata(fileData: Uint8Array, metadata: string): Uint8Array;

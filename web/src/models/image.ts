@@ -14,10 +14,10 @@ export class PrismImage {
     return new PrismImage(new ImageData(new Uint8ClampedArray(imageData.data), imageData.width, imageData.height), metadata);
   }
 
-  static async fromArrayBuffer(arrayBuffer: ArrayBuffer): Promise<PrismImage> {
-    const imageData = await decodeImage(arrayBuffer);
+  static async fromFileData(data: Uint8Array): Promise<PrismImage> {
+    const imageData = await decodeImage(data);
     try {
-      const metaData = decodeMetadata(arrayBuffer);
+      const metaData = decodeMetadata(data);
       return new PrismImage(imageData, metaData);
     } catch (error) {
       console.warn('Metadata decoding failed:', error);

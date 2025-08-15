@@ -1,17 +1,19 @@
+import { parseMimeType } from './image-mimetype.js';
 import { encodeMetadata as encodePiexif } from './metadata/piexif-wrap.js';
 import { encodeMetadata as encodePNGChunk } from './metadata/png.js';
 
-export function encodeMetadata(binaryString: string, mimeType: string, metadata: string): string {
+export function encodeMetadata(fileData: Uint8Array, metadata: string): Uint8Array {
+  const mimeType = parseMimeType(fileData);
   const encoder = metadataEncoders[mimeType];
   // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   if (!encoder) {
     console.warn(`No metadata encoder found for MIME type: ${mimeType}`);
-    return binaryString;
+    return new Uint8Array(fileData);
   }
-  return encoder(binaryString, metadata);
+  return encoder(fileData, metadata);
 }
 
-const metadataEncoders: Record<string, (binaryString: string, meatadata: string) => string> = {
+const metadataEncoders: Record<string, (fileData: Uint8Array, meatadata: string) => Uint8Array> = {
   'image/jpeg': encodePiexif,
   'image/png': encodePNGChunk,
 };

@@ -11,7 +11,7 @@ import { HelpButton } from '../components/help-button';
 import type { ImageEncodeFormat } from '../services/image-encoder';
 import { CanvasFallback } from '../components/canvas-fallback';
 import { LoadImageFileData } from '../services/image-loader';
-import { showErrorSnackbar } from '../providers/snackbar';
+import { showErrorSnackbar, showSuccessSnackbar } from '../providers/snackbar';
 
 export default function DecodePage() {
   const [loading, setLoading] = useState(false);
@@ -38,7 +38,7 @@ export default function DecodePage() {
         showErrorSnackbar('加载默认图片失败');
         return;
       }
-      const image = await PrismImage.fromArrayBuffer(arrayBuffers[0]);
+      const image = await PrismImage.fromFileData(arrayBuffers[0]);
       setImages([image]);
     })()
       .catch((error: unknown) => {
@@ -326,6 +326,38 @@ function ImageSave() {
   const saveFormat = usePrismDecodeStore((state) => state.saveFormat);
   const setSaveFormat = usePrismDecodeStore((state) => state.setSaveFormat);
 
+  const decodeCanvas = useDecodeCanvasStore((state) => state.decodeCanvas);
+
+  const handleSaveCurrent = useCallback(
+    (format: ImageEncodeFormat) => {
+      decodeCanvas
+        ?.saveCurrentImage(format)
+        .then((fileName) => {
+          showSuccessSnackbar(`已保存为: ${fileName}`);
+        })
+        .catch((error: unknown) => {
+          console.error('Failed to save image:', error);
+          showErrorSnackbar(`保存显示图像失败`);
+        });
+    },
+    [decodeCanvas]
+  );
+
+  const handleSaveOriginal = useCallback(
+    (format: ImageEncodeFormat) => {
+      decodeCanvas
+        ?.saveOriginalImage(format)
+        .then((fileName) => {
+          showErrorSnackbar(`已保存原始图像为: ${fileName}`);
+        })
+        .catch((error: unknown) => {
+          console.error('Failed to save original image:', error);
+          showErrorSnackbar(`保存原始图像失败`);
+        });
+    },
+    [decodeCanvas]
+  );
+
   return (
     <Box
       sx={{
@@ -335,10 +367,23 @@ function ImageSave() {
         gap: 1,
       }}
     >
-      <Button sx={{ flex: 1 }} variant="contained">
+      <Button
+        sx={{ flex: 1 }}
+        variant="contained"
+        onClick={() => {
+          handleSaveCurrent(saveFormat);
+        }}
+      >
         保存显示图像
       </Button>
-      <Button sx={{ flex: 1 }} variant="contained" color="secondary">
+      <Button
+        sx={{ flex: 1 }}
+        variant="contained"
+        color="secondary"
+        onClick={() => {
+          handleSaveOriginal(saveFormat);
+        }}
+      >
         保存原始图像
       </Button>
       <Select

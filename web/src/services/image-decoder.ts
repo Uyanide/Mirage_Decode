@@ -1,23 +1,12 @@
-interface ImageDecodeDataBase {
-  id: string;
-  success: boolean;
-  error?: string;
-}
-
-interface ImageDecodeDataInit extends ImageDecodeDataBase {
-  data: {
-    decoderCount: number;
-  };
-}
-
-interface ImageDecodeDataResult extends ImageDecodeDataBase {
-  data: {
-    imageData: ImageData;
-  };
-}
+import type {
+  ImageDecodeDataBase,
+  ImageDecodeDataInit,
+  ImageDecodeDataResult,
+  ImageDecodeWorkerData,
+} from './image-decoder.worker';
 
 let worker: Worker | null = null;
-const handlers: Record<string, (data: ImageDecodeDataResult) => void> = {};
+const handlers: Record<string, (data: ImageDecodeDataBase) => void> = {};
 
 export async function initDecoderWorker() {
   if (worker) {
@@ -31,12 +20,15 @@ export async function initDecoderWorker() {
 
   await new Promise<void>((resolve, reject) => {
     worker!.onmessage = (event) => {
-      const data = event.data as ImageDecodeDataInit;
+      const data = event.data as ImageDecodeDataBase;
       if (data.success) {
-        console.log(`Successfully initialized image decoder worker with ${data.data.decoderCount.toString()} decoders`);
+        const initData = data as ImageDecodeDataInit;
+        console.log(`Successfully initialized image decoder worker with ${initData.payload.decoderCount.toString()} decoders`);
         resolve();
       } else if (data.error) {
         reject(new Error(data.error));
+      } else {
+        reject(new Error('Unknown error during worker initialization'));
       }
     };
     worker!.onerror = (eror) => {
@@ -46,7 +38,7 @@ export async function initDecoderWorker() {
   });
 
   worker.onmessage = (event) => {
-    const data = event.data as ImageDecodeDataResult;
+    const data = event.data as ImageDecodeDataBase;
     const handler = handlers[data.id];
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (handler) {
@@ -57,23 +49,26 @@ export async function initDecoderWorker() {
   };
 }
 
-function registerMessageHandler(id: string, callback: (data: ImageDecodeDataResult) => void) {
+function registerMessageHandler(id: string, callback: (data: ImageDecodeDataBase) => void) {
   handlers[id] = callback;
 }
 
-export async function decodeImage(fileData: ArrayBuffer): Promise<ImageData> {
+export async function decodeImage(fileData: Uint8Array): Promise<ImageData> {
   if (!worker) {
     throw new Error('Image decoder worker is not initialized');
   }
   return new Promise((resolve, reject) => {
     const id = crypto.randomUUID();
-    registerMessageHandler(id, (data: ImageDecodeDataResult) => {
+    registerMessageHandler(id, (data: ImageDecodeDataBase) => {
       if (data.success) {
-        resolve(data.data.imageData);
+        const resultData = data as ImageDecodeDataResult;
+        resolve(
+          new ImageData(new Uint8ClampedArray(resultData.payload.data), resultData.payload.width, resultData.payload.height)
+        );
       } else {
-        reject(new Error(data.error));
+        reject(new Error(data.error || 'Unknown error during image decoding'));
       }
     });
-    worker!.postMessage({ type: 'decode', id, fileData });
+    worker!.postMessage({ type: 'decode', id, payload: { fileData: fileData.buffer } } as ImageDecodeWorkerData);
   });
 }

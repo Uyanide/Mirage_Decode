@@ -13,8 +13,8 @@ const signatures: Record<string, (s: string) => boolean> = {
   'image/jxl': (s) => s.startsWith('\xFF\x0A') || s.startsWith('\x00\x00\x00\x0CJXL \r\n\x87\n'),
 };
 
-export function parseMimeType(fileData: ArrayBuffer): string {
-  const signature = String.fromCharCode(...new Uint8Array(fileData.slice(0, 20)));
+export function parseMimeType(fileData: Uint8Array): string {
+  const signature = String.fromCharCode(...fileData.slice(0, 20));
   for (const [mimeType, check] of Object.entries(signatures)) {
     if (check(signature)) {
       return mimeType;

@@ -18,17 +18,17 @@ export function ImageLoaderMulti({ onLoad, children, defaultImage, disabled }: I
   const [loading, setLoading] = useState(false);
 
   const wrapImageLoad = useCallback(
-    (getFileData: () => Promise<ArrayBuffer[]>) => {
+    (getFileData: () => Promise<Uint8Array[]>) => {
       (async () => {
         setLoading(true);
-        const arrayBuffers = await getFileData();
-        if (arrayBuffers.length === 0) {
+        const datas = await getFileData();
+        if (datas.length === 0) {
           showWarningSnackbar('没有图片被加载');
           return;
         }
-        const promises = arrayBuffers.map((buffer) => {
+        const promises = datas.map((buffer) => {
           return new Promise<PrismImage | null>((resolve) => {
-            PrismImage.fromArrayBuffer(buffer)
+            PrismImage.fromFileData(buffer)
               .then((image) => {
                 resolve(image);
               })

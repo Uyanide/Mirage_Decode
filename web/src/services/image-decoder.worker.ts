@@ -1,26 +1,45 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-
 import { constructError } from '../utils/general';
 import { parseMimeType } from './image-mimetype';
 
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-interface DecodeData {
+export interface ImageDecodeDataBase {
+  id: string;
+  success: boolean;
+  error?: string;
+}
+
+export interface ImageDecodeDataInit extends ImageDecodeDataBase {
+  payload: {
+    decoderCount: number;
+  };
+}
+
+export interface ImageDecodeDataResult extends ImageDecodeDataBase {
+  payload: {
+    data: ArrayBuffer;
+    width: number;
+    height: number;
+  };
+}
+
+export interface ImageDecodeWorkerData {
   type: 'decode' | 'init';
   id: string;
-  fileData: ArrayBuffer;
+  payload: {
+    fileData: ArrayBuffer;
+  };
 }
 
 const decoders: ImageDecoderBase[] = [];
-const messageQueue: DecodeData[] = [];
+const messageQueue: ImageDecodeWorkerData[] = [];
 let isInited = false;
 let isProcessing = false;
 
 self.onmessage = (event) => {
-  switch (event.data.type) {
+  const data = event.data as ImageDecodeWorkerData;
+  switch (data.type) {
     case 'init':
       if (isInited) {
-        postMessage({ success: true, data: { decoderCount: decoders.length } });
+        postMessage({ success: true, payload: { decoderCount: decoders.length } } as ImageDecodeDataInit);
       }
       if (ImageDecoderImageDecoderImpl.isAvailable()) {
         try {
@@ -37,22 +56,26 @@ self.onmessage = (event) => {
         }
       }
       if (decoders.length === 0) {
-        postMessage({ success: false, error: 'No image decoder available' });
+        postMessage({ success: false, error: 'No image decoder available' } as ImageDecodeDataBase);
       }
       isInited = true;
-      postMessage({ success: true, data: { decoderCount: decoders.length } });
+      postMessage({ success: true, payload: { decoderCount: decoders.length } } as ImageDecodeDataInit);
       break;
     case 'decode':
       if (!isInited) {
-        postMessage({ success: false, id: event.data.id, error: 'Worker is not initialized' });
+        postMessage({ success: false, id: data.id, error: 'Worker is not initialized' } as ImageDecodeDataBase);
       }
-      messageQueue.push(event.data);
+      messageQueue.push(data);
       if (!isProcessing) {
         isProcessing = true;
         processQueue()
           .catch((error: unknown) => {
             console.error('Error processing image queue:', error);
-            postMessage({ success: false, id: event.data.id, error: error instanceof Error ? error.message : 'Unknown error' });
+            postMessage({
+              success: false,
+              id: data.id,
+              error: error instanceof Error ? error.message : 'Unknown error',
+            } as ImageDecodeDataBase);
           })
           .finally(() => {
             isProcessing = false;
@@ -64,14 +87,28 @@ self.onmessage = (event) => {
 
 async function processQueue() {
   while (messageQueue.length > 0) {
-    const { id, fileData } = messageQueue.shift()!;
-    const mimeType = parseMimeType(fileData);
+    const { id, payload } = messageQueue.shift()!;
+    const data = new Uint8Array(payload.fileData);
+    const mimeType = parseMimeType(data);
     let success = false;
     for (const decoder of decoders) {
       try {
-        const imageData = await decoder.decode(fileData, mimeType);
+        const imageData = await decoder.decode(data, mimeType);
         console.log(`Successfully decoded image with ${decoder.constructor.name}`);
-        postMessage({ success: true, id, data: { imageData } });
+        postMessage(
+          {
+            success: true,
+            id,
+            payload: {
+              width: imageData.width,
+              height: imageData.height,
+              data: imageData.data.buffer,
+            },
+          } as ImageDecodeDataResult,
+          {
+            transfer: [imageData.data.buffer],
+          }
+        );
         success = true;
         break; // Exit loop on successful decode
       } catch (error: unknown) {
@@ -79,13 +116,13 @@ async function processQueue() {
       }
     }
     if (!success) {
-      postMessage({ success: false, id, error: `Failed to decode image with mime type ${mimeType}` });
+      postMessage({ success: false, id, error: `Failed to decode image with mime type ${mimeType}` } as ImageDecodeDataBase);
     }
   }
 }
 
 abstract class ImageDecoderBase {
-  abstract decode(fileData: ArrayBuffer, mimeType: string): Promise<ImageData>;
+  abstract decode(fileData: Uint8Array, mimeType: string): Promise<ImageData>;
 }
 
 class ImageDecoderImageDecoderImpl extends ImageDecoderBase {
@@ -93,9 +130,9 @@ class ImageDecoderImageDecoderImpl extends ImageDecoderBase {
     return typeof ImageDecoder !== 'undefined';
   }
 
-  async decode(fileData: ArrayBuffer, mimeType: string): Promise<ImageData> {
+  async decode(fileData: Uint8Array, mimeType: string): Promise<ImageData> {
     const decoder = new ImageDecoder({
-      data: fileData,
+      data: fileData.buffer,
       type: mimeType,
       colorSpaceConversion: 'none',
       preferAnimation: false,
@@ -127,35 +164,20 @@ class ImageDecoderCanvasImpl extends ImageDecoderBase {
     this.ctx = ctx;
   }
 
-  async decode(fileData: ArrayBuffer, mimeType: string): Promise<ImageData> {
-    return new Promise((resolve, reject) => {
-      const blob = new Blob([fileData], { type: mimeType });
-      const reader = new FileReader();
+  async decode(fileData: Uint8Array, mimeType: string): Promise<ImageData> {
+    try {
+      const blob = new Blob([fileData.buffer as ArrayBuffer], { type: mimeType });
+      const imageBitmap = await createImageBitmap(blob);
 
-      reader.onload = () => {
-        if (reader.result) {
-          const image = new Image();
-          image.onload = () => {
-            this.canvas.width = image.width;
-            this.canvas.height = image.height;
-            this.ctx.drawImage(image, 0, 0);
-            const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
-            resolve(imageData);
-          };
-          image.onerror = (error) => {
-            reject(constructError(error));
-          };
-          image.src = reader.result as string;
-        } else {
-          reject(new Error('FileReader result is null'));
-        }
-      };
+      this.canvas.width = imageBitmap.width;
+      this.canvas.height = imageBitmap.height;
+      this.ctx.drawImage(imageBitmap, 0, 0);
 
-      reader.onerror = (error) => {
-        reject(constructError(error));
-      };
-
-      reader.readAsDataURL(blob);
-    });
+      const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+      imageBitmap.close(); // Clean up imageBitmap
+      return imageData;
+    } catch (error: unknown) {
+      throw constructError(error);
+    }
   }
 }

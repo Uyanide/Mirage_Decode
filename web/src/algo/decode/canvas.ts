@@ -3,6 +3,8 @@ import type { PrismImage } from '../../models/image';
 import { usePrismDecodeImagesStore, usePrismDecodeStore } from '../../providers/process/decode';
 import { PrismCanvas } from '../image-canvas';
 import { decodePreset, prismDecode, type PrismDecodeConfig } from './process';
+import { encodeImage, ImageEncodeMimetypeMap, type ImageEncodeFormat } from '../../services/image-encoder';
+import { saveFile } from '../../services/file-saver';
 
 export class DecodeCanvas extends PrismCanvas {
   private origData: ImageData | null = null;
@@ -118,6 +120,23 @@ export class DecodeCanvas extends PrismCanvas {
       return true;
     }
     return false;
+  }
+
+  async saveCurrentImage(format: ImageEncodeFormat): Promise<string> {
+    const data = this.imageDataAdjusted ?? this.imageData ?? this.origData;
+    if (!data) {
+      throw new Error('No image data available to save');
+    }
+    const encoded = await encodeImage(data, format);
+    return saveFile(encoded, ImageEncodeMimetypeMap[format]);
+  }
+
+  async saveOriginalImage(format: ImageEncodeFormat): Promise<string> {
+    if (!this.origData) {
+      throw new Error('No original image data available to save');
+    }
+    const encoded = await encodeImage(this.origData, format);
+    return saveFile(encoded, ImageEncodeMimetypeMap[format]);
   }
 }
 

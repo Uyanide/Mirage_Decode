@@ -3,7 +3,7 @@ import { constructError } from '../utils/general';
 
 export const LoadImageFileData = {
   async fromFileSelect(multi = false) {
-    return new Promise<ArrayBuffer[]>((rs, rj) => {
+    return new Promise<Uint8Array[]>((rs, rj) => {
       const input = document.createElement('input');
       input.type = 'file';
       input.accept = 'image/*';
@@ -16,14 +16,14 @@ export const LoadImageFileData = {
             file
               .arrayBuffer()
               .then((buffer) => {
-                rs([buffer]);
+                rs([new Uint8Array(buffer)]);
               })
               .catch((error: unknown) => {
                 rj(constructError(error));
               });
             return;
           }
-          const promises = Array.from(files).map((file) => file.arrayBuffer());
+          const promises = Array.from(files).map((file) => file.arrayBuffer().then((buffer) => new Uint8Array(buffer)));
           Promise.all(promises)
             .then((buffers) => {
               rs(buffers);
@@ -42,7 +42,7 @@ export const LoadImageFileData = {
     });
   },
 
-  async _fromString(text: string): Promise<ArrayBuffer | null> {
+  async _fromString(text: string): Promise<Uint8Array | null> {
     try {
       if (text.startsWith('http://') || text.startsWith('https://')) {
         return await LoadImageFileData._fromFetch(text);
@@ -54,7 +54,7 @@ export const LoadImageFileData = {
         for (let i = 0; i < len; i++) {
           bytes[i] = binaryString.charCodeAt(i);
         }
-        return bytes.buffer;
+        return bytes;
       }
       return null;
     } catch (error: unknown) {
@@ -63,8 +63,8 @@ export const LoadImageFileData = {
     }
   },
 
-  async _rasePromise(promises: Promise<ArrayBuffer | null>[]) {
-    return new Promise<ArrayBuffer[]>((rs) => {
+  async _rasePromise(promises: Promise<Uint8Array | null>[]) {
+    return new Promise<Uint8Array[]>((rs) => {
       let resolvedCount = 0;
       const totalPromises = promises.length;
 
@@ -91,17 +91,17 @@ export const LoadImageFileData = {
   },
 
   async fromPasteDirect(multi = false) {
-    return new Promise<ArrayBuffer[]>((rs, rj) => {
+    return new Promise<Uint8Array[]>((rs, rj) => {
       (async () => {
         const clipboardItems = await navigator.clipboard.read();
 
-        const parseSingleItem = async (item: ClipboardItem): Promise<ArrayBuffer | null> => {
+        const parseSingleItem = async (item: ClipboardItem): Promise<Uint8Array | null> => {
           try {
             for (const type of item.types) {
               if (type.startsWith('image/')) {
                 const blob = await item.getType(type);
                 const arrayBuffer = await blob.arrayBuffer();
-                return arrayBuffer;
+                return new Uint8Array(arrayBuffer);
               } else if (type === 'text/plain') {
                 const textBlob = await item.getType(type);
                 const text = await textBlob.text();
@@ -140,7 +140,7 @@ export const LoadImageFileData = {
   },
 
   async _fromFetch(uri: string, timeout = 60000) {
-    return new Promise<ArrayBuffer>((rs, rj) => {
+    return new Promise<Uint8Array>((rs, rj) => {
       (async () => {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => {
@@ -155,7 +155,7 @@ export const LoadImageFileData = {
             return;
           }
           const arrayBuffer = await response.arrayBuffer();
-          rs(arrayBuffer);
+          rs(new Uint8Array(arrayBuffer));
         } catch (error) {
           if (error instanceof DOMException && error.name === 'AbortError') {
             rj(new Error('请求超时'));
@@ -173,7 +173,7 @@ export const LoadImageFileData = {
   },
 
   async fromFetch(url: string, timeout = 60000, proxy = corsProxyUrl) {
-    return new Promise<ArrayBuffer[]>((rs, rj) => {
+    return new Promise<Uint8Array[]>((rs, rj) => {
       if (!url.startsWith('http://') && !url.startsWith('https://')) {
         rj(new Error('无效的URL'));
         return;
@@ -195,14 +195,14 @@ export const LoadImageFileData = {
   },
 
   async fromDropItems(items: DataTransferItemList, multi = false) {
-    return new Promise<ArrayBuffer[]>((rs, rj) => {
+    return new Promise<Uint8Array[]>((rs, rj) => {
       (async () => {
-        const promises: Promise<ArrayBuffer | null>[] = [];
+        const promises: Promise<Uint8Array | null>[] = [];
         for (const item of items) {
           if (item.kind === 'file') {
             const file = item.getAsFile();
             if (file) {
-              promises.push(file.arrayBuffer());
+              promises.push(file.arrayBuffer().then((buffer) => new Uint8Array(buffer)));
             }
           } else if (item.kind === 'string' && item.type === 'text/plain') {
             promises.push(
