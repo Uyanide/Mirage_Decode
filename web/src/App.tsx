@@ -8,6 +8,7 @@ import { GlobalSnackbar } from './components/snackbar';
 import { DecodeList } from './pages/decode-list';
 import { useSidebarStore } from './providers/sidebar';
 import { version as appVersion } from '../package.json';
+import { changeLog } from './constants/change-log';
 
 function App() {
   const themeMode = useThemeStore((state) => state.mode);
@@ -178,54 +179,6 @@ function ChangeHistory() {
   const [fold, setFold] = useState(true);
   const palette = useThemeStore((state) => state.palette);
 
-  const versionData = [
-    {
-      version: '1.0',
-      changes: ['实施版本号记录，用于优化缓存处理', '添加从剪贴板粘贴图片功能', '在显形界面添加"保存原始图像"功能'],
-    },
-    {
-      version: '1.1',
-      changes: ['可以根据系统设置进行明暗主题切换', '添加"表图是否取灰度"功能'],
-    },
-    {
-      version: '1.2',
-      changes: [
-        '引入jpeg-js库部分源码，统一不同浏览器编码jpeg时的行为',
-        '引入piexif库部分源码，用于读取jpeg图片的元数据',
-        '支持jpeg图片在生成时写入参数以在显形时自动填写',
-      ],
-    },
-    {
-      version: '1.3',
-      changes: [
-        '引入png-metadata库部分源码，用于读取png图片的元数据',
-        '支持png图片在生成时写入参数以自动显形',
-        '添加表里图对比度调整功能',
-        '里图对比度可写入元数据',
-      ],
-    },
-    {
-      version: '1.4',
-      changes: [
-        '针对特定浏览器优化',
-        '支持幻影坦克作为表图',
-        '添加手动切换明暗主题功能，方便观察幻影坦克',
-        '优化Alpha通道处理逻辑，为可能的幻影坦克整合铺路',
-        '添加显形界面阈值直接输入的功能',
-        '显形界面支持多文件输入，为方便查看增加侧边栏',
-        '支持html文档下载以供离线使用',
-      ],
-    },
-    {
-      version: '1.5',
-      changes: ['使用cors代理，希望能解决跨域问题', '修复若干历史遗留 Bug'],
-    },
-    {
-      version: '1.6',
-      changes: ['使用 React 重写整个项目'],
-    },
-  ];
-
   return (
     <Box
       sx={{
@@ -272,7 +225,7 @@ function ChangeHistory() {
           >
             <Table size="small">
               <TableBody>
-                {versionData.map((item) => (
+                {changeLog.map((item) => (
                   <TableRow key={item.version}>
                     <TableCell
                       sx={{
