@@ -1,4 +1,5 @@
 import type { PrismDecodeMethod } from '../../providers/process/decode';
+import { PrismCanvas } from '../image-canvas';
 
 const processCoverPixel: Record<PrismDecodeMethod, (data: Uint8ClampedArray, width: number, i: number) => void> = {
   black: (data, _, i) => {
@@ -72,11 +73,12 @@ const processCoverPixel: Record<PrismDecodeMethod, (data: Uint8ClampedArray, wid
   },
 };
 
-interface PrismDecodeConfig {
+export interface PrismDecodeConfig {
   lowerThreshold: number;
   higherThreshold: number;
   method: PrismDecodeMethod;
-  grayConvert: (r: number, g: number, b: number) => number;
+  contrast: number;
+  grayConvert?: (r: number, g: number, b: number) => number;
 }
 
 export function prismDecode(
@@ -97,7 +99,7 @@ export function prismDecode(
     const r = data[i];
     const g = data[i + 1];
     const b = data[i + 2];
-    const l = grayConvert(r, g, b);
+    const l = (grayConvert ?? PrismCanvas.toGrayLum)(r, g, b);
     const a = data[i + 3];
 
     if (l >= lowerThreshold && l <= higherThreshold) {
@@ -109,4 +111,42 @@ export function prismDecode(
       processCover(newData, imageData.width, i);
     }
   }
+}
+
+/**
+ *
+ * @param str [in]
+ * @param values [in | out] should be set to default values before calling
+ */
+export function decodePreset(str: string, values: PrismDecodeConfig) {
+  if (str.length < 0) {
+    return false;
+  }
+  // 0 / 1
+  const isReversed = str[0] === '1';
+  // 2 digits hex
+  if (str.length < 3) {
+    return;
+  }
+  const threshold = parseInt(str.slice(1, 3), 16);
+  if (isNaN(threshold)) {
+    return;
+  }
+  if (isReversed) {
+    values.lowerThreshold = 255 - threshold;
+    values.higherThreshold = 255;
+  } else {
+    values.lowerThreshold = 0;
+    values.higherThreshold = threshold;
+  }
+  // 2 digits hex
+  if (str.length < 5) {
+    return;
+  }
+  const contrast = parseInt(str.slice(3, 5), 16);
+  if (isNaN(contrast)) {
+    return;
+  }
+  values.contrast = contrast;
+  return;
 }

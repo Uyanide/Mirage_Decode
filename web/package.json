@@ -15,6 +15,7 @@
     "@mui/icons-material": "^7.3.1",
     "@mui/material": "^7.3.1",
     "exif-parser": "^0.1.12",
+    "piexif-ts": "^2.1.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "zustand": "^5.0.7"

@@ -1,5 +1,5 @@
 import { parseMimeType } from './image-mimetype.js';
-import { decodeMetadata as decodePiexif } from './metadata/piexif-wrap.js';
+import { decodeMetadata as decodePiexif } from './metadata/piexif-wrap';
 import { decodeMetadata as decodeMetadataPNGChunk } from './metadata/png.js';
 
 export function decodeMetadata(fileData: ArrayBuffer): string {
@@ -18,11 +18,14 @@ const metadataDecoders: Record<string, (fileData: ArrayBuffer) => string> = {
 };
 
 function decodeMetadataJPEG(fileData: ArrayBuffer): string {
-  const binString = String.fromCharCode(...new Uint8Array(fileData));
-  return decodePiexif(binString);
+  return decodePiexif(binString(fileData));
 }
 
 function decodeMetadataPNG(fileData: ArrayBuffer): string {
-  const binString = String.fromCharCode(...new Uint8Array(fileData));
-  return decodeMetadataPNGChunk(binString);
+  return decodeMetadataPNGChunk(binString(fileData));
+}
+
+function binString(fileData: ArrayBuffer): string {
+  const bytes = new Uint8Array(fileData);
+  return bytes.reduce((str, byte) => str + String.fromCharCode(byte), '');
 }

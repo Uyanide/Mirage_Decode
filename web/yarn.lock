@@ -1800,6 +1800,11 @@ picomatch@^4.0.2, picomatch@^4.0.3:
   resolved "https://registry.yarnpkg.com/picomatch/-/picomatch-4.0.3.tgz#796c76136d1eead715db1e7bad785dedd695a042"
   integrity sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==
 
+piexif-ts@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/piexif-ts/-/piexif-ts-2.1.0.tgz#d8da5a7d9113035f615e48cc8e12d5d45e924632"
+  integrity sha512-Fk1T7NbZnmiI4IPHrxz8y3dpzMAywDk1+9g0iGwHf+UPYPZJ1/CKALzhPPRPqAxwalwNz2t0NB4krY/PkAI93A==
+
 postcss@^8.5.6:
   version "8.5.6"
   resolved "https://registry.yarnpkg.com/postcss/-/postcss-8.5.6.tgz#2825006615a619b4f62a9e7426cc120b349a8f3c"

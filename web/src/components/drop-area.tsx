@@ -17,14 +17,14 @@ export function DropArea({ onDrop, children, disabled }: DropAreaProps) {
     if (disabled) return;
 
     const handleDragOver = (e: DragEvent) => {
-      console.log('Drag over');
+      // console.log('Drag over');
       e.preventDefault();
       e.stopPropagation();
       setIsDragOver(true);
     };
 
     const handleDragLeave = (e: DragEvent) => {
-      console.log('Drag leave');
+      // console.log('Drag leave');
       e.preventDefault();
       e.stopPropagation();
       if (!element.contains(e.relatedTarget as Node)) {
@@ -33,7 +33,7 @@ export function DropArea({ onDrop, children, disabled }: DropAreaProps) {
     };
 
     const handleDrop = (e: DragEvent) => {
-      console.log('Drop');
+      // console.log('Drop');
       e.preventDefault();
       e.stopPropagation();
       setIsDragOver(false);

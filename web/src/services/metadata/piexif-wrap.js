@@ -1,14 +1,9 @@
 import piexif from './piexif';
 
 export function decodeMetadata(binaryString) {
-  try {
-    const exif = piexif.load(binaryString);
-    const infoString = exif['0th'][piexif.ImageIFD.Make];
-    return infoString;
-  } catch (error) {
-    console.error('Error decoding metadata:', error);
-    return '';
-  }
+  const exif = piexif.load(binaryString);
+  const infoString = exif['0th'][piexif.ImageIFD.Make];
+  return infoString;
 }
 
 export function encodeMetadata(binaryString, metadata) {

@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import type { PrismImage } from '../../models/image';
 import { usePrismDecodeImagesStore, usePrismDecodeStore } from '../../providers/process/decode';
 import { PrismCanvas } from '../image-canvas';
-import { prismDecode } from './process';
+import { decodePreset, prismDecode, type PrismDecodeConfig } from './process';
 
 export class DecodeCanvas extends PrismCanvas {
   private origData: ImageData | null = null;
@@ -62,10 +62,34 @@ export class DecodeCanvas extends PrismCanvas {
     this.origData = image.imageData;
     this.imageData = new ImageData(new Uint8ClampedArray(this.origData.data.length), image.width(), image.height());
     this.imageDataAdjusted = null;
+
+    this.setPreset(image.metadata);
+
     this.decode();
     if (!this.adjust()) {
       super.putImageData(this.imageData);
     }
+  }
+
+  setPreset(metadata: string) {
+    console.log('Setting preset from string:', metadata);
+    const { lowerThreshold, higherThreshold, contrast } = usePrismDecodeStore.getState();
+    const config: PrismDecodeConfig = {
+      lowerThreshold,
+      higherThreshold,
+      method: 'black', // doesn't matter
+      contrast,
+    };
+    decodePreset(metadata, config);
+    this.setValues(config);
+  }
+
+  setValues(config: PrismDecodeConfig) {
+    usePrismDecodeStore.setState({
+      lowerThreshold: config.lowerThreshold,
+      higherThreshold: config.higherThreshold,
+      contrast: config.contrast,
+    });
   }
 
   decode = () => {
@@ -73,12 +97,12 @@ export class DecodeCanvas extends PrismCanvas {
       console.warn('No original image data or image data to decode');
       return;
     }
-    const { lowerThreshold, higherThreshold, method } = usePrismDecodeStore.getState();
+    const { lowerThreshold, higherThreshold, method, contrast } = usePrismDecodeStore.getState();
     prismDecode(this.origData, this.imageData, {
       lowerThreshold,
       higherThreshold,
       method,
-      grayConvert: PrismCanvas.toGrayLum,
+      contrast,
     });
     if (!this.adjust()) {
       super.putImageData(this.imageData);
