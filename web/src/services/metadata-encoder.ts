@@ -1,6 +1,6 @@
 import { parseMimeType } from './image-mimetype.js';
-import { encodeMetadata as encodePiexif } from './metadata/piexif-wrap.js';
-import { encodeMetadata as encodePNGChunk } from './metadata/png.js';
+import { encodeMake as encodePiexif } from './metadata/piexif-wrap.js';
+import { encodetEXt as encodePNGChunk } from './metadata/png.js';
 
 export function encodeMetadata(fileData: Uint8Array, metadata: string): Uint8Array {
   const mimeType = parseMimeType(fileData);

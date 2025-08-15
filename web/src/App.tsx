@@ -7,6 +7,7 @@ import { DraggableSidebar } from './components/sidebar';
 import { GlobalSnackbar } from './components/snackbar';
 import { DecodeList } from './pages/decode-list';
 import { useSidebarStore } from './providers/sidebar';
+import { version as appVersion } from '../package.json';
 
 function App() {
   const themeMode = useThemeStore((state) => state.mode);
@@ -25,6 +26,8 @@ function App() {
         backgroundColor: palette.Background,
         minHeight: '100vh',
         gap: 2,
+        paddingTop: 2,
+        paddingBottom: 4,
       }}
     >
       <Box
@@ -86,7 +89,7 @@ function TopLinks() {
       <Typography variant="body2">本网站仅做辅助, 并非此类坦克的唯一解!</Typography>
 
       <Typography variant="body2">
-        推荐访问方式:&nbsp;
+        请认准指定域名:&nbsp;
         <Link href="https://example.com" target="_blank" rel="noopener">
           https://prism.uyanide.com
         </Link>
@@ -96,9 +99,9 @@ function TopLinks() {
       <Typography variant="body2">
         <Link href="https://example.com" target="_blank" rel="noopener">
           下载当前页面
-        </Link>
+        </Link>{' '}
+        <Typography variant="caption">(可在任意现代浏览器中离线使用)</Typography>
       </Typography>
-      <Typography variant="body2">可在任意支持 HTML5 的浏览器中离线使用</Typography>
     </Box>
   );
 }
@@ -114,7 +117,7 @@ function VersionInfo() {
       }}
     >
       <Typography variant="body1">
-        当前版本: <strong>1.6.0</strong>
+        当前版本: <strong>{appVersion}</strong>
       </Typography>
       <Typography variant="body2">如发现有功能不正常可手动清理浏览器缓存后刷新</Typography>
     </Box>
@@ -133,6 +136,13 @@ function BottomLinks() {
         color: 'text.secondary',
       }}
     >
+      <Typography variant="body1">
+        <Link href="https://example.com" target="_blank" rel="noopener">
+          常见问题 Q&A
+        </Link>
+      </Typography>
+
+      <Box margin={0.5} />
       <Typography variant="body2">更多其他项目</Typography>
       <Typography variant="body2">
         <Link href="https://example.com" target="_blank" rel="noopener">
@@ -257,6 +267,7 @@ function ChangeHistory() {
               backgroundColor: palette.SecondaryBackground,
               borderRadius: 4,
               padding: 2,
+              transition: 'background-color 0.7s',
             }}
           >
             <Table size="small">

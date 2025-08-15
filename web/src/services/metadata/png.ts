@@ -1,4 +1,4 @@
-export function decodeMetadata(data: Uint8Array): string {
+export function decodetEXt(data: Uint8Array): string {
   let pos = 8; // Skip the PNG header
   while (pos < data.length) {
     const size = stoi(data, pos, 4);
@@ -16,7 +16,7 @@ export function decodeMetadata(data: Uint8Array): string {
   return '';
 }
 
-export function encodeMetadata(data: Uint8Array, metadata: string): Uint8Array {
+export function encodetEXt(data: Uint8Array, metadata: string): Uint8Array {
   const textEncoder = new TextEncoder();
   // const chunks: Uint8Array[] = [];
   // chunks.push(data.slice(0, 8)); // PNG header

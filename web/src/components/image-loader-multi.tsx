@@ -40,7 +40,6 @@ export function ImageLoaderMulti({ onLoad, children, defaultImage, disabled }: I
         });
         const images = await Promise.all(promises);
         const filtered = images.filter((i) => i !== null);
-        showWarningSnackbar('没有图片被成功加载');
         if (filtered.length === 0) {
           return;
         }
