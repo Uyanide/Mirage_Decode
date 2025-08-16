@@ -2,13 +2,15 @@ import { Box, Button, Typography } from '@mui/material';
 
 interface CanvasFallbackProps {
   text: string;
+  width?: string;
+  height?: string;
   action?: string;
   aspectRatio?: string;
   onClick?: () => void;
   disabled?: boolean;
 }
 
-export function CanvasFallback({ text, action, aspectRatio, onClick, disabled }: CanvasFallbackProps) {
+export function CanvasFallback({ text, action, aspectRatio, onClick, disabled, width, height }: CanvasFallbackProps) {
   return (
     <Box
       sx={{
@@ -16,7 +18,8 @@ export function CanvasFallback({ text, action, aspectRatio, onClick, disabled }:
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        width: '100%',
+        width: width,
+        height: height,
         aspectRatio: aspectRatio ?? '16/9',
         backgroundColor: 'background.paper',
         border: '1px dashed',

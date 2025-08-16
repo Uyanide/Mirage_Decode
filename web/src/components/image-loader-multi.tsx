@@ -73,7 +73,6 @@ export function ImageLoaderMulti({ onLoad, children, defaultImage, disabled }: I
         alignItems: 'center',
         justifyContent: 'center',
         gap: 1,
-        maxWidth: 'sm',
         width: '100%',
       }}
     >

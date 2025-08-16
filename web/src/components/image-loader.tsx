@@ -4,7 +4,6 @@ import { Check } from '@mui/icons-material';
 import { itemHeight, zIndex } from '../constants/layout';
 import { useCallback, useState } from 'react';
 import { ImageDisplay } from './image-display';
-import { useThemeStore } from '../providers/theme';
 import { DropArea } from './drop-area';
 import { LoadImageFileData } from '../services/image-loader';
 import { LoadingProgress } from './loading';
@@ -27,8 +26,6 @@ export function ImageLoader({ onconfirm, oncancel, defaultImage }: ImageLoaderPr
   const [image, setImage] = useState<PrismImage | null>(null);
   const [loading, setLoading] = useState(false);
   const [url, setUrl] = useState<string>('');
-
-  const themeMode = useThemeStore((state) => state.mode);
 
   const wrapImageLoad = useCallback((getFileData: () => Promise<Uint8Array[]>) => {
     (async () => {
@@ -188,7 +185,7 @@ export function ImageLoader({ onconfirm, oncancel, defaultImage }: ImageLoaderPr
             <LoadingProgress />
           </Box>
         ) : (
-          <ImageDisplay image={image} isBlackBackground={themeMode === 'dark'} placeholderText="也可拖拽到此处" />
+          <ImageDisplay image={image} placeholderText="也可拖拽到此处" width="100%" />
         )}
       </DropArea>
       <Box

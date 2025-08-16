@@ -38,7 +38,7 @@ export const changeLog = [
     changes: ['使用cors代理，希望能解决跨域问题', '修复若干历史遗留 Bug'],
   },
   {
-    version: '1.6',
+    version: '2.0',
     changes: ['使用 React 重写整个项目', '添加对多重隐写的支持'],
   },
 ];

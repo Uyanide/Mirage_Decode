@@ -1,7 +1,6 @@
 import { Box, Button, Container, Typography } from '@mui/material';
 import { usePrismDecodeImagesStore } from '../providers/process/decode';
 import { ImageDisplay } from '../components/image-display';
-import { useThemeStore } from '../providers/theme';
 
 export function DecodeList() {
   const listState = usePrismDecodeImagesStore();
@@ -9,8 +8,6 @@ export function DecodeList() {
   const currImage = listState.currImage;
   const setCurrIndex = listState.setCurrIndex;
   const setImages = listState.setImages;
-
-  const themeMode = useThemeStore((state) => state.mode);
 
   return (
     <Box
@@ -51,11 +48,7 @@ export function DecodeList() {
             padding: 0,
           }}
         >
-          <ImageDisplay
-            image={image.image}
-            isBlackBackground={themeMode === 'dark'}
-            highLight={currImage !== null && currImage.index === image.index}
-          />
+          <ImageDisplay image={image.image} highLight={currImage !== null && currImage.index === image.index} width="100%" />
         </Container>
       ))}
     </Box>

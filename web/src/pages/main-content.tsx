@@ -18,7 +18,7 @@ export function MainContent() {
       sx={{
         display: 'flex',
         flexDirection: 'column',
-        maxWidth: 'md',
+        maxWidth: 'lg',
         width: '100%',
         mx: 'auto',
       }}

@@ -1,17 +1,31 @@
 import { Box, Typography } from '@mui/material';
 import type { PrismImage } from '../models/image';
 import { useEffect, useRef } from 'react';
+import { useThemeStore } from '../providers/theme';
 
 interface ImageDisplayProps {
   image: PrismImage | null;
-  isBlackBackground: boolean;
+  width?: string;
+  height?: string;
+  isBlackBackground?: boolean;
   placeholderText?: string;
   aspectRatio?: string;
   highLight?: boolean;
 }
 
-export function ImageDisplay({ image, isBlackBackground, placeholderText, aspectRatio, highLight }: ImageDisplayProps) {
+export function ImageDisplay({
+  image,
+  isBlackBackground,
+  placeholderText,
+  aspectRatio,
+  highLight,
+  width,
+  height,
+}: ImageDisplayProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const themeMode = useThemeStore((state) => state.mode);
+  const isDark = isBlackBackground ?? themeMode == 'dark';
 
   useEffect(() => {
     if (!image || !canvasRef.current) return;
@@ -30,18 +44,20 @@ export function ImageDisplay({ image, isBlackBackground, placeholderText, aspect
     return (
       <Box
         sx={{
-          border: '1px solid',
+          width: width,
+          height: height,
           borderColor: 'text.disabled',
-          width: '100%',
           aspectRatio: aspectRatio ?? '16/9',
           borderRadius: 1,
+          border: '1px solid',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
+          backgroundColor: 'background.paper',
         }}
       >
         <Typography variant="body1" color="text.secondary">
-          {placeholderText ?? '空空如也(暂时) :/'}
+          {placeholderText ?? '(･_･`)>'}
         </Typography>
       </Box>
     );
@@ -49,14 +65,15 @@ export function ImageDisplay({ image, isBlackBackground, placeholderText, aspect
     return (
       <Box
         sx={{
-          width: '100%',
+          width: width,
+          height: height,
           aspectRatio: aspectRatio ?? '16/9',
+          backgroundColor: isDark ? 'black' : 'white',
+          border: highLight ? '3px solid' : 'none',
+          borderColor: 'primary.main',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: isBlackBackground ? 'black' : 'white',
-          border: highLight ? '3px solid' : 'none',
-          borderColor: 'primary.main',
         }}
       >
         <canvas style={{ maxWidth: '100%', maxHeight: '100%' }} ref={canvasRef} />

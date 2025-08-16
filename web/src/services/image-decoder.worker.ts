@@ -152,7 +152,6 @@ class ImageDecoderCanvasImpl extends ImageDecoderBase {
   }
 
   private canvas: OffscreenCanvas;
-  private ctx: OffscreenCanvasRenderingContext2D;
 
   constructor() {
     super();
@@ -161,7 +160,6 @@ class ImageDecoderCanvasImpl extends ImageDecoderBase {
     if (!ctx) {
       throw new Error('Failed to get offscreen canvas context');
     }
-    this.ctx = ctx;
   }
 
   async decode(fileData: Uint8Array, mimeType: string): Promise<ImageData> {
@@ -171,9 +169,25 @@ class ImageDecoderCanvasImpl extends ImageDecoderBase {
 
       this.canvas.width = imageBitmap.width;
       this.canvas.height = imageBitmap.height;
-      this.ctx.drawImage(imageBitmap, 0, 0);
+      const ctx = this.canvas.getContext('2d');
+      if (!ctx) {
+        throw new Error('Failed to get offscreen canvas context');
+      }
+      // should help a bit :/
+      try {
+        ctx.imageSmoothingEnabled = false;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+        (ctx as any).mozImageSmoothingEnabled = false;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+        (ctx as any).webkitImageSmoothingEnabled = false;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+        (ctx as any).msImageSmoothingEnabled = false;
+      } catch (e: unknown) {
+        console.warn('Failed to set image smoothing properties:', e);
+      }
+      ctx.drawImage(imageBitmap, 0, 0);
 
-      const imageData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+      const imageData = ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
       imageBitmap.close(); // Clean up imageBitmap
       return imageData;
     } catch (error: unknown) {

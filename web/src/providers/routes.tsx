@@ -3,6 +3,7 @@ import { create } from 'zustand';
 
 const DecodePage = lazy(() => import('../pages/decode'));
 const EncodePage = lazy(() => import('../pages/encode'));
+const AdvancedEncodePage = lazy(() => import('../pages/advanced-encode'));
 
 interface CurrentRouteStore {
   currentRoute: string;
@@ -33,5 +34,10 @@ export const Pages: Record<string, Page> = {
     title: '制作',
     route: '/encode',
     build: () => <EncodePage />,
+  },
+  '/advanced-encode': {
+    title: '高级',
+    route: '/advanced-encode',
+    build: () => <AdvancedEncodePage />,
   },
 };

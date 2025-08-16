@@ -13,6 +13,7 @@ import { CanvasFallback } from '../components/canvas-fallback';
 import { LoadImageFileData } from '../services/image-loader';
 import { showErrorSnackbar, showSuccessSnackbar } from '../providers/snackbar';
 import { LoadingOverlay } from '../components/loading';
+import { useDesktopMode } from '../providers/layout';
 
 export default function DecodePage() {
   const [loading, setLoading] = useState(false);
@@ -66,48 +67,63 @@ export default function DecodePage() {
     }
   }, [setDecodeCanvas]);
 
+  const desktop = useDesktopMode();
+
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        maxWidth: 'sm',
-        mx: 'auto',
-        gap: 2,
-        width: '100%',
-      }}
-    >
+    <>
       {loading && <LoadingOverlay />}
-      <ImageLoaderMulti onLoad={handleImagesLoaded} defaultImage={defaultImages.decode} disabled={loading}>
-        <canvas
-          ref={decodeCanvasRef}
-          style={{
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: desktop ? 'row' : 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          maxWidth: desktop ? 'lg' : 'sm',
+          gap: 2,
+          width: '100%',
+          mx: 'auto',
+        }}
+      >
+        <ImageLoaderMulti onLoad={handleImagesLoaded} defaultImage={defaultImages.decode} disabled={loading}>
+          <canvas
+            ref={decodeCanvasRef}
+            style={{
+              width: '100%',
+              height: '100%',
+              display: currImage ? 'block' : 'none',
+            }}
+          ></canvas>
+          {!currImage && (
+            <CanvasFallback
+              text={loading ? '加载中...' : '只是一张画布'}
+              action="加载示例图片"
+              onClick={handleLoadDefault}
+              disabled={loading}
+            ></CanvasFallback>
+          )}
+        </ImageLoaderMulti>
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 2,
             width: '100%',
-            height: '100%',
-            display: currImage ? 'block' : 'none',
           }}
-        ></canvas>
-        {!currImage && (
-          <CanvasFallback
-            text={loading ? '加载中...' : '只是一张画布'}
-            action="加载示例图片"
-            onClick={handleLoadDefault}
-            disabled={loading}
-          ></CanvasFallback>
-        )}
-      </ImageLoaderMulti>
-      <InputContainer>
-        <ThresholdSlider />
-        <Box sx={{ mt: 2 }} />
-        <ContrastSlider />
-      </InputContainer>
-      <InputContainer>
-        <MethodsInput />
-      </InputContainer>
-      <ImageSave />
-    </Box>
+        >
+          <InputContainer>
+            <ThresholdSlider />
+            <Box sx={{ mt: 2 }} />
+            <ContrastSlider />
+          </InputContainer>
+          <InputContainer>
+            <MethodsInput />
+          </InputContainer>
+          <ImageSave />
+        </Box>
+      </Box>
+    </>
   );
 }
 
@@ -128,7 +144,6 @@ function ThresholdSlider() {
         textAlign: 'center',
       }}
     >
-      {' '}
       <Box
         sx={{
           display: 'flex',

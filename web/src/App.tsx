@@ -10,8 +10,11 @@ import { useSidebarStore } from './providers/sidebar';
 import { version as appVersion } from '../package.json';
 import { changeLog } from './constants/change-log';
 import { zIndex } from './constants/layout';
+import { useDesktopModeInitializer } from './providers/layout';
 
 function App() {
+  useDesktopModeInitializer();
+
   const themeMode = useThemeStore((state) => state.mode);
   const toggleThemeMode = useThemeStore((state) => state.toggleTheme);
   const palette = useThemeStore((state) => state.palette);
@@ -101,7 +104,7 @@ function TopLinks() {
       <Typography variant="body2">
         <Link href="https://example.com" target="_blank" rel="noopener">
           下载当前页面
-        </Link>{' '}
+        </Link>
         <Typography variant="caption">(可在任意现代浏览器中离线使用)</Typography>
       </Typography>
     </Box>
@@ -138,7 +141,7 @@ function BottomLinks() {
         color: 'text.secondary',
       }}
     >
-      <Typography variant="body1">
+      <Typography variant="body2">
         <Link href="https://example.com" target="_blank" rel="noopener">
           常见问题 Q&A
         </Link>

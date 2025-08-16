@@ -5,7 +5,7 @@ export const itemHeight = {
 export const zIndex = {
   sidebar: 100,
   dialog: 200,
-  backdrop: 300,
-  action: 400,
+  action: 300,
+  backdrop: 400,
   snackbar: 500,
 };

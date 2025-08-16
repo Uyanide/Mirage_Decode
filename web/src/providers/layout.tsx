@@ -46,15 +46,15 @@ export const useDesktopModeInitializer = () => {
     const handleResize = () => {
       const width = window.innerWidth;
       setScreenWidth(width);
-      setDesktopMode(width >= theme.breakpoints.values.sm);
-      setLargeScreen(width >= theme.breakpoints.values.lg);
+      setDesktopMode(width >= theme.breakpoints.values.lg);
+      setLargeScreen(width >= theme.breakpoints.values.xl);
     };
 
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [setDesktopMode, setScreenWidth, setLargeScreen, theme.breakpoints.values.sm, theme.breakpoints.values.lg]);
+  }, [setDesktopMode, setScreenWidth, setLargeScreen, theme.breakpoints.values.xl, theme.breakpoints.values.lg]);
 };
 
 export const useDesktopMode = () => {
