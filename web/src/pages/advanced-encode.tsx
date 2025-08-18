@@ -1,12 +1,26 @@
 import { Box, Button, Grid, Input, Select, Slider, Switch, Typography } from '@mui/material';
-import { ImageDisplay } from '../components/image-display';
 import { InputContainer } from '../components/input-container';
 import { ImageLoaderDialog } from '../components/image-loader';
-import { useDesktopMode } from '../providers/layout';
+import { useDesktopMode, useSmallScreen } from '../providers/layout';
 import { HelpButton } from '../components/help-button';
+import { CanvasFallback } from '../components/canvas-fallback';
 
 export default function AdvancesEncodePage() {
-  return <ImageInputs />;
+  const desktop = useDesktopMode();
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        maxWidth: desktop ? 'lg' : 'sm',
+        mx: 'auto',
+      }}
+    >
+      <ImageInputs />
+    </Box>
+  );
 }
 
 function ImageInputs() {
@@ -15,25 +29,29 @@ function ImageInputs() {
   return (
     <Grid container spacing={2} maxWidth={desktop ? 'lg' : 'sm'}>
       <Grid size={desktop ? 6 : 12}>
-        <ImageConfig />
+        <ImageConfig index={0} />
       </Grid>
 
       <Grid size={desktop ? 6 : 12}>
-        <ImageConfig />
+        <ImageConfig index={1} />
       </Grid>
 
       <Grid size={desktop ? 6 : 12}>
-        <ImageConfig />
+        <ImageConfig index={2} />
       </Grid>
 
       <Grid size={desktop ? 6 : 12}>
-        <ImageConfig />
+        <ImageConfig index={3} />
       </Grid>
     </Grid>
   );
 }
 
-function ImageConfig() {
+interface ImageConfigProps {
+  index: number;
+}
+
+function ImageConfig({ index }: ImageConfigProps) {
   return (
     <InputContainer>
       <Box
@@ -43,19 +61,10 @@ function ImageConfig() {
           width: '100%',
           gap: 2,
           alignItems: 'center',
+          overflowX: 'auto',
         }}
       >
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 1,
-            px: 1,
-          }}
-        >
-          <ImageLoaderDialog onconfirm={() => {}}></ImageLoaderDialog>
-          <ImageDisplay image={null} aspectRatio="1" height="200px" />
-        </Box>
+        <ImageInput index={index} />
         <Box
           sx={{
             flex: 1,
@@ -184,5 +193,44 @@ function ImageConfig() {
         </Box>
       </Box>
     </InputContainer>
+  );
+}
+
+function ImageInput({ index }: ImageConfigProps) {
+  const smallScreen = useSmallScreen();
+  const size = smallScreen ? 100 : 200;
+
+  const image = null;
+
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 1,
+        px: 1,
+        width: size,
+      }}
+    >
+      <ImageLoaderDialog onconfirm={(image) => {}} label="加载"></ImageLoaderDialog>
+      {!image && (
+        <CanvasFallback
+          text="(･_･`)>"
+          aspectRatio="1"
+          styles={{
+            width: '100%',
+            objectFit: 'contain',
+          }}
+        ></CanvasFallback>
+      )}
+      <canvas
+        style={{
+          maxWidth: size,
+          maxHeight: size,
+          display: image ? 'block' : 'none',
+          objectFit: 'contain',
+        }}
+      ></canvas>
+    </Box>
   );
 }

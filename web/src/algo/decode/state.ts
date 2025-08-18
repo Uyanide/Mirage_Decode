@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
-import { decodeDefaultArgs } from '../../constants/default-arg';
+import { DecodeDefaultArgs, maxContrast, minContrast } from '../../constants/default-arg';
 import type { PrismImage } from '../../models/image';
 import type { ImageEncodeFormat } from '../../services/image-encoder';
 
@@ -23,29 +23,32 @@ interface PrismDecodeState {
 
 export const usePrismDecodeStore = create<PrismDecodeState>()(
   subscribeWithSelector((set) => ({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    doReadMetadata: decodeDefaultArgs.doReadMetadata,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    lowerThreshold: decodeDefaultArgs.lowerThreshold,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    higherThreshold: decodeDefaultArgs.higherThreshold,
-    method: decodeDefaultArgs.method as PrismDecodeMethod,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    contrast: decodeDefaultArgs.contrast,
-    saveFormat: decodeDefaultArgs.saveFormat as ImageEncodeFormat,
+    doReadMetadata: DecodeDefaultArgs.doReadMetadata,
+    lowerThreshold: DecodeDefaultArgs.lowerThreshold,
+    higherThreshold: DecodeDefaultArgs.higherThreshold,
+    method: DecodeDefaultArgs.method as PrismDecodeMethod,
+    contrast: DecodeDefaultArgs.contrast,
+    saveFormat: DecodeDefaultArgs.saveFormat,
     setDoReadMetadata: (value: boolean) => {
       set({ doReadMetadata: value });
     },
     setLowerThreshold: (value: number) => {
-      set({ lowerThreshold: value });
+      set((state) => {
+        if (value < 0 || value > state.higherThreshold) return {};
+        return { lowerThreshold: value };
+      });
     },
     setHigherThreshold: (value: number) => {
-      set({ higherThreshold: value });
+      set((state) => {
+        if (value < state.lowerThreshold || value > 255) return {};
+        return { higherThreshold: value };
+      });
     },
     setMethod: (value: PrismDecodeMethod) => {
       set({ method: value });
     },
     setContrast: (value: number) => {
+      if (value < minContrast || value > maxContrast) return;
       set({ contrast: value });
     },
     setSaveFormat: (value: ImageEncodeFormat) => {

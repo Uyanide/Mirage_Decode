@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ImageLoaderMulti } from '../components/image-loader-multi';
-import { defaultImages } from '../constants/default-arg';
+import { DecodeDefaultArgs, defaultImages, EncodeDefaultArgs, maxContrast, minContrast } from '../constants/default-arg';
 import { usePrismDecodeImagesStore, usePrismDecodeStore, type PrismDecodeMethod } from '../algo/decode/state';
 import { PrismImage } from '../models/image';
 import { useSidebarStore } from '../providers/sidebar';
@@ -163,7 +163,7 @@ function ThresholdSlider() {
         }}
         min={0}
         max={255}
-        step={1}
+        step={DecodeDefaultArgs.thresholdStep}
         valueLabelDisplay="auto"
       />
       <Box
@@ -184,7 +184,7 @@ function ThresholdSlider() {
             }
           }}
           inputProps={{
-            step: 1,
+            step: DecodeDefaultArgs.thresholdStep,
             min: 0,
             max: 255,
             type: 'number',
@@ -252,9 +252,9 @@ function ContrastSlider() {
         onChange={(_, v) => {
           setContrast(v);
         }}
-        min={0}
-        max={100}
-        step={1}
+        min={minContrast}
+        max={maxContrast}
+        step={EncodeDefaultArgs.contrastStep}
         valueLabelDisplay="auto"
       />
       <Box
@@ -275,9 +275,9 @@ function ContrastSlider() {
             }
           }}
           inputProps={{
-            step: 1,
-            min: 0,
-            max: 255,
+            step: EncodeDefaultArgs.contrastStep,
+            min: minContrast,
+            max: maxContrast,
             type: 'number',
           }}
           sx={{
@@ -289,7 +289,7 @@ function ContrastSlider() {
         <Button
           size="small"
           onClick={() => {
-            setContrast(50);
+            setContrast(DecodeDefaultArgs.contrast);
           }}
           sx={{
             width: '100px',

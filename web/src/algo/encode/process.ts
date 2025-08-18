@@ -1,3 +1,5 @@
+import { ImageUtils } from '../image-utils';
+
 export function isCover(x: number, y: number, slope: number, gap: number, isRow: boolean): boolean {
   if (slope === 0) {
     return (isRow ? y : x) % (gap + 1) < gap;
@@ -25,10 +27,17 @@ export function prismEncode(
 ) {
   // All the validation works should be done by caller
   const isCoverPixel = (x: number, y: number) => isCover(x, y, slope, gap, isRow);
-  const scaleInner = isReverse ? (v: number, t: number) => 255 - t + (v * t) / 255 : (v: number, t: number) => (v * t) / 255;
-  const scaleCover = isReverse
-    ? (v: number, t: number) => (v * (255 - t)) / 255
-    : (v: number, t: number) => t + (v * (255 - t)) / 255;
+  const scaleWrap = (v: number, t: number, func: (v: number, t: number) => number) => {
+    return Math.floor(func(v, t));
+  };
+  const scaleInner = (v: number, t: number) =>
+    scaleWrap(v, t, isReverse ? (v: number, t: number) => 255 - t + (v * t) / 255 : (v: number, t: number) => (v * t) / 255);
+  const scaleCover = (v: number, t: number) =>
+    scaleWrap(
+      v,
+      t,
+      isReverse ? (v: number, t: number) => (v * (255 - t)) / 255 : (v: number, t: number) => t + (v * (255 - t)) / 255
+    );
   const width = innerData.width;
   const length = innerData.data.length;
   for (let i = 0, x = 0, y = 0; i < length; i += 4) {
@@ -60,6 +69,7 @@ export function prismEncode(
 }
 
 export function encodePreset(innerThreshold: number, contrast: number, isReverse: boolean) {
+  contrast = ImageUtils.scaleContrastCompress(contrast);
   return `${isReverse ? '1' : '0'}\
 ${innerThreshold.toString(16).padStart(2, '0')}\
 ${contrast.toString(16).padStart(2, '0')}`;

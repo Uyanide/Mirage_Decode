@@ -29,7 +29,7 @@ export const useLayoutStore = create<LayoutState>((set) => ({
 export const useDesktopModeInitializer = () => {
   const theme = useTheme();
   const isDesktopMode = useMediaQuery(theme.breakpoints.up('lg'));
-  const isSmallScreen = useMediaQuery(theme.breakpoints.up('sm'));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const setDesktopMode = useLayoutStore((state) => state.setDesktopMode);
   const setSmallScreen = useLayoutStore((state) => state.setSmallScreen);
   const setScreenWidth = useLayoutStore((state) => state.setScreenWidth);

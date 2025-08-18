@@ -19,7 +19,7 @@ export function CanvasFallback({ text, action, aspectRatio, onClick, disabled, s
         justifyContent: 'center',
         aspectRatio: aspectRatio ?? '16/9',
         backgroundColor: 'background.paper',
-        border: '1px dashed',
+        border: '1.5px dashed',
         borderColor: 'text.secondary',
         borderRadius: 2,
         ...styles,

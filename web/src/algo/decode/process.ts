@@ -147,6 +147,6 @@ export function decodePreset(str: string, values: PrismDecodeConfig) {
   if (isNaN(contrast) || contrast < 0 || contrast > 100) {
     return;
   }
-  values.contrast = 100 - contrast;
+  values.contrast = ImageUtils.scaleContrastExpand(100 - contrast);
   return;
 }

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { ImageEncodeFormat } from '../../services/image-encoder';
 import { subscribeWithSelector } from 'zustand/middleware';
-import { encodeDefaultArgs } from '../../constants/default-arg';
+import { EncodeDefaultArgs, maxContrast, minContrast } from '../../constants/default-arg';
 import type { PrismImage } from '../../models/image';
 import { prismEncodeCanvas } from './canvas';
 
@@ -36,47 +36,38 @@ interface PrismEncodeState {
 
 export const usePrismEncodeStore = create<PrismEncodeState>()(
   subscribeWithSelector((set) => ({
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    innerThreshold: encodeDefaultArgs.innerThreshold,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    coverThreshold: encodeDefaultArgs.coverThreshold,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    innerContrast: encodeDefaultArgs.innerContrast,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    coverContrast: encodeDefaultArgs.coverContrast,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    isInnerGray: encodeDefaultArgs.isInnerGray,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    isCoverGray: encodeDefaultArgs.isCoverGray,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    isReverse: encodeDefaultArgs.isReverse,
-    saveFormat: encodeDefaultArgs.saveFormat as ImageEncodeFormat,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    maxSize: encodeDefaultArgs.maxSize,
+    innerThreshold: EncodeDefaultArgs.innerThreshold,
+    coverThreshold: EncodeDefaultArgs.coverThreshold,
+    innerContrast: EncodeDefaultArgs.innerContrast,
+    coverContrast: EncodeDefaultArgs.coverContrast,
+    isInnerGray: EncodeDefaultArgs.isInnerGray,
+    isCoverGray: EncodeDefaultArgs.isCoverGray,
+    isReverse: EncodeDefaultArgs.isReverse,
+    saveFormat: EncodeDefaultArgs.saveFormat,
+    maxSize: EncodeDefaultArgs.maxSize,
     blendMode: {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      slope: encodeDefaultArgs.blendMode.slope,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      gap: encodeDefaultArgs.blendMode.gap,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
-      isRow: encodeDefaultArgs.blendMode.isRow,
+      slope: EncodeDefaultArgs.blendMode.slope,
+      gap: EncodeDefaultArgs.blendMode.gap,
+      isRow: EncodeDefaultArgs.blendMode.isRow,
     },
     setInnerThreshold: (value: number) => {
       set((state) => {
-        if (value > state.coverThreshold) return {};
+        if (value > state.coverThreshold || value < 0) return {};
         return { innerThreshold: value };
       });
     },
     setCoverThreshold: (value: number) => {
       set((state) => {
-        if (value < state.innerThreshold) return {};
+        if (value < state.innerThreshold || value > 255) return {};
         return { coverThreshold: value };
       });
     },
     setInnerContrast: (value: number) => {
+      if (value < minContrast || value > maxContrast) return;
       set({ innerContrast: value });
     },
     setCoverContrast: (value: number) => {
+      if (value < minContrast || value > maxContrast) return;
       set({ coverContrast: value });
     },
     setIsInnerGray: (value: boolean) => {
@@ -92,6 +83,7 @@ export const usePrismEncodeStore = create<PrismEncodeState>()(
       set({ saveFormat: value });
     },
     setMaxSize: (value: number) => {
+      if (value < EncodeDefaultArgs.minMaxSize || value > EncodeDefaultArgs.maxMaxSize) return;
       set({ maxSize: value });
     },
     setBlendMode: (slope: number, gap: number, isRow: boolean) => {

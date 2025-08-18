@@ -1,20 +1,60 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { ImageEncodeFormat } from '../services/image-encoder';
+
 export const maxListSize: number = 20;
 
-export const decodeDefaultArgs: Record<string, any> = {
+export const minContrast = -255;
+export const maxContrast = 255;
+
+interface DecodeDefaultArgsType {
+  doReadMetadata: boolean;
+  lowerThreshold: number;
+  higherThreshold: number;
+  thresholdStep: number;
+  method: string;
+  contrast: number;
+  contrastStep: number;
+  saveFormat: ImageEncodeFormat;
+}
+
+export const DecodeDefaultArgs: DecodeDefaultArgsType = {
   doReadMetadata: true,
   lowerThreshold: 0,
   higherThreshold: 24,
+  thresholdStep: 1,
   method: 'ltavg',
-  contrast: 50,
+  contrast: 0,
+  contrastStep: 5,
   saveFormat: 'PNG',
 };
 
-export const encodeDefaultArgs: Record<string, any> = {
+interface EncodeDefaultArgsType {
+  innerThreshold: number;
+  coverThreshold: number;
+  thresholdStep: number;
+  innerContrast: number;
+  coverContrast: number;
+  contrastStep: number;
+  isInnerGray: boolean;
+  isCoverGray: boolean;
+  isReverse: boolean;
+  saveFormat: ImageEncodeFormat;
+  maxSize: number;
+  blendMode: {
+    slope: number;
+    gap: number;
+    isRow: boolean;
+  };
+  maxMaxSize: number;
+  minMaxSize: number;
+}
+
+export const EncodeDefaultArgs: EncodeDefaultArgsType = {
   innerThreshold: 24,
   coverThreshold: 42,
-  innerContrast: 50,
-  coverContrast: 50,
+  thresholdStep: 1,
+  innerContrast: 0,
+  coverContrast: 0,
+  contrastStep: 5,
   isInnerGray: false,
   isCoverGray: true,
   isReverse: false,

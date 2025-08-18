@@ -26,8 +26,9 @@ export function MainContent() {
       <TabNavigation currentRoute={currentRoute} setCurrentRoute={setCurrentRoute} pages={Pages} />
       <Box
         sx={{
-          px: 4,
-          py: 3,
+          paddingRight: 4, // leave space for sidebar
+          paddingLeft: 2,
+          py: 2,
           backgroundColor: palette.SecondaryBackground,
           borderRadius: '0 0 16px 16px',
           width: '100%',

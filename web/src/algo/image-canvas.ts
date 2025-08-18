@@ -62,4 +62,16 @@ export abstract class PrismCanvas {
     }
     ctx.putImageData(imageData, 0, 0);
   }
+
+  getImageData() {
+    if (!this.canvas) {
+      return null;
+    }
+    const ctx = this.canvas.getContext('2d');
+    if (!ctx) {
+      console.warn('Failed to get canvas context');
+      return null;
+    }
+    return ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+  }
 }

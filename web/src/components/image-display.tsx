@@ -49,7 +49,7 @@ export function ImageDisplay({
           borderColor: 'text.disabled',
           aspectRatio: aspectRatio ?? '16/9',
           borderRadius: 1,
-          border: '1px solid',
+          border: '1.5px solid',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',

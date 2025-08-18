@@ -17,7 +17,6 @@ import {
   Select,
   Slider,
   Switch,
-  TextField,
   Typography,
 } from '@mui/material';
 import { InputContainer } from '../components/input-container';
@@ -30,14 +29,14 @@ import { zIndex } from '../constants/layout';
 import { isCover } from '../algo/encode/process';
 import { usePrismEncodeImageStore, usePrismEncodeStore } from '../algo/encode/state';
 import { prismEncodeCanvas } from '../algo/encode/canvas';
-import { useDebounce } from '../utils/hooks/debounce';
-import { defaultImages, encodeDefaultArgs } from '../constants/default-arg';
+import { defaultImages, EncodeDefaultArgs, maxContrast, minContrast } from '../constants/default-arg';
 import type { ImageEncodeFormat } from '../services/image-encoder';
 import { showErrorSnackbar, showSuccessSnackbar } from '../providers/snackbar';
 import { useFormatWarningStore } from '../providers/format-warning';
 import { usePrismDecodeImagesStore } from '../algo/decode/state';
 import { PrismImage } from '../models/image';
 import { useCurrentRouteStore } from '../providers/routes';
+import { NumberInput } from '../components/number-input';
 
 export default function EncodePage() {
   const desktop = useDesktopMode();
@@ -114,7 +113,7 @@ function ImageInput({ isCover }: ImageConfigProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const smallScreen = useSmallScreen();
-  const size = smallScreen ? 100 : 200;
+  const size = smallScreen ? 120 : 200;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -210,7 +209,7 @@ function ImageArguments({ isCover }: ImageConfigProps) {
         value={threshold}
         min={0}
         max={255}
-        step={1}
+        step={EncodeDefaultArgs.thresholdStep}
         track={isCover ? 'inverted' : 'normal'}
         onChange={(_, value) => {
           setThreshold(value);
@@ -227,7 +226,7 @@ function ImageArguments({ isCover }: ImageConfigProps) {
         <Input
           value={threshold}
           inputProps={{
-            step: 1,
+            step: EncodeDefaultArgs.thresholdStep,
             min: 0,
             max: 255,
             type: 'number',
@@ -257,9 +256,9 @@ function ImageArguments({ isCover }: ImageConfigProps) {
       </Box>
       <Slider
         value={contrast}
-        min={0}
-        max={100}
-        step={1}
+        min={minContrast}
+        max={maxContrast}
+        step={EncodeDefaultArgs.contrastStep}
         onChange={(_, value) => {
           setContrast(value);
         }}
@@ -275,9 +274,9 @@ function ImageArguments({ isCover }: ImageConfigProps) {
         <Input
           value={contrast}
           inputProps={{
-            step: 1,
-            min: 0,
-            max: 255,
+            step: EncodeDefaultArgs.contrastStep,
+            min: minContrast,
+            max: maxContrast,
             type: 'number',
           }}
           sx={{
@@ -296,7 +295,7 @@ function ImageArguments({ isCover }: ImageConfigProps) {
             width: '80px',
           }}
           onClick={() => {
-            setContrast(50);
+            setContrast(isCover ? EncodeDefaultArgs.coverContrast : EncodeDefaultArgs.innerContrast);
           }}
         >
           重置对比度
@@ -582,19 +581,6 @@ function BlendModeConfigDialog({ onConfirm, onCancel }: BlendModeConfigDialogPro
 function SizeConfig() {
   const maxSize = usePrismEncodeStore((state) => state.maxSize);
   const setMaxSize = usePrismEncodeStore((state) => state.setMaxSize);
-  const [_size, _setSize] = useState(maxSize.toString());
-  const [_valid, _setValid] = useState(true);
-  const _debouncedSize = useDebounce(_size, 500);
-
-  useEffect(() => {
-    const size = parseInt(_debouncedSize, 10);
-    if (isNaN(size) || size < encodeDefaultArgs.minWidth || size > encodeDefaultArgs.maxSize) {
-      _setValid(false);
-      return;
-    }
-    _setValid(true);
-    setMaxSize(size);
-  }, [_debouncedSize, setMaxSize]);
 
   return (
     <Box
@@ -608,18 +594,19 @@ function SizeConfig() {
       }}
     >
       <Typography>最大长或宽:</Typography>
-      <TextField
-        value={_size}
-        onChange={(e) => {
-          _setSize(e.target.value);
+      <NumberInput
+        initValue={maxSize}
+        onChange={(v) => {
+          setMaxSize(v);
         }}
         size="small"
         variant="standard"
-        error={!_valid}
         sx={{
           maxWidth: '100px',
         }}
-      ></TextField>
+        min={EncodeDefaultArgs.minMaxSize}
+        max={EncodeDefaultArgs.maxMaxSize}
+      />
       <HelpButton message="此选项用于限制生成图像文件的大小" />
     </Box>
   );

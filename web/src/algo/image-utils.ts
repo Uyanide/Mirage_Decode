@@ -34,9 +34,17 @@ function toGray(src: Ptr<ImageData>, tar: Ptr<ImageData>, algo: ToGrayAlgo = toG
   }
 }
 
+function scaleContrastExpand(value: number): number {
+  return Math.max(Math.min(((value - 50) * 255) / 50, 255), -255);
+}
+
+function scaleContrastCompress(value: number): number {
+  return Math.max(Math.min((value * 50) / 255 + 50, 100), 0);
+}
+
 /**
  * Adjusts the contrast of the image.
- * @param contrast from 0 to 100
+ * @param contrast from -255 to 255
  * @returns
  */
 function adjustContrast(contrast: number, src: Ptr<ImageData>, tar: Ptr<ImageData>) {
@@ -51,8 +59,7 @@ function adjustContrast(contrast: number, src: Ptr<ImageData>, tar: Ptr<ImageDat
     return;
   }
   const tarData = tar.v.data;
-  const contrastScaled = (contrast - 50) * 5.1;
-  const factor = (259 * (contrastScaled + 255)) / (255 * (259 - contrastScaled));
+  const factor = (259 * (contrast + 255)) / (255 * (259 - contrast));
 
   for (let i = 0; i < srcData.length; i += 4) {
     tarData[i] = Math.min(Math.max(0, factor * (srcData[i] - 128) + 128), 255);
@@ -173,6 +180,8 @@ export const ImageUtils = {
   resizeCover,
   resizeFit,
   toGray,
+  scaleContrastExpand,
+  scaleContrastCompress,
   adjustContrast,
   matchSize,
 };

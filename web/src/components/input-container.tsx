@@ -9,7 +9,7 @@ export function InputContainer({ children }: InputContainerProps) {
     <Box
       sx={{
         width: '100%',
-        border: '1px solid',
+        border: '1.5px solid',
         borderColor: 'text.secondary',
         borderRadius: '8px',
         backgroundColor: 'background.paper',
