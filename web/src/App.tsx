@@ -10,7 +10,7 @@ import { useSidebarStore } from './providers/sidebar';
 import { version as appVersion } from '../package.json';
 import { changeLog } from './constants/change-log';
 import { zIndex } from './constants/layout';
-import { useDesktopModeInitializer } from './providers/layout';
+import { useDesktopModeInitializer, useSmallScreen } from './providers/layout';
 
 function App() {
   useDesktopModeInitializer();
@@ -22,6 +22,8 @@ function App() {
   const dayNightToggleRef = useRef<HTMLElement>(null);
 
   const sidebarState = useSidebarStore();
+
+  const smallScreen = useSmallScreen();
 
   return (
     <Box
@@ -48,7 +50,7 @@ function App() {
         }}
         ref={dayNightToggleRef}
       >
-        <DayNightToggle value={themeMode} size={1.5} onChange={toggleThemeMode} />
+        <DayNightToggle value={themeMode} size={smallScreen ? 1 : 1.5} onChange={toggleThemeMode} />
       </Box>
 
       <DraggableSidebar

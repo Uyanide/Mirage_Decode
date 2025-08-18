@@ -4,9 +4,9 @@ import { create } from 'zustand';
 
 interface LayoutState {
   isDesktopMode: boolean;
-  setDesktopMode: (isDesktop: boolean) => void;
-  isLargeScreen: boolean;
-  setLargeScreen: (isLarge: boolean) => void;
+  setDesktopMode: (is: boolean) => void;
+  isSmallScreen: boolean;
+  setSmallScreen: (is: boolean) => void;
   screenWidth: number;
   setScreenWidth: (width: number) => void;
 }
@@ -16,9 +16,9 @@ export const useLayoutStore = create<LayoutState>((set) => ({
   setDesktopMode: (isDesktop) => {
     set({ isDesktopMode: isDesktop });
   },
-  isLargeScreen: false,
-  setLargeScreen: (isLarge) => {
-    set({ isLargeScreen: isLarge });
+  isSmallScreen: false,
+  setSmallScreen: (isSmall) => {
+    set({ isSmallScreen: isSmall });
   },
   screenWidth: window.innerWidth,
   setScreenWidth: (width) => {
@@ -28,10 +28,10 @@ export const useLayoutStore = create<LayoutState>((set) => ({
 
 export const useDesktopModeInitializer = () => {
   const theme = useTheme();
-  const isDesktopMode = useMediaQuery(theme.breakpoints.up('sm'));
-  const isLargeScreen = useMediaQuery(theme.breakpoints.up('lg'));
+  const isDesktopMode = useMediaQuery(theme.breakpoints.up('lg'));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.up('sm'));
   const setDesktopMode = useLayoutStore((state) => state.setDesktopMode);
-  const setLargeScreen = useLayoutStore((state) => state.setLargeScreen);
+  const setSmallScreen = useLayoutStore((state) => state.setSmallScreen);
   const setScreenWidth = useLayoutStore((state) => state.setScreenWidth);
 
   useEffect(() => {
@@ -39,22 +39,22 @@ export const useDesktopModeInitializer = () => {
   }, [isDesktopMode, setDesktopMode]);
 
   useEffect(() => {
-    setLargeScreen(isLargeScreen);
-  }, [isLargeScreen, setLargeScreen]);
+    setSmallScreen(isSmallScreen);
+  }, [isSmallScreen, setSmallScreen]);
 
   useEffect(() => {
     const handleResize = () => {
       const width = window.innerWidth;
       setScreenWidth(width);
       setDesktopMode(width >= theme.breakpoints.values.lg);
-      setLargeScreen(width >= theme.breakpoints.values.xl);
+      setSmallScreen(width < theme.breakpoints.values.sm);
     };
 
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [setDesktopMode, setScreenWidth, setLargeScreen, theme.breakpoints.values.xl, theme.breakpoints.values.lg]);
+  }, [setDesktopMode, setScreenWidth, setSmallScreen, theme.breakpoints.values.lg, theme.breakpoints.values.sm]);
 };
 
 export const useDesktopMode = () => {
@@ -65,6 +65,6 @@ export const useScreenWidth = () => {
   return useLayoutStore((state) => state.screenWidth);
 };
 
-export const useLargeScreen = () => {
-  return useLayoutStore((state) => state.isLargeScreen);
+export const useSmallScreen = () => {
+  return useLayoutStore((state) => state.isSmallScreen);
 };

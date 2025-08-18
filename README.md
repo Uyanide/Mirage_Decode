@@ -20,12 +20,6 @@
 
 一看就懂，不懂也能用 :)
 
-## 引用库
-
--   **[jpeg-js](https://github.com/jpeg-js/jpeg-js)** (用于统一不同浏览器编码 JPEG 的行为)
--   **[piexifjs](https://github.com/hMatoba/piexifjs)** (用于读写 JPEG Metadata)
--   **[node-png-metadata](https://github.com/kujirahand/node-png-metadata)** (用于读写 PNG Chunk)
-
 # Q&A
 
 ### 0. 百度贴吧相关：

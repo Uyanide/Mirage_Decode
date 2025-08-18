@@ -22,7 +22,7 @@ import {
 } from '@mui/material';
 import { InputContainer } from '../components/input-container';
 import { ImageLoaderDialog } from '../components/image-loader';
-import { useDesktopMode } from '../providers/layout';
+import { useDesktopMode, useSmallScreen } from '../providers/layout';
 import { HelpButton } from '../components/help-button';
 import { CanvasFallback } from '../components/canvas-fallback';
 import { useCallback, useEffect, useRef, useState } from 'react';
@@ -48,6 +48,7 @@ export default function EncodePage() {
         flexDirection: 'column',
         width: '100%',
         maxWidth: desktop ? 'lg' : 'sm',
+        mx: 'auto',
       }}
     >
       <ImageInputs />
@@ -96,6 +97,7 @@ function ImageConfig({ isCover }: ImageConfigProps) {
           width: '100%',
           gap: 2,
           alignItems: 'center',
+          overflowX: 'auto',
         }}
       >
         <ImageInput isCover={isCover}></ImageInput>
@@ -110,6 +112,9 @@ function ImageInput({ isCover }: ImageConfigProps) {
   const setImage = usePrismEncodeImageStore(isCover ? (state) => state.setCoverImage : (state) => state.setInnerImage);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  const smallScreen = useSmallScreen();
+  const size = smallScreen ? 100 : 200;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -137,7 +142,7 @@ function ImageInput({ isCover }: ImageConfigProps) {
         flexDirection: 'column',
         gap: 1,
         px: 1,
-        width: '200px',
+        width: size,
       }}
     >
       <ImageLoaderDialog
@@ -145,14 +150,14 @@ function ImageInput({ isCover }: ImageConfigProps) {
           setImage(image);
         }}
         defaultImage={isCover ? defaultImages.encodeCover : defaultImages.encodeInner}
+        label="加载"
       ></ImageLoaderDialog>
       {!image && (
         <CanvasFallback
           text="(･_･`)>"
           aspectRatio="1"
           styles={{
-            maxWidth: '200px',
-            maxHeight: '200px',
+            width: '100%',
             objectFit: 'contain',
           }}
         ></CanvasFallback>
@@ -160,11 +165,10 @@ function ImageInput({ isCover }: ImageConfigProps) {
       <canvas
         ref={canvasRef}
         style={{
-          maxWidth: '200px',
-          maxHeight: '200px',
+          maxWidth: size,
+          maxHeight: size,
           display: image ? 'block' : 'none',
           objectFit: 'contain',
-          imageRendering: 'pixelated',
         }}
       ></canvas>
     </Box>
