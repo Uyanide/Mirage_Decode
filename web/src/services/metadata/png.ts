@@ -1,15 +1,16 @@
 export function decodetEXt(data: Uint8Array): string {
+  const textDecoder = new TextDecoder('latin1');
   let pos = 8; // Skip the PNG header
   while (pos < data.length) {
     const size = stoi(data, pos, 4);
     if (size < 0) {
       return '';
     }
-    const type = data.slice(pos + 4, pos + 8);
-    if (type.join('') === 'tEXt') {
+    const type = textDecoder.decode(data.slice(pos + 4, pos + 8));
+    if (type === 'tEXt') {
       // const data = str.slice(8, 8 + size);
       // return data.split('\0')[0];
-      return new TextDecoder('').decode(data.slice(pos + 8, pos + 8 + size));
+      return textDecoder.decode(data.slice(pos + 8, pos + 8 + size));
     }
     pos += size + 12; // 4 bytes for size, 4 bytes for type, 4 bytes for CRC
   }
@@ -18,6 +19,7 @@ export function decodetEXt(data: Uint8Array): string {
 
 export function encodetEXt(data: Uint8Array, metadata: string): Uint8Array {
   const textEncoder = new TextEncoder();
+  const textDecoder = new TextDecoder('latin1');
   // const chunks: Uint8Array[] = [];
   // chunks.push(data.slice(0, 8)); // PNG header
   const encodedMetadata = textEncoder.encode(metadata);
@@ -30,7 +32,7 @@ export function encodetEXt(data: Uint8Array, metadata: string): Uint8Array {
     if (size < 0) {
       return new Uint8Array(data);
     }
-    const type = data.slice(pos + 4, pos + 8).join('');
+    const type = textDecoder.decode(data.slice(pos + 4, pos + 8));
     // end
     if (type === 'IEND') {
       ret.set(itos(metadata.length, 4), retPos);
@@ -41,11 +43,12 @@ export function encodetEXt(data: Uint8Array, metadata: string): Uint8Array {
       retPos += metadata.length;
       ret.set(itos(crc32('tEXt' + metadata), 4), retPos);
       retPos += 4;
+      const iendData = textEncoder.encode('IEND\xAE\x42\x60\x82');
       ret.set(itos(0, 4), retPos);
       retPos += 4;
-      ret.set(textEncoder.encode('IEND'), retPos);
+      ret.set(iendData.slice(0, 4), retPos);
       retPos += 4;
-      ret.set(textEncoder.encode('\xAE\x42\x60\x82'), retPos);
+      ret.set(iendData.slice(4, 8), retPos);
       retPos += 4;
       break;
     }
@@ -69,7 +72,7 @@ export function encodetEXt(data: Uint8Array, metadata: string): Uint8Array {
 
 function stoi(data: Uint8Array, start: number, length: number): number {
   let ret = 0;
-  for (let i = start; i < length; i++) {
+  for (let i = start; i < start + length; i++) {
     const code = data[i];
     ret = (ret << 8) | (code & 0xff);
   }

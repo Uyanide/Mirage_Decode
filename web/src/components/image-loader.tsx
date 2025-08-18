@@ -240,7 +240,15 @@ export function ImageLoaderDialog({ onconfirm, label, disabled, defaultImage }: 
       <Button variant="contained" onClick={handleToggleOpen} fullWidth disabled={disabled}>
         {label ?? '加载图片'}
       </Button>
-      <Dialog open={open} onClose={() => {}} maxWidth="sm" fullWidth sx={{ zIndex: zIndex.dialog }}>
+      <Dialog
+        open={open}
+        onClose={() => {
+          setOpen(false);
+        }}
+        maxWidth="sm"
+        fullWidth
+        sx={{ zIndex: zIndex.dialog }}
+      >
         <ImageLoader oncancel={handleCancel} onconfirm={handleConfirm} defaultImage={defaultImage} />
       </Dialog>
     </>

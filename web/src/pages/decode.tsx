@@ -1,11 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ImageLoaderMulti } from '../components/image-loader-multi';
 import { defaultImages } from '../constants/default-arg';
-import { usePrismDecodeImagesStore, usePrismDecodeStore, type PrismDecodeMethod } from '../providers/process/decode';
+import { usePrismDecodeImagesStore, usePrismDecodeStore, type PrismDecodeMethod } from '../algo/decode/state';
 import { PrismImage } from '../models/image';
 import { useSidebarStore } from '../providers/sidebar';
 import { Box, Button, Input, MenuItem, Select, Slider, Typography } from '@mui/material';
-import { DecodeCanvas, useDecodeCanvasStore } from '../algo/decode/canvas';
 import { InputContainer } from '../components/input-container';
 import { HelpButton } from '../components/help-button';
 import type { ImageEncodeFormat } from '../services/image-encoder';
@@ -14,6 +13,7 @@ import { LoadImageFileData } from '../services/image-loader';
 import { showErrorSnackbar, showSuccessSnackbar } from '../providers/snackbar';
 import { LoadingOverlay } from '../components/loading';
 import { useDesktopMode } from '../providers/layout';
+import { prismDecodeCanvas } from '../algo/decode/canvas';
 
 export default function DecodePage() {
   const [loading, setLoading] = useState(false);
@@ -54,18 +54,16 @@ export default function DecodePage() {
   }, [setImages]);
 
   const decodeCanvasRef = useRef<HTMLCanvasElement>(null);
-  const setDecodeCanvas = useDecodeCanvasStore((state) => state.setDecodeCanvas);
   const currImage = usePrismDecodeImagesStore((state) => state.currImage);
 
   useEffect(() => {
     if (decodeCanvasRef.current) {
-      const canvas = new DecodeCanvas(decodeCanvasRef.current);
-      setDecodeCanvas(canvas);
+      prismDecodeCanvas.bind(decodeCanvasRef.current);
       return () => {
-        canvas.destroy();
+        prismDecodeCanvas.unbind();
       };
     }
-  }, [setDecodeCanvas]);
+  }, []);
 
   const desktop = useDesktopMode();
 
@@ -91,6 +89,7 @@ export default function DecodePage() {
               width: '100%',
               height: '100%',
               display: currImage ? 'block' : 'none',
+              imageRendering: 'pixelated',
             }}
           ></canvas>
           {!currImage && (
@@ -344,37 +343,29 @@ function ImageSave() {
   const saveFormat = usePrismDecodeStore((state) => state.saveFormat);
   const setSaveFormat = usePrismDecodeStore((state) => state.setSaveFormat);
 
-  const decodeCanvas = useDecodeCanvasStore((state) => state.decodeCanvas);
+  const handleSaveCurrent = useCallback((format: ImageEncodeFormat) => {
+    prismDecodeCanvas
+      .saveCurrentImage(format)
+      .then((fileName) => {
+        showSuccessSnackbar(`已保存为: ${fileName}`);
+      })
+      .catch((error: unknown) => {
+        console.error('Failed to save image:', error);
+        showErrorSnackbar(`保存显示图像失败`);
+      });
+  }, []);
 
-  const handleSaveCurrent = useCallback(
-    (format: ImageEncodeFormat) => {
-      decodeCanvas
-        ?.saveCurrentImage(format)
-        .then((fileName) => {
-          showSuccessSnackbar(`已保存为: ${fileName}`);
-        })
-        .catch((error: unknown) => {
-          console.error('Failed to save image:', error);
-          showErrorSnackbar(`保存显示图像失败`);
-        });
-    },
-    [decodeCanvas]
-  );
-
-  const handleSaveOriginal = useCallback(
-    (format: ImageEncodeFormat) => {
-      decodeCanvas
-        ?.saveOriginalImage(format)
-        .then((fileName) => {
-          showErrorSnackbar(`已保存原始图像为: ${fileName}`);
-        })
-        .catch((error: unknown) => {
-          console.error('Failed to save original image:', error);
-          showErrorSnackbar(`保存原始图像失败`);
-        });
-    },
-    [decodeCanvas]
-  );
+  // const handleSaveOriginal = useCallback((format: ImageEncodeFormat) => {
+  //   prismDecodeCanvas
+  //     .saveOriginalImage(format)
+  //     .then((fileName) => {
+  //       showSuccessSnackbar(`已保存原始图像为: ${fileName}`);
+  //     })
+  //     .catch((error: unknown) => {
+  //       console.error('Failed to save original image:', error);
+  //       showErrorSnackbar(`保存原始图像失败`);
+  //     });
+  // }, []);
 
   return (
     <Box
@@ -394,7 +385,7 @@ function ImageSave() {
       >
         保存显示图像
       </Button>
-      <Button
+      {/* <Button
         sx={{ flex: 1 }}
         variant="contained"
         color="secondary"
@@ -403,7 +394,7 @@ function ImageSave() {
         }}
       >
         保存原始图像
-      </Button>
+      </Button> */}
       <Select
         value={saveFormat}
         variant="standard"

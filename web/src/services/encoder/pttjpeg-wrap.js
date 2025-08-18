@@ -14,6 +14,6 @@ export function encode(imageData) {
     },
   };
   var inImage = new encoder.pttImage(imageData);
-  encoder.encode(90, inImage, bw, '4:4:4');
+  encoder.encode(99, inImage, bw, '4:4:4');
   return new Uint8Array(chunks.reduce((acc, chunk) => acc.concat(Array.from(chunk)), []));
 }

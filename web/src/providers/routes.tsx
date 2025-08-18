@@ -13,7 +13,7 @@ interface CurrentRouteStore {
 export const useCurrentRouteStore = create<CurrentRouteStore>((set) => ({
   currentRoute: '/decode',
   setCurrentRoute: (route) => {
-    if (route === '') route = '/';
+    if (route === '') route = '/decode';
     set({ currentRoute: route });
   },
 }));

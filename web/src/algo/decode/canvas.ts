@@ -1,17 +1,19 @@
-import { create } from 'zustand';
 import type { PrismImage } from '../../models/image';
-import { usePrismDecodeImagesStore, usePrismDecodeStore } from '../../providers/process/decode';
+import { usePrismDecodeImagesStore, usePrismDecodeStore } from './state';
 import { PrismCanvas } from '../image-canvas';
 import { decodePreset, prismDecode, type PrismDecodeConfig } from './process';
 import { encodeImage, ImageEncodeMimetypeMap, type ImageEncodeFormat } from '../../services/image-encoder';
 import { saveFile } from '../../services/file-saver';
+import { nullPtr, type Ptr } from '../../utils/general';
+import { ImageUtils } from '../image-utils';
 
-export class DecodeCanvas extends PrismCanvas {
-  private origData: ImageData | null = null;
+class DecodeCanvas extends PrismCanvas {
+  protected decodedData: Ptr<ImageData> = nullPtr();
+  protected adjustedData: Ptr<ImageData> = nullPtr();
 
-  constructor(canvas: HTMLCanvasElement) {
-    super(canvas);
-    this.unsubscribers.push(
+  bind(canvas: HTMLCanvasElement) {
+    super.bind(canvas);
+    this.subscribe(
       usePrismDecodeStore.subscribe(
         (state) => state.lowerThreshold,
         () => {
@@ -20,7 +22,7 @@ export class DecodeCanvas extends PrismCanvas {
       )
     );
 
-    this.unsubscribers.push(
+    this.subscribe(
       usePrismDecodeStore.subscribe(
         (state) => state.higherThreshold,
         () => {
@@ -29,7 +31,7 @@ export class DecodeCanvas extends PrismCanvas {
       )
     );
 
-    this.unsubscribers.push(
+    this.subscribe(
       usePrismDecodeStore.subscribe(
         (state) => state.method,
         () => {
@@ -38,14 +40,16 @@ export class DecodeCanvas extends PrismCanvas {
       )
     );
 
-    this.unsubscribers.push(
+    this.subscribe(
       usePrismDecodeStore.subscribe(
         (state) => state.contrast,
-        () => this.adjust(true)
+        () => {
+          this.adjust(true);
+        }
       )
     );
 
-    this.unsubscribers.push(
+    this.subscribe(
       usePrismDecodeImagesStore.subscribe(
         (state) => state.currImage,
         (currImage) => {
@@ -61,16 +65,14 @@ export class DecodeCanvas extends PrismCanvas {
   }
 
   setImage(image: PrismImage) {
-    this.origData = image.imageData;
-    this.imageData = new ImageData(new Uint8ClampedArray(this.origData.data.length), image.width(), image.height());
-    this.imageDataAdjusted = null;
+    super.setImage(image, false);
 
     this.setPreset(image.metadata);
 
     this.decode();
-    if (!this.adjust()) {
-      super.putImageData(this.imageData);
-    }
+    this.adjust();
+
+    this.putImageData(this.adjustedData);
   }
 
   setPreset(metadata: string) {
@@ -95,35 +97,39 @@ export class DecodeCanvas extends PrismCanvas {
   }
 
   decode = () => {
-    if (!this.origData || !this.imageData) {
-      console.warn('No original image data or image data to decode');
+    if (!this.srcData.v) {
+      console.warn('No original image data to decode');
+      return;
+    }
+    ImageUtils.matchSize(this.srcData, this.decodedData);
+    if (!this.decodedData.v) {
+      console.warn('No buffer available');
       return;
     }
     const { lowerThreshold, higherThreshold, method, contrast } = usePrismDecodeStore.getState();
-    prismDecode(this.origData, this.imageData, {
+    prismDecode(this.srcData.v, this.decodedData.v, {
       lowerThreshold,
       higherThreshold,
       method,
       contrast,
     });
-    if (!this.adjust()) {
-      super.putImageData(this.imageData);
-    }
+    this.adjust();
   };
 
-  adjust(forceUpdate?: boolean): boolean {
+  adjust(forceUpdate?: boolean) {
     const { contrast } = usePrismDecodeStore.getState();
     // 'forceUpdate' cuz changing from other values to 50
     // also needs updating
     if (forceUpdate || contrast !== 50) {
-      super.adjustContrast(contrast);
-      return true;
+      ImageUtils.adjustContrast(contrast, this.decodedData, this.adjustedData);
+    } else {
+      this.adjustedData.v = this.decodedData.v;
     }
-    return false;
+    this.putImageData(this.adjustedData);
   }
 
   async saveCurrentImage(format: ImageEncodeFormat): Promise<string> {
-    const data = this.imageDataAdjusted ?? this.imageData ?? this.origData;
+    const data = this.adjustedData.v ?? this.decodedData.v ?? this.srcData.v;
     if (!data) {
       throw new Error('No image data available to save');
     }
@@ -132,20 +138,12 @@ export class DecodeCanvas extends PrismCanvas {
   }
 
   async saveOriginalImage(format: ImageEncodeFormat): Promise<string> {
-    if (!this.origData) {
+    if (!this.srcData.v) {
       throw new Error('No original image data available to save');
     }
-    const encoded = await encodeImage(this.origData, format);
+    const encoded = await encodeImage(this.srcData.v, format);
     return saveFile(encoded, ImageEncodeMimetypeMap[format]);
   }
 }
 
-export const useDecodeCanvasStore = create<{
-  decodeCanvas: DecodeCanvas | null;
-  setDecodeCanvas: (canvas: DecodeCanvas) => void;
-}>((set) => ({
-  decodeCanvas: null,
-  setDecodeCanvas: (canvas: DecodeCanvas) => {
-    set({ decodeCanvas: canvas });
-  },
-}));
+export const prismDecodeCanvas = new DecodeCanvas();

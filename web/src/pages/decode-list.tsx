@@ -1,5 +1,5 @@
 import { Box, Button, Container, Typography } from '@mui/material';
-import { usePrismDecodeImagesStore } from '../providers/process/decode';
+import { usePrismDecodeImagesStore } from '../algo/decode/state';
 import { ImageDisplay } from '../components/image-display';
 
 export function DecodeList() {

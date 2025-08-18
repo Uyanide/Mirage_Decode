@@ -1,5 +1,5 @@
-import type { PrismDecodeMethod } from '../../providers/process/decode';
-import { PrismCanvas } from '../image-canvas';
+import type { PrismDecodeMethod } from './state';
+import { ImageUtils } from '../image-utils';
 
 const processCoverPixel: Record<PrismDecodeMethod, (data: Uint8ClampedArray, width: number, i: number) => void> = {
   black: (data, _, i) => {
@@ -99,7 +99,7 @@ export function prismDecode(
     const r = data[i];
     const g = data[i + 1];
     const b = data[i + 2];
-    const l = (grayConvert ?? PrismCanvas.toGrayLum)(r, g, b);
+    const l = (grayConvert ?? ImageUtils.toGrayLum)(r, g, b);
     const a = data[i + 3];
 
     if (l >= lowerThreshold && l <= higherThreshold) {
@@ -144,9 +144,9 @@ export function decodePreset(str: string, values: PrismDecodeConfig) {
     return;
   }
   const contrast = parseInt(str.slice(3, 5), 16);
-  if (isNaN(contrast)) {
+  if (isNaN(contrast) || contrast < 0 || contrast > 100) {
     return;
   }
-  values.contrast = contrast;
+  values.contrast = 100 - contrast;
   return;
 }
