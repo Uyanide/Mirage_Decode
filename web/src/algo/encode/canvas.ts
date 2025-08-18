@@ -198,6 +198,7 @@ export class EncodeResultCanvas extends PrismCanvas {
   setCoverImage(image: PrismImage) {
     this.cover.setImage(image, false);
     if (!this.inner.hasImage()) {
+      this.cover.putImageData(this.cover.srcData);
       return;
     }
     this.resize();

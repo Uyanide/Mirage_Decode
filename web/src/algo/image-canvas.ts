@@ -3,7 +3,7 @@ import { nullPtr, type Ptr } from '../utils/general';
 
 export abstract class PrismCanvas {
   protected canvas: HTMLCanvasElement | null = null;
-  protected srcData: Ptr<ImageData> = nullPtr();
+  readonly srcData: Ptr<ImageData> = nullPtr();
   protected unsubscribers: (() => void)[] = [];
 
   bind(canvas: HTMLCanvasElement) {

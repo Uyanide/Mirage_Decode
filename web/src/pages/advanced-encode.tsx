@@ -13,6 +13,17 @@ function ImageInputs() {
   const desktop = useDesktopMode();
 
   return (
+    <>
+      <Typography variant="h5" sx={{ mb: 2, textAlign: 'center' }}>
+        敬请期待 :D
+      </Typography>
+      <Typography variant="h6" sx={{ mb: 2, textAlign: 'center' }}>
+        给自己个 DDL，2025.8.20 之前
+      </Typography>
+    </>
+  );
+
+  return (
     <Grid container spacing={2} maxWidth={desktop ? 'lg' : 'sm'}>
       <Grid size={desktop ? 6 : 12}>
         <ImageConfig />
