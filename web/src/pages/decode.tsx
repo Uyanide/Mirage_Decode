@@ -89,7 +89,6 @@ export default function DecodePage() {
               width: '100%',
               height: '100%',
               display: currImage ? 'block' : 'none',
-              imageRendering: 'pixelated',
             }}
           ></canvas>
           {!currImage && (

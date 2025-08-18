@@ -8,4 +8,11 @@ export default defineConfig({
   worker: {
     format: 'es', // or 'module'
   },
+  optimizeDeps: {
+    exclude: ['@jsquash/png'],
+  },
+  build: {
+    outDir: '../docs',
+    emptyOutDir: true,
+  },
 });

@@ -399,6 +399,21 @@ function OutputCanvas() {
 function BlendModeConfig() {
   const [showDialog, setShowDialog] = useState(false);
 
+  const setBlendMode = usePrismEncodeStore((state) => state.setBlendMode);
+
+  const handleConfirm = useCallback(
+    (slope: number, gap: number, isRow: boolean) => {
+      setBlendMode(slope, gap, isRow);
+      setShowDialog(false);
+      prismEncodeCanvas.encodeResult();
+    },
+    [setBlendMode]
+  );
+
+  const handleCancel = useCallback(() => {
+    setShowDialog(false);
+  }, []);
+
   return (
     <>
       <Button
@@ -410,12 +425,7 @@ function BlendModeConfig() {
         设置混合模式
       </Button>
       <Dialog open={showDialog} maxWidth="sm" fullWidth sx={{ zIndex: zIndex.dialog }}>
-        <BlendModeConfigDialog
-          onConfirm={() => {}}
-          onCancel={() => {
-            setShowDialog(false);
-          }}
-        />
+        <BlendModeConfigDialog onConfirm={handleConfirm} onCancel={handleCancel} />
       </Dialog>
     </>
   );
@@ -427,9 +437,11 @@ interface BlendModeConfigDialogProps {
 }
 
 function BlendModeConfigDialog({ onConfirm, onCancel }: BlendModeConfigDialogProps) {
-  const [slope, setSlope] = useState(1);
-  const [gap, setGap] = useState(1);
-  const [isRow, setIsRow] = useState(false);
+  const blendMode = usePrismEncodeStore((state) => state.blendMode);
+
+  const [slope, setSlope] = useState(blendMode.slope);
+  const [gap, setGap] = useState(blendMode.gap);
+  const [isRow, setIsRow] = useState(blendMode.isRow);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
