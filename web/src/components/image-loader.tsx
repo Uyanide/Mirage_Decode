@@ -237,7 +237,15 @@ export function ImageLoaderDialog({ onconfirm, label, disabled, defaultImage }: 
 
   return (
     <>
-      <Button variant="contained" onClick={handleToggleOpen} fullWidth disabled={disabled}>
+      <Button
+        variant="contained"
+        onClick={handleToggleOpen}
+        fullWidth
+        disabled={disabled}
+        sx={{
+          color: 'background.default',
+        }}
+      >
         {label ?? '加载图片'}
       </Button>
       <Dialog

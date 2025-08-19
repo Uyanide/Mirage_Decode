@@ -30,3 +30,35 @@ export function ThemeManagerProvider({ children }: ThemeManagerProviderProps) {
     </ThemeProvider>
   );
 }
+
+interface SubThemeManagerProviderProps {
+  children: ReactNode;
+  primaryPaletteKey: string;
+}
+
+export function SubThemeManagerProvider({ children, primaryPaletteKey }: SubThemeManagerProviderProps) {
+  const mode = useThemeStore((s) => s.mode);
+  const secondaryColor = useThemeStore((s) => s.secondaryColor);
+  const paletteSupplement = useThemeStore((s) => s.palette);
+
+  const primaryColor = (paletteSupplement as Record<string, string>)[primaryPaletteKey] || paletteSupplement.Blue;
+
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+          primary: { main: primaryColor },
+          secondary: { main: secondaryColor },
+        },
+      }),
+    [mode, primaryColor, secondaryColor]
+  );
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      {children}
+    </ThemeProvider>
+  );
+}

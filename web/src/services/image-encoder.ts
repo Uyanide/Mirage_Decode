@@ -4,6 +4,7 @@ import type {
   ImageEncodeDataResult,
   ImageEncodeWorkerData,
 } from './image-encoder.worker';
+import { useAvailableFormatsStore } from '../providers/format';
 
 export type ImageEncodeFormat = 'PNG' | 'JPEG';
 
@@ -11,7 +12,6 @@ export const ImageEncodeMimetypeMap: Record<ImageEncodeFormat, string> = {
   PNG: 'image/png',
   JPEG: 'image/jpeg',
 };
-export const availableImageEncodeFormats: ImageEncodeFormat[] = [];
 
 let worker: Worker | null = null;
 const handlers: Record<string, (data: ImageEncodeDataBase) => void> = {};
@@ -29,12 +29,16 @@ export async function initEncoderWorker() {
   await new Promise<void>((resolve, reject) => {
     worker!.onmessage = (event) => {
       const data = event.data as ImageEncodeDataBase;
+      const availableImageEncodeFormats: ImageEncodeFormat[] = [];
       if (data.success) {
         const initData = data as ImageEncodeDataInit;
         availableImageEncodeFormats.push(...initData.payload.formats);
         console.log(
           `Successfully initialized image encoder worker with ${availableImageEncodeFormats.length.toString()} formats`
         );
+        useAvailableFormatsStore.setState({
+          availableFormats: availableImageEncodeFormats,
+        });
         resolve();
       } else if (data.error) {
         reject(new Error(data.error));

@@ -11,10 +11,8 @@ import {
   FormLabel,
   Grid,
   Input,
-  MenuItem,
   Radio,
   RadioGroup,
-  Select,
   Slider,
   Switch,
   Typography,
@@ -37,6 +35,7 @@ import { usePrismDecodeImagesStore } from '../algo/decode/state';
 import { PrismImage } from '../models/image';
 import { useCurrentRouteStore } from '../providers/routes';
 import { NumberInput } from '../components/number-input';
+import { FormatSelector } from '../components/format-selector';
 
 export default function EncodePage() {
   const desktop = useDesktopMode();
@@ -773,18 +772,13 @@ function Output() {
       >
         显形测试
       </Button>
-      <Select
-        value={saveFormat}
-        variant="standard"
-        sx={{ minWidth: 80 }}
-        onChange={(e) => {
-          setSaveFormat(e.target.value as ImageEncodeFormat);
+      <FormatSelector
+        format={saveFormat}
+        onChange={(format) => {
+          setSaveFormat(format);
         }}
         disabled={processing}
-      >
-        <MenuItem value="JPEG">JPEG</MenuItem>
-        <MenuItem value="PNG">PNG</MenuItem>
-      </Select>
+      ></FormatSelector>
       <HelpButton message="非 JPEG 格式有较高地被社交平台强制压缩的风险" />
     </Box>
   );

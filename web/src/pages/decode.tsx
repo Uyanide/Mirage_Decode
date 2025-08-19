@@ -14,6 +14,7 @@ import { showErrorSnackbar, showSuccessSnackbar } from '../providers/snackbar';
 import { LoadingOverlay } from '../components/loading';
 import { useDesktopMode } from '../providers/layout';
 import { prismDecodeCanvas } from '../algo/decode/canvas';
+import { FormatSelector } from '../components/format-selector';
 
 export default function DecodePage() {
   const [loading, setLoading] = useState(false);
@@ -394,17 +395,12 @@ function ImageSave() {
       >
         保存原始图像
       </Button> */}
-      <Select
-        value={saveFormat}
-        variant="standard"
-        onChange={(e) => {
-          setSaveFormat(e.target.value as ImageEncodeFormat);
+      <FormatSelector
+        format={saveFormat}
+        onChange={(format) => {
+          setSaveFormat(format);
         }}
-        sx={{ minWidth: 80 }}
-      >
-        <MenuItem value="JPEG">JPEG</MenuItem>
-        <MenuItem value="PNG">PNG</MenuItem>
-      </Select>
+      ></FormatSelector>
     </Box>
   );
 }
