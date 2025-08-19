@@ -246,8 +246,8 @@ function ImageArguments({ index, disabled }: ImageConfigProps & { disabled: bool
     setConfigValue(index, 'contrast', value);
   };
 
-  const handleGrayToggle = () => {
-    setConfigValue(index, 'isGray', !config.isGray);
+  const handleGrayChange = (value: boolean) => {
+    setConfigValue(index, 'isGray', value);
   };
 
   const handleWeightChange = (value: number) => {
@@ -405,7 +405,14 @@ function ImageArguments({ index, disabled }: ImageConfigProps & { disabled: bool
         }}
       >
         <Typography variant="body2">3. 取灰度:</Typography>
-        <Switch size="medium" value={config.isGray} onClick={handleGrayToggle} disabled={disabled}></Switch>
+        <Switch
+          size="medium"
+          checked={config.isGray}
+          onChange={(e) => {
+            handleGrayChange(e.target.checked);
+          }}
+          disabled={disabled}
+        />
         <Box sx={{ flex: 1 }} />
         <HelpButton message="舍弃颜色可显著提升抗压缩能力" />
       </Box>
