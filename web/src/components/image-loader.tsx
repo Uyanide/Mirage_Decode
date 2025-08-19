@@ -40,7 +40,7 @@ export function ImageLoader({ onconfirm, oncancel, defaultImage }: ImageLoaderPr
       setImage(selectedImage);
     })()
       .catch((error: unknown) => {
-        console.error('加载图片失败:', error);
+        console.error('Filed to load image:', error);
         showErrorSnackbar('加载图片失败');
       })
       .finally(() => {

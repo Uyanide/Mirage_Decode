@@ -89,7 +89,7 @@ function TopLinks() {
       }}
     >
       <Typography variant="body2">
-        <Link href="https://example.com" target="_blank" rel="noopener">
+        <Link href="https://tieba.baidu.com/p/9093709508" target="_blank" rel="noopener">
           什么是光棱坦克
         </Link>
       </Typography>
@@ -98,18 +98,24 @@ function TopLinks() {
 
       <Typography variant="body2">
         请认准指定域名:&nbsp;
-        <Link href="https://example.com" target="_blank" rel="noopener">
+        <Link href="https://prism.uyanide.com" target="_blank" rel="noopener">
           https://prism.uyanide.com
         </Link>
       </Typography>
 
       <Box sx={{ margin: 0.5 }} />
+      <Typography variant="body2">不习惯新版本? 老版本在这里:&nbsp;</Typography>
+      <Link href="https://prism-old.uyanide.com" target="_blank" rel="noopener" variant="body2">
+        https://prism-old.uyanide.com
+      </Link>
+
+      {/* <Box sx={{ margin: 0.5 }} />
       <Typography variant="body2">
         <Link href="https://example.com" target="_blank" rel="noopener">
           下载当前页面
         </Link>
         <Typography variant="caption">(可在任意现代浏览器中离线使用)</Typography>
-      </Typography>
+      </Typography> */}
     </Box>
   );
 }
@@ -145,7 +151,7 @@ function BottomLinks() {
       }}
     >
       <Typography variant="body2">
-        <Link href="https://example.com" target="_blank" rel="noopener">
+        <Link href="https://github.com/Uyanide/Mirage_Decode?tab=readme-ov-file#qa" target="_blank" rel="noopener">
           常见问题 Q&A
         </Link>
       </Typography>
@@ -153,28 +159,29 @@ function BottomLinks() {
       <Box margin={0.5} />
       <Typography variant="body2">更多其他项目</Typography>
       <Typography variant="body2">
-        <Link href="https://example.com" target="_blank" rel="noopener">
+        <Link href="https://mtcloak.uyanide.com" target="_blank" rel="noopener">
           幻光火箭炮工厂 (暂定)
         </Link>
       </Typography>
       <Typography variant="body2">
-        <Link href="https://example.com" target="_blank" rel="noopener">
+        <Link href="https://mirage.uyanide.com" target="_blank" rel="noopener">
           全彩幻影坦克工厂
         </Link>
       </Typography>
       <Box margin={0.5} />
       <Typography variant="body2">
-        <Link href="https://example.com" target="_blank" rel="noopener">
-          Bug 或建议反馈
-        </Link>
+        <Link href="https://github.com/Uyanide/Mirage_Decode/issues/new" target="_blank" rel="noopener">
+          Bug 或建议
+        </Link>{' '}
+        有问必答 <s>欢迎拷打</s>
       </Typography>
       <Typography variant="body2">
-        <Link href="https://example.com" target="_blank" rel="noopener">
+        <Link href="https://github.com/Uyanide" target="_blank" rel="noopener">
           Github - Uyanide (我)
         </Link>
       </Typography>
       <Typography variant="body2">
-        <Link href="https://example.com" target="_blank" rel="noopener">
+        <Link href="https://github.com/Uyanide/Mirage_Decode/tree/main" target="_blank" rel="noopener">
           Github - Mirage_Decode (本项目仓库)
         </Link>
       </Typography>

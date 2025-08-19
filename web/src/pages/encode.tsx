@@ -29,7 +29,7 @@ import { showErrorSnackbar, showSuccessSnackbar } from '../providers/snackbar';
 import { useFormatWarningStore } from '../providers/format-warning';
 import { usePrismDecodeImagesStore } from '../algo/decode/state';
 import { PrismImage } from '../models/image';
-import { useCurrentRouteStore } from '../providers/routes';
+import { routes, useCurrentRouteStore } from '../providers/routes';
 import { NumberInput } from '../components/number-input';
 import { FormatSelector } from '../components/format-selector';
 import { FormatWarnDialog } from '../components/format-warn-dialog';
@@ -680,7 +680,7 @@ function Output() {
         const fileData = await prismEncodeCanvas.encodeResultToFile(saveFormat);
         const image = await PrismImage.fromFileData(fileData);
         setDecodeImages([image]);
-        serRoute('/decode');
+        serRoute(routes.decode);
       })()
         .catch((error: unknown) => {
           console.error('Failed to encode result:', error);

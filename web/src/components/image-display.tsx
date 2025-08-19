@@ -36,7 +36,7 @@ export function ImageDisplay({
     if (ctx) {
       ctx.putImageData(image.imageData, 0, 0);
     } else {
-      console.error('无法获取 canvas 上下文');
+      console.error('Failed to get canvas context');
     }
   }, [image]);
 

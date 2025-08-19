@@ -1,6 +1,7 @@
-import { Box, Button, Container, Typography } from '@mui/material';
+import { Box, Button, Typography } from '@mui/material';
 import { usePrismDecodeImagesStore } from '../algo/decode/state';
 import { ImageDisplay } from '../components/image-display';
+import { routes, useCurrentRouteStore } from '../providers/routes';
 
 export function DecodeList() {
   const listState = usePrismDecodeImagesStore();
@@ -8,6 +9,7 @@ export function DecodeList() {
   const currImage = listState.currImage;
   const setCurrIndex = listState.setCurrIndex;
   const setImages = listState.setImages;
+  const setRoute = useCurrentRouteStore((state) => state.setCurrentRoute);
 
   return (
     <Box
@@ -35,21 +37,23 @@ export function DecodeList() {
         onClick={() => {
           setImages([]);
         }}
+        fullWidth
       >
         清空
       </Button>
       {images.map((image) => (
-        <Container
+        <Box
           key={image.index}
           onClick={() => {
             setCurrIndex(image.index);
+            setRoute(routes.decode);
           }}
           sx={{
-            padding: 0,
+            width: '100%',
           }}
         >
           <ImageDisplay image={image.image} highLight={currImage !== null && currImage.index === image.index} width="100%" />
-        </Container>
+        </Box>
       ))}
     </Box>
   );

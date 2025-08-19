@@ -9,7 +9,7 @@ import { SubThemeManagerProvider } from '../providers/theme-provider';
 import { NumberInput } from '../components/number-input';
 import { FormatSelector } from '../components/format-selector';
 import type { ImageEncodeFormat } from '../services/image-encoder';
-import { useCurrentRouteStore } from '../providers/routes';
+import { routes, useCurrentRouteStore } from '../providers/routes';
 import { Check } from '@mui/icons-material';
 import {
   useAdvancedEncodeConfigsStore,
@@ -91,7 +91,7 @@ function InfoBox() {
           component="button"
           variant="body1"
           onClick={() => {
-            setRoute('/decode');
+            setRoute(routes.decode);
           }}
         >
           显形界面
@@ -660,7 +660,7 @@ function SaveBox() {
         const fileData = await prismAdvancedEncodeCanvas.encodeResultToFile(saveFormat);
         const image = await PrismImage.fromFileData(fileData);
         setDecodeImages([image]);
-        serRoute('/decode');
+        serRoute(routes.decode);
       })()
         .catch((error: unknown) => {
           console.error('Failed to encode result:', error);

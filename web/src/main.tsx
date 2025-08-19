@@ -20,7 +20,6 @@ initEncoderWorker().catch((error: unknown) => {
   showErrorSnackbar('初始化图像编码器失败');
 });
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-call
 enableMapSet();
 
 createRoot(document.getElementById('root')!).render(

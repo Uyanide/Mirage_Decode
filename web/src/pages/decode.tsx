@@ -47,7 +47,7 @@ export default function DecodePage() {
     })()
       .catch((error: unknown) => {
         showErrorSnackbar('加载默认图片失败');
-        console.error('加载默认图片失败:', error);
+        console.error('Failed to load default image:', error);
       })
       .finally(() => {
         setLoading(false);

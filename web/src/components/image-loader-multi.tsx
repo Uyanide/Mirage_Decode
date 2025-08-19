@@ -33,7 +33,7 @@ export function ImageLoaderMulti({ onLoad, children, defaultImage, disabled }: I
                 resolve(image);
               })
               .catch((error: unknown) => {
-                console.error('加载图片失败:', error);
+                console.error('Failed to load image:', error);
                 resolve(null);
               });
           });
@@ -47,7 +47,7 @@ export function ImageLoaderMulti({ onLoad, children, defaultImage, disabled }: I
         onLoad(filtered);
       })()
         .catch((error: unknown) => {
-          console.error('加载图片失败:', error);
+          console.error('Failed to load image:', error);
           showWarningSnackbar('加载图片失败');
         })
         .finally(() => {
