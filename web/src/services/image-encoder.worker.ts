@@ -126,7 +126,7 @@ class ImageEncoderJPEG extends ImageEncoderBase {
   }
 
   async encode(imageData: ImageData): Promise<Uint8Array> {
-    const JPEG = await import('./encoder/pttjpeg-wrap');
+    const JPEG = await import('./encoder/jpeg-js-enc-wrap');
     return JPEG.encode(imageData);
   }
 }
