@@ -11,7 +11,7 @@
 -   [Github Pages](https://uyanide.github.io/Mirage_Decode/)
 -   [旧版](https://prism-old.uyanide.com)
 -   [旧版 - 单页面版本下载](https://api.uyanide.com/prism_page)
--   [<s>新版 - 单页面版本下载</s>](https://www.bilibili.com/video/BV1UT42167xb/) (目前并不存在这种东西 😉)
+-   [<s>新版 - 单页面版本下载</s>](https://www.bilibili.com/video/BV1GJ411x7h7/) (目前并不存在这种东西 😉)
 
 ## 技术原理
 
