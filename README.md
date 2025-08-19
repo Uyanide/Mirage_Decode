@@ -1,4 +1,6 @@
-<small> 第一次写前端…… </small>
+> [!WARNING]
+> 废弃的分支！请前往 [master 分支](https://github.com/Uyanide/Mirage_Decode/tree/master)
+
 
 # 基于灰度值分离与像素交错的(伪)隐写图显形与制作工具
 
