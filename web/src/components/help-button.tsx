@@ -2,9 +2,9 @@ import InfoIcon from '@mui/icons-material/Info';
 import { IconButton } from '@mui/material';
 import { showInfoSnackbar } from '../providers/snackbar';
 
-interface HelpButtonProps {
+type HelpButtonProps = {
   message: string;
-}
+};
 
 export function HelpButton({ message }: HelpButtonProps) {
   return (

@@ -10,14 +10,14 @@ export function isCover(x: number, y: number, slope: number, gap: number, isRow:
   }
 }
 
-export interface PrismEncodeConfig {
+export type PrismEncodeConfig = {
   innerThreshold: number;
   coverThreshold: number;
   slope: number;
   gap: number;
   isRow: boolean;
   isReverse: boolean;
-}
+};
 
 export function prismEncode(
   innerData: ImageData,

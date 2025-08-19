@@ -1,10 +1,10 @@
 import { create } from 'zustand';
 import type { ImageEncodeFormat } from '../services/image-encoder';
 
-interface AvailableFormatsState {
+type AvailableFormatsState = {
   availableFormats: ImageEncodeFormat[];
   setAvailableFormats: (formats: ImageEncodeFormat[]) => void;
-}
+};
 
 export const useAvailableFormatsStore = create<AvailableFormatsState>((set) => ({
   availableFormats: [],

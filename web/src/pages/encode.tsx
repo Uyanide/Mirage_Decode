@@ -2,10 +2,6 @@ import {
   Box,
   Button,
   Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
   FormControl,
   FormControlLabel,
   FormLabel,
@@ -36,6 +32,7 @@ import { PrismImage } from '../models/image';
 import { useCurrentRouteStore } from '../providers/routes';
 import { NumberInput } from '../components/number-input';
 import { FormatSelector } from '../components/format-selector';
+import { FormatWarnDialog } from '../components/format-warn-dialog';
 
 export default function EncodePage() {
   const desktop = useDesktopMode();
@@ -81,9 +78,9 @@ function ImageInputs() {
   );
 }
 
-interface ImageConfigProps {
+type ImageConfigProps = {
   isCover: boolean;
-}
+};
 
 function ImageConfig({ isCover }: ImageConfigProps) {
   return (
@@ -95,7 +92,6 @@ function ImageConfig({ isCover }: ImageConfigProps) {
           width: '100%',
           gap: 2,
           alignItems: 'center',
-          overflowX: 'auto',
         }}
       >
         <ImageInput isCover={isCover}></ImageInput>
@@ -433,10 +429,10 @@ function BlendModeConfig() {
   );
 }
 
-interface BlendModeConfigDialogProps {
+type BlendModeConfigDialogProps = {
   onConfirm: (slope: number, gap: number, isRow: boolean) => void;
   onCancel: () => void;
-}
+};
 
 function BlendModeConfigDialog({ onConfirm, onCancel }: BlendModeConfigDialogProps) {
   const blendMode = usePrismEncodeStore((state) => state.blendMode);
@@ -706,51 +702,14 @@ function Output() {
         gap: 1,
       }}
     >
-      <Dialog
-        open={show}
-        onClose={() => {
-          setShow(false);
-        }}
-        maxWidth="sm"
-        fullWidth
-        sx={{ zIndex: zIndex.dialog }}
-      >
-        <DialogTitle id="alert-dialog-title">{`确认保存为 ${saveFormat}？`}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            非 JPEG 格式可能会被社交平台强制压缩，这将严重影响显形效果。请谨慎选择。
-          </DialogContentText>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={!showWarning}
-                onChange={(e) => {
-                  setShowWarning(!e.target.checked);
-                }}
-              />
-            }
-            label="本次不再显示此提示"
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={() => {
-              setShow(false);
-            }}
-          >
-            取消
-          </Button>
-          <Button
-            onClick={() => {
-              setShow(false);
-              handleSave(saveFormat, true);
-            }}
-            autoFocus
-          >
-            仍然保存
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <FormatWarnDialog
+        show={show}
+        setShow={setShow}
+        saveFormat={saveFormat}
+        handleSave={handleSave}
+        showWarning={showWarning}
+        setShowWarning={setShowWarning}
+      />
       <Button
         sx={{ flex: 1 }}
         variant="contained"

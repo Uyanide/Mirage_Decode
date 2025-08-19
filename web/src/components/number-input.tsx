@@ -2,14 +2,14 @@ import { TextField } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useDebounce } from '../utils/hooks/debounce';
 
-interface NumberInputProps {
+type NumberInputProps = {
   initValue: number;
   onChange: (value: number) => void;
   min?: number;
   max?: number;
   debounce?: number;
   [rest: string]: unknown;
-}
+};
 
 export function NumberInput({ initValue, onChange, debounce = 200, min, max, ...rest }: NumberInputProps) {
   const [value, setValue] = useState(initValue.toString());

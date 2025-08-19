@@ -7,12 +7,12 @@ import { LoadImageFileData } from '../services/image-loader';
 import { LoadingOverlay } from './loading';
 import { showSuccessSnackbar, showWarningSnackbar } from '../providers/snackbar';
 
-interface ImageLoaderMultiProps {
+type ImageLoaderMultiProps = {
   onLoad: (images: PrismImage[]) => void;
   children?: React.ReactNode;
   defaultImage?: string;
   disabled?: boolean;
-}
+};
 
 export function ImageLoaderMulti({ onLoad, children, defaultImage, disabled }: ImageLoaderMultiProps) {
   const [loading, setLoading] = useState(false);

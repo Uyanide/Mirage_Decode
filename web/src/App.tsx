@@ -35,6 +35,7 @@ function App() {
         gap: 2,
         paddingTop: 2,
         paddingBottom: 4,
+        m: 0,
       }}
     >
       <Box

@@ -3,13 +3,13 @@ import { Box, Typography } from '@mui/material';
 import { useThemeStore } from '../providers/theme';
 import { zIndex } from '../constants/layout';
 
-interface SidebarProps {
+type SidebarProps = {
   show: boolean;
   setShow: (show: boolean) => void;
   minWidth: number;
   children?: ReactNode;
   hideFullscreenExcludes?: RefObject<HTMLElement | null>[];
-}
+};
 
 // isVisible === false ?
 //      click on sidebarToggleButton => show sidebar

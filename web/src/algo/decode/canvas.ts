@@ -2,10 +2,9 @@ import type { PrismImage } from '../../models/image';
 import { usePrismDecodeImagesStore, usePrismDecodeStore } from './state';
 import { PrismCanvas } from '../image-canvas';
 import { decodePreset, prismDecode, type PrismDecodeConfig } from './process';
-import { encodeImage, ImageEncodeMimetypeMap, type ImageEncodeFormat } from '../../services/image-encoder';
-import { saveFile } from '../../services/file-saver';
 import { nullPtr, type Ptr } from '../../utils/general';
 import { ImageUtils } from '../image-utils';
+import type { ImageEncodeFormat } from '../../services/image-encoder';
 
 class DecodeCanvas extends PrismCanvas {
   protected decodedData: Ptr<ImageData> = nullPtr();
@@ -120,7 +119,7 @@ class DecodeCanvas extends PrismCanvas {
     const { contrast } = usePrismDecodeStore.getState();
     // 'forceUpdate' cuz changing from other values to 50
     // also needs updating
-    if (forceUpdate || contrast !== 50) {
+    if (forceUpdate || contrast !== 0) {
       ImageUtils.adjustContrast(contrast, this.decodedData, this.adjustedData);
     } else {
       this.adjustedData.v = this.decodedData.v;
@@ -129,20 +128,11 @@ class DecodeCanvas extends PrismCanvas {
   }
 
   async saveCurrentImage(format: ImageEncodeFormat): Promise<string> {
-    const data = this.adjustedData.v ?? this.decodedData.v ?? this.srcData.v;
-    if (!data) {
-      throw new Error('No image data available to save');
-    }
-    const encoded = await encodeImage(data, format);
-    return saveFile(encoded, ImageEncodeMimetypeMap[format]);
+    return this.saveImageFile(await this.encodeImageFile(this.adjustedData, format), format);
   }
 
   async saveOriginalImage(format: ImageEncodeFormat): Promise<string> {
-    if (!this.srcData.v) {
-      throw new Error('No original image data available to save');
-    }
-    const encoded = await encodeImage(this.srcData.v, format);
-    return saveFile(encoded, ImageEncodeMimetypeMap[format]);
+    return this.saveImageFile(await this.encodeImageFile(this.srcData, format), format);
   }
 }
 

@@ -5,10 +5,10 @@ const DecodePage = lazy(() => import('../pages/decode'));
 const EncodePage = lazy(() => import('../pages/encode'));
 const AdvancedEncodePage = lazy(() => import('../pages/advanced-encode'));
 
-interface CurrentRouteStore {
+type CurrentRouteStore = {
   currentRoute: string;
   setCurrentRoute: (route: string) => void;
-}
+};
 
 export const useCurrentRouteStore = create<CurrentRouteStore>((set) => ({
   currentRoute: '/decode',

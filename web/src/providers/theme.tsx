@@ -114,7 +114,7 @@ const darkPalette: Palette = {
   ElementBackground: '#444',
 };
 
-interface ThemeStore {
+type ThemeStore = {
   mode: ThemeMode;
   primaryColor: string;
   secondaryColor: string;
@@ -122,7 +122,7 @@ interface ThemeStore {
   toggleTheme: () => void;
   setPrimaryColor: (color: string) => void;
   setSecondaryColor: (color: string) => void;
-}
+};
 
 const localThemeKey = 'theme-mode';
 

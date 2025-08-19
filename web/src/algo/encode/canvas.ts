@@ -4,9 +4,7 @@ import { usePrismEncodeImageStore, usePrismEncodeStore } from './state';
 import type { PrismImage } from '../../models/image';
 import { ImageUtils } from '../image-utils';
 import { encodePreset, prismEncode } from './process';
-import { encodeImage, ImageEncodeMimetypeMap, type ImageEncodeFormat } from '../../services/image-encoder';
-import { saveFile } from '../../services/file-saver';
-import { encodeMetadata } from '../../services/metadata-encoder';
+import { type ImageEncodeFormat } from '../../services/image-encoder';
 
 // srcData
 // resizedData
@@ -68,7 +66,7 @@ export class EncodeInputCanvas extends PrismCanvas {
       temp.v = this.resizedData.v;
     }
     const temp2: Ptr<ImageData> = nullPtr();
-    if (contrast !== 50) {
+    if (contrast !== 0) {
       ImageUtils.adjustContrast(contrast, temp, temp2);
     } else {
       temp2.v = temp.v;
@@ -182,8 +180,6 @@ export class EncodeResultCanvas extends PrismCanvas {
 
   unbind() {
     super.unbind();
-    this.inner.unbind();
-    this.cover.unbind();
   }
 
   setInnerImage(image: PrismImage) {
@@ -274,20 +270,14 @@ export class EncodeResultCanvas extends PrismCanvas {
   }
 
   async saveResult(format: ImageEncodeFormat) {
-    const encoded = await this.encodeResultToFile(format);
-    return saveFile(encoded, ImageEncodeMimetypeMap[format]);
+    const encoded = await this.encodeImageFile(this.resultData, format);
+    return this.saveImageFile(encoded, format);
   }
 
-  async encodeResultToFile(format: ImageEncodeFormat) {
-    if (!this.resultData.v) {
-      throw new Error('No result to encode');
-    }
-    const data = this.resultData.v;
+  encodeResultToFile(format: ImageEncodeFormat) {
     const { innerThreshold, innerContrast, isReverse } = usePrismEncodeStore.getState();
     const metadata = encodePreset(innerThreshold, innerContrast, isReverse);
-    const encoded = await encodeImage(data, format);
-    const inserted = encodeMetadata(encoded, metadata);
-    return inserted;
+    return this.encodeImageFile(this.resultData, format, metadata);
   }
 }
 

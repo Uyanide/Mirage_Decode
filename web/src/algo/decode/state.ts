@@ -6,7 +6,7 @@ import type { ImageEncodeFormat } from '../../services/image-encoder';
 
 export type PrismDecodeMethod = 'black' | 'white' | 'transparent' | 'lcopy' | 'tcopy' | 'ltavg';
 
-interface PrismDecodeState {
+type PrismDecodeState = {
   doReadMetadata: boolean;
   lowerThreshold: number;
   higherThreshold: number;
@@ -19,7 +19,7 @@ interface PrismDecodeState {
   setMethod: (value: PrismDecodeMethod) => void;
   setContrast: (value: number) => void;
   setSaveFormat: (value: ImageEncodeFormat) => void;
-}
+};
 
 export const usePrismDecodeStore = create<PrismDecodeState>()(
   subscribeWithSelector((set) => ({
@@ -62,12 +62,12 @@ type PrismDecodeImage = {
   index: number;
 };
 
-interface PrismDecodeImagesState {
+type PrismDecodeImagesState = {
   images: PrismDecodeImage[];
   currImage: PrismDecodeImage | null;
   setCurrIndex: (index: number) => void;
   setImages: (images: PrismImage[]) => void;
-}
+};
 
 export const usePrismDecodeImagesStore = create<PrismDecodeImagesState>()(
   subscribeWithSelector((set) => ({

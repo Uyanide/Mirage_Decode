@@ -27,11 +27,11 @@ OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 import { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './day-night-toggle.module.css';
 
-interface DayNightToggleProps {
+type DayNightToggleProps = {
   value: 'light' | 'dark';
   size: number;
   onChange: () => void;
-}
+};
 
 export const DayNightToggle = ({ value, size, onChange }: DayNightToggleProps) => {
   const [colldown, setColldown] = useState(false);

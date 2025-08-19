@@ -1,4 +1,7 @@
 import { PrismImage } from '../models/image';
+import { saveFile } from '../services/file-saver';
+import { encodeImage, ImageEncodeMimetypeMap, type ImageEncodeFormat } from '../services/image-encoder';
+import { encodeMetadata } from '../services/metadata-encoder';
 import { nullPtr, type Ptr } from '../utils/general';
 
 export abstract class PrismCanvas {
@@ -7,6 +10,9 @@ export abstract class PrismCanvas {
   protected unsubscribers: (() => void)[] = [];
 
   bind(canvas: HTMLCanvasElement) {
+    if (this.canvas || this.unsubscribers.length > 0) {
+      this.unbind();
+    }
     this.canvas = canvas;
   }
 
@@ -73,5 +79,21 @@ export abstract class PrismCanvas {
       return null;
     }
     return ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  async encodeImageFile(src: Ptr<ImageData>, format: ImageEncodeFormat, metadata?: string): Promise<Uint8Array> {
+    if (!src.v) {
+      throw new Error('No image data to encode');
+    }
+    const fileData = await encodeImage(src.v, format);
+    if (!metadata) {
+      return fileData;
+    } else {
+      return encodeMetadata(fileData, metadata);
+    }
+  }
+
+  saveImageFile(file: Uint8Array, format: ImageEncodeFormat): string {
+    return saveFile(file, ImageEncodeMimetypeMap[format]);
   }
 }

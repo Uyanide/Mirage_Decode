@@ -5,7 +5,7 @@ export const maxListSize: number = 20;
 export const minContrast = -255;
 export const maxContrast = 255;
 
-interface DecodeDefaultArgsType {
+type DecodeDefaultArgsType = {
   doReadMetadata: boolean;
   lowerThreshold: number;
   higherThreshold: number;
@@ -14,7 +14,7 @@ interface DecodeDefaultArgsType {
   contrast: number;
   contrastStep: number;
   saveFormat: ImageEncodeFormat;
-}
+};
 
 export const DecodeDefaultArgs: DecodeDefaultArgsType = {
   doReadMetadata: true,
@@ -27,7 +27,7 @@ export const DecodeDefaultArgs: DecodeDefaultArgsType = {
   saveFormat: 'PNG',
 };
 
-interface EncodeDefaultArgsType {
+type EncodeDefaultArgsType = {
   innerThreshold: number;
   coverThreshold: number;
   thresholdStep: number;
@@ -46,7 +46,7 @@ interface EncodeDefaultArgsType {
   };
   maxMaxSize: number;
   minMaxSize: number;
-}
+};
 
 export const EncodeDefaultArgs: EncodeDefaultArgsType = {
   innerThreshold: 24,
@@ -70,6 +70,36 @@ export const EncodeDefaultArgs: EncodeDefaultArgsType = {
 };
 
 export const corsProxyUrl: string = 'https://api.uyanide.com/proxy?url=';
+
+type AdvancedEncodeDefaultArgsType = {
+  width: number;
+  height: number;
+  maxSize: number;
+  minSize: number;
+  lowerThreshold: number;
+  higherThreshold: number;
+  thresholdStep: number;
+  contrast: number;
+  contrastStep: number;
+  isGray: boolean;
+  weight: number;
+  saveFormat: ImageEncodeFormat;
+};
+
+export const AdvancedEncodeDefaultArgs: AdvancedEncodeDefaultArgsType = {
+  width: 1000,
+  height: 1000,
+  maxSize: 10000,
+  minSize: 10,
+  lowerThreshold: 0,
+  higherThreshold: 24,
+  thresholdStep: 1,
+  contrast: 0,
+  contrastStep: 5,
+  isGray: false,
+  weight: 1,
+  saveFormat: 'JPEG',
+};
 
 export const defaultImages = {
   decode: '/examples/prism.jpg',

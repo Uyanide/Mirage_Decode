@@ -2,9 +2,9 @@ import { useMemo, type ReactNode } from 'react';
 import { useThemeStore } from './theme';
 import { createTheme, CssBaseline, ThemeProvider } from '@mui/material';
 
-interface ThemeManagerProviderProps {
+type ThemeManagerProviderProps = {
   children: ReactNode;
-}
+};
 
 export function ThemeManagerProvider({ children }: ThemeManagerProviderProps) {
   const mode = useThemeStore((s) => s.mode);
@@ -31,10 +31,10 @@ export function ThemeManagerProvider({ children }: ThemeManagerProviderProps) {
   );
 }
 
-interface SubThemeManagerProviderProps {
+type SubThemeManagerProviderProps = {
   children: ReactNode;
   primaryPaletteKey: string;
-}
+};
 
 export function SubThemeManagerProvider({ children, primaryPaletteKey }: SubThemeManagerProviderProps) {
   const mode = useThemeStore((s) => s.mode);

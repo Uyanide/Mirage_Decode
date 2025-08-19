@@ -1,18 +1,35 @@
-import { Box, Button, FormControl, FormLabel, Grid, Input, Link, Select, Slider, Switch, Typography } from '@mui/material';
+import { Box, Button, FormControl, FormLabel, Grid, Input, Link, Slider, Switch, TextField, Typography } from '@mui/material';
 import { InputContainer } from '../components/input-container';
 import { ImageLoaderDialog } from '../components/image-loader';
 import { useDesktopMode, useSmallScreen } from '../providers/layout';
 import { HelpButton } from '../components/help-button';
 import { CanvasFallback } from '../components/canvas-fallback';
-import { PaletteEntries, useThemeStore } from '../providers/theme';
+import { PaletteEntries } from '../providers/theme';
 import { SubThemeManagerProvider } from '../providers/theme-provider';
 import { NumberInput } from '../components/number-input';
 import { FormatSelector } from '../components/format-selector';
 import type { ImageEncodeFormat } from '../services/image-encoder';
 import { useCurrentRouteStore } from '../providers/routes';
+import { Check } from '@mui/icons-material';
+import {
+  useAdvancedEncodeConfigsStore,
+  useAdvancedImagesStore,
+  useAdvancedImagesStoreInit,
+} from '../algo/advanced-encode/state';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { PrismImage } from '../models/image';
+import { prismAdvancedEncodeCanvas } from '../algo/advanced-encode/canvas';
+import { AdvancedEncodeDefaultArgs, maxContrast, minContrast } from '../constants/default-arg';
+import { LoadingOverlay } from '../components/loading';
+import { useFormatWarningStore } from '../providers/format-warning';
+import { usePrismDecodeImagesStore } from '../algo/decode/state';
+import { showErrorSnackbar, showSuccessSnackbar } from '../providers/snackbar';
+import { FormatWarnDialog } from '../components/format-warn-dialog';
 
 export default function AdvancesEncodePage() {
   const desktop = useDesktopMode();
+
+  useAdvancedImagesStoreInit();
 
   return (
     <Box
@@ -88,18 +105,22 @@ function InfoBox() {
 function ImageInputs() {
   const desktop = useDesktopMode();
 
+  const indexes = useAdvancedEncodeConfigsStore((state) => state.indexes);
+
   return (
     <Grid container spacing={2} maxWidth={desktop ? 'lg' : 'sm'}>
-      <Grid size={desktop ? 6 : 12}>
-        <ImageConfig index={0} />
-      </Grid>
+      {indexes.map((index) => (
+        <Grid key={index} size={desktop ? 6 : 12}>
+          <ImageConfig index={index} />
+        </Grid>
+      ))}
     </Grid>
   );
 }
 
-interface ImageConfigProps {
+type ImageConfigProps = {
   index: number;
-}
+};
 
 function ImageConfig({ index }: ImageConfigProps) {
   const primaryColor = PaletteEntries[index % PaletteEntries.length];
@@ -113,7 +134,6 @@ function ImageConfig({ index }: ImageConfigProps) {
             width: '100%',
             gap: 2,
             alignItems: 'center',
-            overflowX: 'auto',
           }}
         >
           <ImageInput index={index} />
@@ -128,9 +148,36 @@ function ImageInput({ index }: ImageConfigProps) {
   const smallScreen = useSmallScreen();
   const size = smallScreen ? 120 : 200;
 
-  const image = null;
+  const createConfig = useAdvancedEncodeConfigsStore((state) => state.createConfig);
+  const removeConfig = useAdvancedEncodeConfigsStore((state) => state.removeConfig);
 
-  const palette = useThemeStore((state) => state.palette);
+  const hasImage = useAdvancedImagesStore((state) => state.getHasInput(index));
+
+  const handleImageLoaded = useCallback(
+    (image: PrismImage) => {
+      if (prismAdvancedEncodeCanvas.setInputImage(image, index)) {
+        createConfig();
+      }
+    },
+    [index, createConfig]
+  );
+
+  const handleImageRemoved = () => {
+    if (!hasImage) {
+      // refuse to remove empty inputs
+      return;
+    }
+    removeConfig(index);
+  };
+
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    prismAdvancedEncodeCanvas.bindInputCanvas(index, canvasRef.current!);
+    return () => {
+      prismAdvancedEncodeCanvas.unbindInputCanvas(index);
+    };
+  }, [index]);
 
   return (
     <Box
@@ -142,8 +189,8 @@ function ImageInput({ index }: ImageConfigProps) {
         width: size,
       }}
     >
-      <ImageLoaderDialog onconfirm={(image) => {}} label="加载"></ImageLoaderDialog>
-      {!image && (
+      <ImageLoaderDialog onconfirm={handleImageLoaded} label="加载"></ImageLoaderDialog>
+      {!hasImage && (
         <CanvasFallback
           text="(･_･`)>"
           aspectRatio="1"
@@ -154,10 +201,11 @@ function ImageInput({ index }: ImageConfigProps) {
         ></CanvasFallback>
       )}
       <canvas
+        ref={canvasRef}
         style={{
           maxWidth: size,
           maxHeight: size,
-          display: image ? 'block' : 'none',
+          display: hasImage ? 'block' : 'none',
           objectFit: 'contain',
         }}
       ></canvas>
@@ -168,6 +216,8 @@ function ImageInput({ index }: ImageConfigProps) {
           width: '100%',
           border: '2px solid',
         }}
+        onClick={handleImageRemoved}
+        disabled={!hasImage}
       >
         移除
       </Button>
@@ -176,6 +226,34 @@ function ImageInput({ index }: ImageConfigProps) {
 }
 
 function ImageArguments({ index }: ImageConfigProps) {
+  const config = useAdvancedEncodeConfigsStore((state) => state.getConfig(index));
+
+  const setConfigValue = useAdvancedEncodeConfigsStore((state) => state.setConfigValue);
+
+  const handleLowerThresholdChange = (value: number) => {
+    setConfigValue(index, 'lowerThreshold', value);
+  };
+
+  const handleHigherThresholdChange = (value: number) => {
+    setConfigValue(index, 'higherThreshold', value);
+  };
+
+  const handleContrastChange = (value: number) => {
+    setConfigValue(index, 'contrast', value);
+  };
+
+  const handleGrayToggle = () => {
+    setConfigValue(index, 'isGray', !config.isGray);
+  };
+
+  const handleWeightChange = (value: number) => {
+    setConfigValue(index, 'weight', value);
+  };
+
+  useEffect(() => {
+    prismAdvancedEncodeCanvas.adjustInput(index);
+  }, [index, config.contrast, config.lowerThreshold, config.higherThreshold, config.isGray]);
+
   return (
     <Box
       sx={{
@@ -195,7 +273,16 @@ function ImageArguments({ index }: ImageConfigProps) {
         <Box sx={{ flex: 1 }} />
         <HelpButton message="建议避免和其他输入图片的色阶重叠" />
       </Box>
-      <Slider value={[10, 20]} min={0} max={255} step={1} />
+      <Slider
+        value={[config.lowerThreshold, config.higherThreshold]}
+        min={0}
+        max={255}
+        step={AdvancedEncodeDefaultArgs.thresholdStep}
+        onChange={(_, value) => {
+          handleLowerThresholdChange(value[0]);
+          handleHigherThresholdChange(value[1]);
+        }}
+      />
       <Box
         sx={{
           display: 'flex',
@@ -204,27 +291,39 @@ function ImageArguments({ index }: ImageConfigProps) {
         }}
       >
         <Input
-          value={10}
+          value={config.lowerThreshold}
           inputProps={{
-            step: 1,
+            step: AdvancedEncodeDefaultArgs.thresholdStep,
             min: 0,
             max: 255,
             type: 'number',
           }}
           sx={{
             width: '80px',
+          }}
+          onChange={(e) => {
+            const value = Number(e.target.value);
+            if (!isNaN(value)) {
+              handleLowerThresholdChange(value);
+            }
           }}
         />
         <Input
-          value={10}
+          value={config.higherThreshold}
           inputProps={{
-            step: 1,
+            step: AdvancedEncodeDefaultArgs.thresholdStep,
             min: 0,
             max: 255,
             type: 'number',
           }}
           sx={{
             width: '80px',
+          }}
+          onChange={(e) => {
+            const value = Number(e.target.value);
+            if (!isNaN(value)) {
+              handleHigherThresholdChange(value);
+            }
           }}
         />
       </Box>
@@ -240,7 +339,15 @@ function ImageArguments({ index }: ImageConfigProps) {
         <Box sx={{ flex: 1 }} />
         <HelpButton message="不合理的对比度会严重降低显形质量" />
       </Box>
-      <Slider value={50} min={0} max={100} step={1} />
+      <Slider
+        value={config.contrast}
+        min={minContrast}
+        max={maxContrast}
+        step={AdvancedEncodeDefaultArgs.contrastStep}
+        onChange={(_, v) => {
+          handleContrastChange(v);
+        }}
+      />
       <Box
         sx={{
           display: 'flex',
@@ -249,21 +356,30 @@ function ImageArguments({ index }: ImageConfigProps) {
         }}
       >
         <Input
-          value={10}
+          value={config.contrast}
           inputProps={{
-            step: 1,
-            min: 0,
-            max: 255,
+            step: AdvancedEncodeDefaultArgs.contrastStep,
+            min: minContrast,
+            max: maxContrast,
             type: 'number',
           }}
           sx={{
             width: '80px',
+          }}
+          onChange={(e) => {
+            const value = Number(e.target.value);
+            if (!isNaN(value)) {
+              handleContrastChange(value);
+            }
           }}
         />
         <Button
           size="small"
           sx={{
             width: '80px',
+          }}
+          onClick={() => {
+            handleContrastChange(0);
           }}
         >
           重置对比度
@@ -279,7 +395,7 @@ function ImageArguments({ index }: ImageConfigProps) {
         }}
       >
         <Typography variant="body2">3. 取灰度:</Typography>
-        <Switch size="medium"></Switch>
+        <Switch size="medium" value={config.isGray} onClick={handleGrayToggle}></Switch>
         <Box sx={{ flex: 1 }} />
         <HelpButton message="舍弃颜色可显著提升抗压缩能力" />
       </Box>
@@ -293,12 +409,22 @@ function ImageArguments({ index }: ImageConfigProps) {
         }}
       >
         <Typography variant="body2">4. 混合权重:</Typography>
-        <Select value="1" size="small" variant="standard">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-        </Select>
+        <Slider
+          value={config.weight}
+          min={1}
+          max={4}
+          step={1}
+          onChange={(_, value) => {
+            handleWeightChange(value);
+          }}
+          sx={{
+            flex: 1,
+            ml: 1,
+            minWidth: '60px',
+          }}
+          valueLabelDisplay="auto"
+          marks
+        />
         <Box sx={{ flex: 1 }} />
         <HelpButton message="权重越高，越容易直接看出" />
       </Box>
@@ -307,64 +433,155 @@ function ImageArguments({ index }: ImageConfigProps) {
 }
 
 function ConfigBox() {
+  const size = useAdvancedEncodeConfigsStore((state) => state.size);
+  const setSize = useAdvancedEncodeConfigsStore((state) => state.setSize);
+
+  const [loading, setLoading] = useState(false);
+
+  const [width, setWidth] = useState(size.width);
+  const [height, setHeight] = useState(size.height);
+
+  const handleConfirm = useCallback(
+    (width: number, height: number) => {
+      setLoading(true);
+      try {
+        setSize(width, height);
+        prismAdvancedEncodeCanvas.resize({ width, height });
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setSize]
+  );
+
   return (
-    <InputContainer>
-      <FormControl
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 1,
-          width: '100%',
-        }}
-      >
-        <Box
+    <>
+      {loading && <LoadingOverlay />}
+      <InputContainer>
+        <FormControl
           sx={{
             display: 'flex',
             flexDirection: 'row',
-            alignItems: 'end',
-            justifyContent: 'center',
-            width: '100%',
             gap: 1,
+            width: '100%',
+            alignItems: 'center',
+            justifyContent: 'center',
           }}
         >
-          <FormLabel>生成图片宽度:</FormLabel>
-          <NumberInput
-            initValue={1000}
-            onChange={(v) => {}}
-            size="small"
-            variant="standard"
+          <Box
             sx={{
-              maxWidth: '100px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 1,
             }}
-          />
-        </Box>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'row',
-            alignItems: 'end',
-            justifyContent: 'center',
-            width: '100%',
-            gap: 1,
-          }}
-        >
-          <FormLabel>生成图片高度:</FormLabel>
-          <NumberInput
-            initValue={1000}
-            onChange={(v) => {}}
-            size="small"
-            variant="standard"
+          >
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'end',
+                gap: 1,
+              }}
+            >
+              <FormLabel>当前宽度:</FormLabel>
+              <TextField
+                value={size.width}
+                size="small"
+                variant="standard"
+                sx={{
+                  maxWidth: '60px',
+                }}
+                disabled
+              />
+              <FormLabel>新宽度:</FormLabel>
+              <NumberInput
+                initValue={width}
+                onChange={setWidth}
+                size="small"
+                variant="standard"
+                sx={{
+                  maxWidth: '60px',
+                }}
+                min={AdvancedEncodeDefaultArgs.minSize}
+                max={AdvancedEncodeDefaultArgs.maxSize}
+              />
+            </Box>
+            <Box
+              sx={{
+                display: 'flex',
+                flexDirection: 'row',
+                alignItems: 'end',
+                gap: 1,
+              }}
+            >
+              {' '}
+              <FormLabel>当前高度:</FormLabel>
+              <TextField
+                value={size.height}
+                size="small"
+                variant="standard"
+                sx={{
+                  maxWidth: '60px',
+                }}
+                disabled
+              />
+              <FormLabel>新高度:</FormLabel>
+              <NumberInput
+                initValue={height}
+                onChange={setHeight}
+                size="small"
+                variant="standard"
+                sx={{
+                  maxWidth: '60px',
+                }}
+                min={AdvancedEncodeDefaultArgs.minSize}
+                max={AdvancedEncodeDefaultArgs.maxSize}
+              />
+            </Box>
+          </Box>
+          <Button
             sx={{
-              maxWidth: '100px',
+              aspectRatio: 1,
+              minWidth: 0,
+              padding: 0,
+              p: 1,
             }}
-          />
-        </Box>
-      </FormControl>
-    </InputContainer>
+            component="label"
+            onClick={() => {
+              handleConfirm(width, height);
+            }}
+          >
+            <Check />
+          </Button>
+        </FormControl>
+      </InputContainer>
+    </>
   );
 }
 
 function OutputBox() {
+  const [loading, setLoading] = useState(false);
+
+  const hasOutput = useAdvancedImagesStore((state) => state.hasOutput);
+
+  const handleConfirm = useCallback(() => {
+    setLoading(true);
+    try {
+      prismAdvancedEncodeCanvas.encode();
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    prismAdvancedEncodeCanvas.bind(canvasRef.current!);
+    return () => {
+      prismAdvancedEncodeCanvas.unbind();
+    };
+  }, []);
+
   return (
     <Box
       sx={{
@@ -373,19 +590,89 @@ function OutputBox() {
         gap: 1,
       }}
     >
-      <Button variant="contained">光棱，启动！</Button>
-      <CanvasFallback
-        text="只是一张画布"
-        styles={{
-          width: '100%',
-          objectFit: 'contain',
+      {loading && <LoadingOverlay />}
+      <Button variant="contained" onClick={handleConfirm} fullWidth>
+        光棱，启动！
+      </Button>
+      {!hasOutput && (
+        <CanvasFallback
+          text="只是一张画布"
+          styles={{
+            width: '100%',
+            objectFit: 'contain',
+          }}
+        ></CanvasFallback>
+      )}
+      <canvas
+        ref={canvasRef}
+        style={{
+          maxWidth: '100%',
+          maxHeight: '100%',
+          display: hasOutput ? 'block' : 'none',
         }}
-      ></CanvasFallback>
+      ></canvas>
     </Box>
   );
 }
 
 function SaveBox() {
+  const saveFormat = useAdvancedEncodeConfigsStore((state) => state.saveFormat);
+  const setSaveFormat = useAdvancedEncodeConfigsStore((state) => state.setSaveFormat);
+
+  const showWarning = useFormatWarningStore((state) => state.showWarning);
+  const setShowWarning = useFormatWarningStore((state) => state.setShowWarning);
+
+  const [show, setShow] = useState(false);
+
+  const setDecodeImages = usePrismDecodeImagesStore((state) => state.setImages);
+
+  const serRoute = useCurrentRouteStore((state) => state.setCurrentRoute);
+
+  const [processing, setProcessing] = useState(false);
+
+  const handleSave = useCallback(
+    (saveFormat: ImageEncodeFormat, ignoreWarning: boolean) => {
+      if (!ignoreWarning && saveFormat !== 'JPEG' && showWarning) {
+        setShow(true);
+        return;
+      }
+      setProcessing(true);
+      prismAdvancedEncodeCanvas
+        .saveResult(saveFormat)
+        .then((name: string) => {
+          showSuccessSnackbar(`已保存为 ${name}`);
+        })
+        .catch((error: unknown) => {
+          console.error('Failed to save result:', error);
+          showErrorSnackbar('保存失败');
+        })
+        .finally(() => {
+          setProcessing(false);
+        });
+    },
+    [showWarning]
+  );
+
+  const handleTest = useCallback(
+    (saveFormat: ImageEncodeFormat) => {
+      setProcessing(true);
+      (async () => {
+        const fileData = await prismAdvancedEncodeCanvas.encodeResultToFile(saveFormat);
+        const image = await PrismImage.fromFileData(fileData);
+        setDecodeImages([image]);
+        serRoute('/decode');
+      })()
+        .catch((error: unknown) => {
+          console.error('Failed to encode result:', error);
+          showErrorSnackbar('跳转失败');
+        })
+        .finally(() => {
+          setProcessing(false);
+        });
+    },
+    [setDecodeImages, serRoute]
+  );
+
   return (
     <Box
       sx={{
@@ -395,19 +682,43 @@ function SaveBox() {
         gap: 1,
       }}
     >
-      <Button sx={{ flex: 1 }} variant="contained" onClick={() => {}}>
+      <FormatWarnDialog
+        show={show}
+        setShow={setShow}
+        saveFormat={saveFormat}
+        handleSave={handleSave}
+        showWarning={showWarning}
+        setShowWarning={setShowWarning}
+      />
+      <Button
+        sx={{ flex: 1 }}
+        variant="contained"
+        onClick={() => {
+          handleSave(saveFormat, false);
+        }}
+        disabled={processing}
+      >
         保存结果
       </Button>
-      <Button sx={{ flex: 1 }} variant="contained" color="secondary" onClick={() => {}}>
+      <Button
+        sx={{ flex: 1 }}
+        variant="contained"
+        color="secondary"
+        onClick={() => {
+          handleTest(saveFormat);
+        }}
+        disabled={processing}
+      >
         显形测试
       </Button>
-      s
       <FormatSelector
-        format={'JPEG' as ImageEncodeFormat}
+        format={saveFormat}
         onChange={(format) => {
-          console.log(`Selected format: ${format}`);
+          setSaveFormat(format);
         }}
+        disabled={processing}
       ></FormatSelector>
+      <HelpButton message="非 JPEG 格式有较高地被社交平台强制压缩的风险" />
     </Box>
   );
 }

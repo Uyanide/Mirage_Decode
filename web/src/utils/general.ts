@@ -20,9 +20,9 @@ export function uint8ArrayToBinaryString(uint8: Uint8Array): string {
 }
 
 // why not?
-export interface Ptr<T> {
+export type Ptr<T> = {
   v: T | null;
-}
+};
 export function nullPtr<T>(): Ptr<T> {
   return { v: null };
 }

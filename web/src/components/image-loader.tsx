@@ -9,18 +9,18 @@ import { LoadImageFileData } from '../services/image-loader';
 import { LoadingProgress } from './loading';
 import { showErrorSnackbar, showSuccessSnackbar, showWarningSnackbar } from '../providers/snackbar';
 
-interface ImageLoaderProps {
+type ImageLoaderProps = {
   onconfirm: (image: PrismImage) => void;
   oncancel: () => void;
   defaultImage?: string;
-}
+};
 
-interface ImageLoaderDialogProps {
+type ImageLoaderDialogProps = {
   onconfirm: (image: PrismImage) => void;
   label?: string;
   disabled?: boolean;
   defaultImage?: string;
-}
+};
 
 export function ImageLoader({ onconfirm, oncancel, defaultImage }: ImageLoaderProps) {
   const [image, setImage] = useState<PrismImage | null>(null);

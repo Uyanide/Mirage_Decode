@@ -2,14 +2,14 @@ import { useMediaQuery, useTheme } from '@mui/material';
 import { useEffect } from 'react';
 import { create } from 'zustand';
 
-interface LayoutState {
+type LayoutState = {
   isDesktopMode: boolean;
   setDesktopMode: (is: boolean) => void;
   isSmallScreen: boolean;
   setSmallScreen: (is: boolean) => void;
   screenWidth: number;
   setScreenWidth: (width: number) => void;
-}
+};
 
 export const useLayoutStore = create<LayoutState>((set) => ({
   isDesktopMode: false,

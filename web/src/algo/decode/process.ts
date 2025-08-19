@@ -73,13 +73,13 @@ const processCoverPixel: Record<PrismDecodeMethod, (data: Uint8ClampedArray, wid
   },
 };
 
-export interface PrismDecodeConfig {
+export type PrismDecodeConfig = {
   lowerThreshold: number;
   higherThreshold: number;
   method: PrismDecodeMethod;
   contrast: number;
   grayConvert?: (r: number, g: number, b: number) => number;
-}
+};
 
 export function prismDecode(
   imageData: ImageData,

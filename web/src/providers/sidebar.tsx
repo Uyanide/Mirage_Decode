@@ -1,9 +1,9 @@
 import { create } from 'zustand';
 
-interface SidebarState {
+type SidebarState = {
   show: boolean;
   setShow: (show: boolean) => void;
-}
+};
 
 export const useSidebarStore = create<SidebarState>((set) => ({
   show: false,

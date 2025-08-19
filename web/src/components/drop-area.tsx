@@ -1,11 +1,11 @@
 import { Box } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
 
-interface DropAreaProps {
+type DropAreaProps = {
   onDrop: (items: DataTransferItemList) => void;
   children?: React.ReactNode;
   disabled?: boolean;
-}
+};
 
 export function DropArea({ onDrop, children, disabled }: DropAreaProps) {
   const areaRef = useRef<HTMLDivElement>(null);

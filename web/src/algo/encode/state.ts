@@ -11,7 +11,7 @@ type PrismEncodeBlendMode = {
   isRow: boolean;
 };
 
-interface PrismEncodeState {
+type PrismEncodeStore = {
   innerThreshold: number;
   coverThreshold: number;
   innerContrast: number;
@@ -32,9 +32,9 @@ interface PrismEncodeState {
   setSaveFormat: (value: ImageEncodeFormat) => void;
   setMaxSize: (value: number) => void;
   setBlendMode: (slope: number, gap: number, isRow: boolean) => void;
-}
+};
 
-export const usePrismEncodeStore = create<PrismEncodeState>()(
+export const usePrismEncodeStore = create<PrismEncodeStore>()(
   subscribeWithSelector((set) => ({
     innerThreshold: EncodeDefaultArgs.innerThreshold,
     coverThreshold: EncodeDefaultArgs.coverThreshold,
@@ -92,16 +92,16 @@ export const usePrismEncodeStore = create<PrismEncodeState>()(
   }))
 );
 
-export interface PrismEncodeImageState {
+export type PrismEncodeImageStore = {
   innerImage: PrismImage | null;
   coverImage: PrismImage | null;
   haveResult: boolean;
   setInnerImage: (image: PrismImage | null) => void;
   setCoverImage: (image: PrismImage | null) => void;
   setHaveResult: (value: boolean) => void;
-}
+};
 
-export const usePrismEncodeImageStore = create<PrismEncodeImageState>()(
+export const usePrismEncodeImageStore = create<PrismEncodeImageStore>()(
   subscribeWithSelector((set) => ({
     innerImage: null,
     coverImage: null,

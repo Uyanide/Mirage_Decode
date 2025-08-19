@@ -1,14 +1,14 @@
 import type { AlertColor } from '@mui/material';
 import { create } from 'zustand';
 
-interface SnackbarState {
+type SnackbarState = {
   open: boolean;
   message: string;
   servirity: AlertColor;
   setOpen: (open: boolean) => void;
   setMessage: (message: string) => void;
   setServirity: (servirity: AlertColor) => void;
-}
+};
 
 export const useSnackbarStore = create<SnackbarState>((set) => ({
   open: false,

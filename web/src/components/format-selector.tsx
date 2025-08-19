@@ -2,11 +2,11 @@ import { MenuItem, Select } from '@mui/material';
 import { useAvailableFormatsStore } from '../providers/format';
 import type { ImageEncodeFormat } from '../services/image-encoder';
 
-interface FormatSelectorProps {
+type FormatSelectorProps = {
   format: ImageEncodeFormat;
   onChange: (format: ImageEncodeFormat) => void;
   disabled?: boolean;
-}
+};
 
 export function FormatSelector({ format, onChange, disabled }: FormatSelectorProps) {
   const availableFormats = useAvailableFormatsStore((state) => state.availableFormats);

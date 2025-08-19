@@ -1,13 +1,13 @@
 import { Box, Button, Typography } from '@mui/material';
 
-interface CanvasFallbackProps {
+type CanvasFallbackProps = {
   text: string;
   action?: string;
   aspectRatio?: string;
   onClick?: () => void;
   disabled?: boolean;
   styles?: React.CSSProperties;
-}
+};
 
 export function CanvasFallback({ text, action, aspectRatio, onClick, disabled, styles }: CanvasFallbackProps) {
   return (

@@ -3,7 +3,7 @@ import type { PrismImage } from '../models/image';
 import { useEffect, useRef } from 'react';
 import { useThemeStore } from '../providers/theme';
 
-interface ImageDisplayProps {
+type ImageDisplayProps = {
   image: PrismImage | null;
   width?: string;
   height?: string;
@@ -11,7 +11,7 @@ interface ImageDisplayProps {
   placeholderText?: string;
   aspectRatio?: string;
   highLight?: boolean;
-}
+};
 
 export function ImageDisplay({
   image,
