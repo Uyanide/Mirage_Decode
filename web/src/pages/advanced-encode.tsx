@@ -24,7 +24,7 @@ import { LoadingOverlay } from '../components/loading';
 import { useFormatWarningStore } from '../providers/format-warning';
 import { usePrismDecodeImagesStore } from '../algo/decode/state';
 import { showErrorSnackbar, showSuccessSnackbar } from '../providers/snackbar';
-import { WarnDialog } from '../components/format-warn-dialog';
+import { WarnDialog } from '../components/warn-dialog';
 
 export default function AdvancesEncodePage() {
   const desktop = useDesktopMode();
@@ -99,7 +99,7 @@ function InfoBox() {
         >
           显形界面
         </Link>{' '}
-        的阈值滑条多了一个端点，这就是为显形复合坦克准备的 😎
+        的阈值滑条多了一个端点，这正是为显形复合坦克准备的 😎
       </Typography>
     </Box>
   );
@@ -111,7 +111,7 @@ function ImageInputs() {
   const indexes = useAdvancedEncodeConfigsStore((state) => state.indexes);
 
   return (
-    <Grid container spacing={2} maxWidth={desktop ? 'lg' : 'sm'}>
+    <Grid container spacing={1} maxWidth={desktop ? 'lg' : 'sm'}>
       {indexes.map((index) => (
         <Grid key={index} size={desktop ? 6 : 12}>
           <ImageConfig index={index} />
@@ -657,11 +657,13 @@ function OutputBox() {
           setShow(false);
         }}
         onConfirm={() => {
-          setDontCareConflict(true);
+          setShow(false);
           handleConfirm(true);
         }}
         showWarning={!dontCareConflict}
-        setShowWarning={setDontCareConflict}
+        setShowWarning={(v) => {
+          setDontCareConflict(!v);
+        }}
         title="色阶区间存在冲突！"
         content={[
           '建议避免输入图片的色阶端点之间发生重叠，否则显形效果可能不如预期。',

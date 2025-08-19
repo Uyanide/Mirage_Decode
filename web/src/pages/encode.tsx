@@ -32,7 +32,7 @@ import { PrismImage } from '../models/image';
 import { routes, useCurrentRouteStore } from '../providers/routes';
 import { NumberInput } from '../components/number-input';
 import { FormatSelector } from '../components/format-selector';
-import { WarnDialog } from '../components/format-warn-dialog';
+import { WarnDialog } from '../components/warn-dialog';
 
 export default function EncodePage() {
   const desktop = useDesktopMode();

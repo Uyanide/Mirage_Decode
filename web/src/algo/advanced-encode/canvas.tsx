@@ -65,6 +65,7 @@ class AdvancedEncodeResultCanvas extends PrismCanvas {
     for (const inputCanvas of this.inputCanvases.values()) {
       inputCanvas.resizeCover(size.width, size.height);
       inputCanvas.adjust();
+      inputCanvas.putImageData(inputCanvas.adjustedData);
     }
   }
 
