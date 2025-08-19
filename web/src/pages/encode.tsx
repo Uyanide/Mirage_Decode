@@ -32,7 +32,7 @@ import { PrismImage } from '../models/image';
 import { routes, useCurrentRouteStore } from '../providers/routes';
 import { NumberInput } from '../components/number-input';
 import { FormatSelector } from '../components/format-selector';
-import { FormatWarnDialog } from '../components/format-warn-dialog';
+import { WarnDialog } from '../components/format-warn-dialog';
 
 export default function EncodePage() {
   const desktop = useDesktopMode();
@@ -702,13 +702,19 @@ function Output() {
         gap: 1,
       }}
     >
-      <FormatWarnDialog
+      <WarnDialog
         show={show}
-        setShow={setShow}
-        saveFormat={saveFormat}
-        handleSave={handleSave}
+        onClose={() => {
+          setShow(false);
+        }}
+        onConfirm={() => {
+          setShow(false);
+          handleSave(saveFormat, true);
+        }}
         showWarning={showWarning}
         setShowWarning={setShowWarning}
+        title={`确认保存为 ${saveFormat}?`}
+        content={['非 JPEG 格式可能会被某些社交平台强制压缩，这将严重影响显形效果。请谨慎选择。']}
       />
       <Button
         sx={{ flex: 1 }}

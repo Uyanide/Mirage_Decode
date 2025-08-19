@@ -21,12 +21,14 @@ type AdvancedEncodeConfigsStore = {
     height: number;
   };
   saveFormat: ImageEncodeFormat;
+  dontCareConflict: boolean;
   getMaxIndex: () => number;
   createConfig: () => void;
   getConfig: (index: number) => AdvancedEncodeConfigState;
   setConfigValue: (index: number, key: keyof AdvancedEncodeConfigState, value: unknown) => void;
   removeConfig: (index: number) => void;
   setSize: (width: number, height: number) => void;
+  setDontCareConflict: (value: boolean) => void;
   testConflict: () => boolean;
   setSaveFormat: (format: ImageEncodeFormat) => void;
 };
@@ -40,6 +42,7 @@ export const useAdvancedEncodeConfigsStore = create<AdvancedEncodeConfigsStore>(
       height: AdvancedEncodeDefaultArgs.height,
     },
     saveFormat: AdvancedEncodeDefaultArgs.saveFormat,
+    dontCareConflict: AdvancedEncodeDefaultArgs.dontCareConflict,
 
     getMaxIndex: () => {
       const indexes = get().indexes;
@@ -109,11 +112,17 @@ export const useAdvancedEncodeConfigsStore = create<AdvancedEncodeConfigsStore>(
       set({ size: { width, height } });
     },
 
+    setDontCareConflict: (value: boolean) => {
+      set({ dontCareConflict: value });
+    },
+
     testConflict: () => {
       const thresholds: {
         l: number;
         r: number;
       }[] = [];
+
+      if (get().dontCareConflict) return false; // Skip conflict check if dontCareConflict is true
 
       const configs = get().configs;
       for (const index of useAdvancedImagesStore.getState().hasInput) {
@@ -127,10 +136,11 @@ export const useAdvancedEncodeConfigsStore = create<AdvancedEncodeConfigsStore>(
           thresholds.push({ l: lowerThreshold, r: higherThreshold });
         }
       }
+
       thresholds.sort((a, b) => a.l - b.l);
       let end = -1;
       for (const t of thresholds) {
-        if (t.l < end) {
+        if (t.l <= end) {
           return true; // Overlapping ranges
         }
         end = t.r;

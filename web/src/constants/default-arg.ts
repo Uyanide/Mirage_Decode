@@ -84,6 +84,7 @@ type AdvancedEncodeDefaultArgsType = {
   isGray: boolean;
   weight: number;
   saveFormat: ImageEncodeFormat;
+  dontCareConflict: boolean;
 };
 
 export const AdvancedEncodeDefaultArgs: AdvancedEncodeDefaultArgsType = {
@@ -99,6 +100,7 @@ export const AdvancedEncodeDefaultArgs: AdvancedEncodeDefaultArgsType = {
   isGray: false,
   weight: 1,
   saveFormat: 'JPEG',
+  dontCareConflict: false,
 };
 
 export const defaultImages = {

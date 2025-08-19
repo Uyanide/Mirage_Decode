@@ -24,7 +24,7 @@ import { LoadingOverlay } from '../components/loading';
 import { useFormatWarningStore } from '../providers/format-warning';
 import { usePrismDecodeImagesStore } from '../algo/decode/state';
 import { showErrorSnackbar, showSuccessSnackbar } from '../providers/snackbar';
-import { FormatWarnDialog } from '../components/format-warn-dialog';
+import { WarnDialog } from '../components/format-warn-dialog';
 
 export default function AdvancesEncodePage() {
   const desktop = useDesktopMode();
@@ -81,9 +81,12 @@ function InfoBox() {
         这是允许输入<b>超过两张图片</b>的模式 🤓 推荐在对"光棱坦克"的原理有基础的了解后再使用。或者如果您恰巧理解能力超群 🧐
         也可以边试边学——所有的图片均在您的浏览器本地生成，没有人会有任何意见 😉
       </Typography>
-      <Typography variant="body1">
+      {/* <Typography variant="body1">
         在成功加载一张图片后，会有新的图片输入框出现以便您添加更多图片。同理，移除一张图片也会相应地移除它所属的输入框。很直接的交互方式，不是吗
         😊
+      </Typography> */}
+      <Typography variant="body1">
+        请注意，由于渲染的复杂性，此页面<b>不提供</b>结果的实时预览 😥 更新参数请记得手动点击按钮重新生成 🙂
       </Typography>
       <Typography variant="body1">
         另外，相较1.x版本，
@@ -124,6 +127,9 @@ type ImageConfigProps = {
 
 function ImageConfig({ index }: ImageConfigProps) {
   const primaryColor = PaletteEntries[index % PaletteEntries.length];
+
+  const hasImage = useAdvancedImagesStore((state) => state.getHasInput(index));
+
   return (
     <SubThemeManagerProvider primaryPaletteKey={primaryColor}>
       <InputContainer>
@@ -136,22 +142,20 @@ function ImageConfig({ index }: ImageConfigProps) {
             alignItems: 'center',
           }}
         >
-          <ImageInput index={index} />
-          <ImageArguments index={index} />
+          <ImageInput index={index} hasImage={hasImage} />
+          <ImageArguments index={index} disabled={!hasImage} />
         </Box>
       </InputContainer>
     </SubThemeManagerProvider>
   );
 }
 
-function ImageInput({ index }: ImageConfigProps) {
+function ImageInput({ index, hasImage }: ImageConfigProps & { hasImage: boolean }) {
   const smallScreen = useSmallScreen();
   const size = smallScreen ? 120 : 200;
 
   const createConfig = useAdvancedEncodeConfigsStore((state) => state.createConfig);
   const removeConfig = useAdvancedEncodeConfigsStore((state) => state.removeConfig);
-
-  const hasImage = useAdvancedImagesStore((state) => state.getHasInput(index));
 
   const handleImageLoaded = useCallback(
     (image: PrismImage) => {
@@ -225,7 +229,7 @@ function ImageInput({ index }: ImageConfigProps) {
   );
 }
 
-function ImageArguments({ index }: ImageConfigProps) {
+function ImageArguments({ index, disabled }: ImageConfigProps & { disabled: boolean }) {
   const config = useAdvancedEncodeConfigsStore((state) => state.getConfig(index));
 
   const setConfigValue = useAdvancedEncodeConfigsStore((state) => state.setConfigValue);
@@ -282,6 +286,7 @@ function ImageArguments({ index }: ImageConfigProps) {
           handleLowerThresholdChange(value[0]);
           handleHigherThresholdChange(value[1]);
         }}
+        disabled={disabled}
       />
       <Box
         sx={{
@@ -307,6 +312,7 @@ function ImageArguments({ index }: ImageConfigProps) {
               handleLowerThresholdChange(value);
             }
           }}
+          disabled={disabled}
         />
         <Input
           value={config.higherThreshold}
@@ -325,6 +331,7 @@ function ImageArguments({ index }: ImageConfigProps) {
               handleHigherThresholdChange(value);
             }
           }}
+          disabled={disabled}
         />
       </Box>
       <Box
@@ -347,6 +354,7 @@ function ImageArguments({ index }: ImageConfigProps) {
         onChange={(_, v) => {
           handleContrastChange(v);
         }}
+        disabled={disabled}
       />
       <Box
         sx={{
@@ -372,6 +380,7 @@ function ImageArguments({ index }: ImageConfigProps) {
               handleContrastChange(value);
             }
           }}
+          disabled={disabled}
         />
         <Button
           size="small"
@@ -381,6 +390,7 @@ function ImageArguments({ index }: ImageConfigProps) {
           onClick={() => {
             handleContrastChange(0);
           }}
+          disabled={disabled}
         >
           重置对比度
         </Button>
@@ -395,7 +405,7 @@ function ImageArguments({ index }: ImageConfigProps) {
         }}
       >
         <Typography variant="body2">3. 取灰度:</Typography>
-        <Switch size="medium" value={config.isGray} onClick={handleGrayToggle}></Switch>
+        <Switch size="medium" value={config.isGray} onClick={handleGrayToggle} disabled={disabled}></Switch>
         <Box sx={{ flex: 1 }} />
         <HelpButton message="舍弃颜色可显著提升抗压缩能力" />
       </Box>
@@ -424,6 +434,7 @@ function ImageArguments({ index }: ImageConfigProps) {
           }}
           valueLabelDisplay="auto"
           marks
+          disabled={disabled}
         />
         <Box sx={{ flex: 1 }} />
         <HelpButton message="权重越高，越容易直接看出" />
@@ -563,15 +574,31 @@ function OutputBox() {
   const [loading, setLoading] = useState(false);
 
   const hasOutput = useAdvancedImagesStore((state) => state.hasOutput);
+  const checkConflict = useAdvancedEncodeConfigsStore((state) => state.testConflict);
 
-  const handleConfirm = useCallback(() => {
-    setLoading(true);
-    try {
-      prismAdvancedEncodeCanvas.encode();
-    } finally {
-      setLoading(false);
-    }
-  }, []);
+  const dontCareConflict = useAdvancedEncodeConfigsStore((state) => state.dontCareConflict);
+  const setDontCareConflict = useAdvancedEncodeConfigsStore((state) => state.setDontCareConflict);
+
+  const [show, setShow] = useState(false); // warning dialog
+
+  const handleConfirm = useCallback(
+    (force: boolean) => {
+      setLoading(true);
+      try {
+        if (!force) {
+          const conflict = checkConflict();
+          if (conflict) {
+            setShow(true);
+            return;
+          }
+        }
+        prismAdvancedEncodeCanvas.encode();
+      } finally {
+        setLoading(false);
+      }
+    },
+    [checkConflict]
+  );
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -591,7 +618,63 @@ function OutputBox() {
       }}
     >
       {loading && <LoadingOverlay />}
-      <Button variant="contained" onClick={handleConfirm} fullWidth>
+      {/* <Dialog
+        open={show}
+        onClose={() => {
+          setShow(false);
+        }}
+        maxWidth="sm"
+        fullWidth
+        sx={{ zIndex: zIndex.dialog }}
+      >
+        <DialogTitle>{`色阶区间存在冲突！`}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>建议避免输入图片的色阶端点之间发生重叠，否则显形效果可能不如预期。</DialogContentText>
+          <DialogContentText>例如 1-24 与 12-36 存在重叠, 建议调整为 0-24 与 25-49。</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button
+            onClick={() => {
+              setShow(false);
+            }}
+          >
+            取消
+          </Button>
+          <Button
+            onClick={() => {
+              setShow(false);
+              handleConfirm(true);
+            }}
+            autoFocus
+          >
+            仍然继续
+          </Button>
+        </DialogActions>
+      </Dialog> */}
+      <WarnDialog
+        show={show}
+        onClose={() => {
+          setShow(false);
+        }}
+        onConfirm={() => {
+          setDontCareConflict(true);
+          handleConfirm(true);
+        }}
+        showWarning={!dontCareConflict}
+        setShowWarning={setDontCareConflict}
+        title="色阶区间存在冲突！"
+        content={[
+          '建议避免输入图片的色阶端点之间发生重叠，否则显形效果可能不如预期。',
+          '例如 1-24 与 12-36 存在重叠, 建议调整为 0-24 与 25-49。',
+        ]}
+      />
+      <Button
+        variant="contained"
+        onClick={() => {
+          handleConfirm(false);
+        }}
+        fullWidth
+      >
         光棱，启动！
       </Button>
       {!hasOutput && (
@@ -682,13 +765,19 @@ function SaveBox() {
         gap: 1,
       }}
     >
-      <FormatWarnDialog
+      <WarnDialog
         show={show}
-        setShow={setShow}
-        saveFormat={saveFormat}
-        handleSave={handleSave}
+        onClose={() => {
+          setShow(false);
+        }}
+        onConfirm={() => {
+          setShow(false);
+          handleSave(saveFormat, true);
+        }}
         showWarning={showWarning}
         setShowWarning={setShowWarning}
+        title={`确认保存为 ${saveFormat}?`}
+        content={['非 JPEG 格式可能会被某些社交平台强制压缩，这将严重影响显形效果。请谨慎选择。']}
       />
       <Button
         sx={{ flex: 1 }}

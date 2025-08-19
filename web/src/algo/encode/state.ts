@@ -52,13 +52,13 @@ export const usePrismEncodeStore = create<PrismEncodeStore>()(
     },
     setInnerThreshold: (value: number) => {
       set((state) => {
-        if (value > state.coverThreshold || value < 0) return {};
+        if (value >= state.coverThreshold || value < 0) return {};
         return { innerThreshold: value };
       });
     },
     setCoverThreshold: (value: number) => {
       set((state) => {
-        if (value < state.innerThreshold || value > 255) return {};
+        if (value <= state.innerThreshold || value > 255) return {};
         return { coverThreshold: value };
       });
     },

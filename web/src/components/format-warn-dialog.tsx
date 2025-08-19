@@ -9,40 +9,36 @@ import {
   Switch,
 } from '@mui/material';
 import { zIndex } from '../constants/layout';
-import type { ImageEncodeFormat } from '../services/image-encoder';
 
-type FormatWarnDialogProps = {
+type WarnDialogProps = {
   show: boolean;
-  setShow: (show: boolean) => void;
-  saveFormat: ImageEncodeFormat;
-  handleSave: (format: ImageEncodeFormat, force: boolean) => void;
+  onClose: () => void;
+  onConfirm: () => void;
   showWarning: boolean;
   setShowWarning: (show: boolean) => void;
+  title: string;
+  content: string[];
 };
 
-export function FormatWarnDialog({
-  show,
-  setShow,
-  saveFormat,
-  handleSave,
-  showWarning,
-  setShowWarning,
-}: FormatWarnDialogProps) {
+export function WarnDialog({ show, onClose, onConfirm, showWarning, setShowWarning, title, content }: WarnDialogProps) {
   return (
     <Dialog
       open={show}
       onClose={() => {
-        setShow(false);
+        onClose();
       }}
       maxWidth="sm"
       fullWidth
       sx={{ zIndex: zIndex.dialog }}
     >
-      <DialogTitle id="alert-dialog-title">{`确认保存为 ${saveFormat}？`}</DialogTitle>
+      <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          非 JPEG 格式可能会被社交平台强制压缩，这将严重影响显形效果。请谨慎选择。
-        </DialogContentText>
+        {content.map((line) => (
+          <DialogContentText key={line} sx={{ whiteSpace: 'pre-line' }}>
+            {line}
+          </DialogContentText>
+        ))}
+
         <FormControlLabel
           control={
             <Switch
@@ -52,25 +48,13 @@ export function FormatWarnDialog({
               }}
             />
           }
-          label="本次不再显示此提示"
+          label="不再显示此提示"
         />
       </DialogContent>
       <DialogActions>
-        <Button
-          onClick={() => {
-            setShow(false);
-          }}
-        >
-          取消
-        </Button>
-        <Button
-          onClick={() => {
-            setShow(false);
-            handleSave(saveFormat, true);
-          }}
-          autoFocus
-        >
-          仍然保存
+        <Button onClick={onClose}>取消</Button>
+        <Button onClick={onConfirm} autoFocus>
+          无视，继续
         </Button>
       </DialogActions>
     </Dialog>
