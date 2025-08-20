@@ -45,7 +45,7 @@ export const LoadImageFileData = {
   async _fromString(text: string): Promise<Uint8Array | null> {
     try {
       if (text.startsWith('http://') || text.startsWith('https://')) {
-        return await LoadImageFileData._fromFetch(text);
+        return (await LoadImageFileData.fromFetch(text))[0];
       } else if (text.startsWith('data:image/')) {
         const base64Data = text.split(',')[1];
         const binaryString = atob(base64Data);

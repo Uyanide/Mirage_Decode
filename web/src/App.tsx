@@ -181,7 +181,7 @@ function BottomLinks() {
         </Link>
       </Typography>
       <Typography variant="body2">
-        <Link href="https://github.com/Uyanide/Mirage_Decode/tree/main" target="_blank" rel="noopener">
+        <Link href="https://github.com/Uyanide/Mirage_Decode" target="_blank" rel="noopener">
           Github - Mirage_Decode (本项目仓库)
         </Link>
       </Typography>
