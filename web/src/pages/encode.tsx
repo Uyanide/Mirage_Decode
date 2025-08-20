@@ -6,7 +6,6 @@ import {
   FormControlLabel,
   FormLabel,
   Grid,
-  Input,
   Radio,
   RadioGroup,
   Slider,
@@ -30,7 +29,7 @@ import { useFormatWarningStore } from '../providers/format-warning';
 import { usePrismDecodeImagesStore } from '../algo/decode/state';
 import { PrismImage } from '../models/image';
 import { routes, useCurrentRouteStore } from '../providers/routes';
-import { NumberInput } from '../components/number-input';
+import { NumberInput, NumberInputControlled } from '../components/number-input';
 import { FormatSelector } from '../components/format-selector';
 import { WarnDialog } from '../components/warn-dialog';
 
@@ -171,6 +170,7 @@ function ImageInput({ isCover }: ImageConfigProps) {
 
 function ImageArguments({ isCover }: ImageConfigProps) {
   const threshold = usePrismEncodeStore(isCover ? (state) => state.coverThreshold : (state) => state.innerThreshold);
+  const otherThreshold = usePrismEncodeStore(isCover ? (state) => state.innerThreshold : (state) => state.coverThreshold);
   const contrast = usePrismEncodeStore(isCover ? (state) => state.coverContrast : (state) => state.innerContrast);
   const isGray = usePrismEncodeStore(isCover ? (state) => state.isCoverGray : (state) => state.isInnerGray);
   const setThreshold = usePrismEncodeStore(isCover ? (state) => state.setCoverThreshold : (state) => state.setInnerThreshold);
@@ -218,23 +218,18 @@ function ImageArguments({ isCover }: ImageConfigProps) {
           gap: 1,
         }}
       >
-        <Input
-          value={threshold}
-          inputProps={{
-            step: EncodeDefaultArgs.thresholdStep,
-            min: 0,
-            max: 255,
-            type: 'number',
+        <NumberInputControlled
+          realValue={threshold}
+          onSubmit={(value) => {
+            setThreshold(value);
           }}
+          min={isCover ? otherThreshold + 1 : 0}
+          max={isCover ? 255 : otherThreshold - 1}
+          step={EncodeDefaultArgs.thresholdStep}
           sx={{
             width: '80px',
           }}
-          onChange={(e) => {
-            const value = parseInt(e.target.value, 10);
-            if (!isNaN(value)) {
-              setThreshold(value);
-            }
-          }}
+          variant="standard"
         />
       </Box>
       <Box
@@ -266,23 +261,18 @@ function ImageArguments({ isCover }: ImageConfigProps) {
           gap: 1,
         }}
       >
-        <Input
-          value={contrast}
-          inputProps={{
-            step: EncodeDefaultArgs.contrastStep,
-            min: minContrast,
-            max: maxContrast,
-            type: 'number',
+        <NumberInputControlled
+          realValue={contrast}
+          onSubmit={(value) => {
+            setContrast(value);
           }}
+          min={minContrast}
+          max={maxContrast}
+          step={EncodeDefaultArgs.contrastStep}
           sx={{
             width: '80px',
           }}
-          onChange={(e) => {
-            const value = parseInt(e.target.value, 10);
-            if (!isNaN(value)) {
-              setContrast(value);
-            }
-          }}
+          variant="standard"
         />
         <Button
           size="small"

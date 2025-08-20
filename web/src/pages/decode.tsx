@@ -4,7 +4,7 @@ import { DecodeDefaultArgs, defaultImages, EncodeDefaultArgs, maxContrast, minCo
 import { usePrismDecodeImagesStore, usePrismDecodeStore, type PrismDecodeMethod } from '../algo/decode/state';
 import { PrismImage } from '../models/image';
 import { useSidebarStore } from '../providers/sidebar';
-import { Box, Button, Input, MenuItem, Select, Slider, Typography } from '@mui/material';
+import { Box, Button, MenuItem, Select, Slider, Typography } from '@mui/material';
 import { InputContainer } from '../components/input-container';
 import { HelpButton } from '../components/help-button';
 import type { ImageEncodeFormat } from '../services/image-encoder';
@@ -15,6 +15,7 @@ import { LoadingOverlay } from '../components/loading';
 import { useDesktopMode } from '../providers/layout';
 import { prismDecodeCanvas } from '../algo/decode/canvas';
 import { FormatSelector } from '../components/format-selector';
+import { NumberInputControlled } from '../components/number-input';
 
 export default function DecodePage() {
   const [loading, setLoading] = useState(false);
@@ -175,45 +176,33 @@ function ThresholdSlider() {
         }}
       >
         <Box sx={{ flex: 2 }} />
-        <Input
-          value={lowerThreshold}
-          size="small"
-          onChange={(e) => {
-            const value = Number(e.target.value);
-            if (!isNaN(value)) {
-              setLowerThreshold(value);
-            }
+        <NumberInputControlled
+          realValue={lowerThreshold}
+          onSubmit={(value) => {
+            setLowerThreshold(value);
           }}
-          inputProps={{
-            step: DecodeDefaultArgs.thresholdStep,
-            min: 0,
-            max: 255,
-            type: 'number',
-          }}
+          min={0}
+          max={Math.max(higherThreshold - 1, 0)}
+          step={DecodeDefaultArgs.thresholdStep}
           sx={{
             width: '100px',
           }}
+          variant="standard"
         />
 
         <Box sx={{ flex: 1 }} />
-        <Input
-          value={higherThreshold}
-          size="small"
-          onChange={(e) => {
-            const value = Number(e.target.value);
-            if (!isNaN(value)) {
-              setHigherThreshold(value);
-            }
+        <NumberInputControlled
+          realValue={higherThreshold}
+          onSubmit={(value) => {
+            setHigherThreshold(value);
           }}
-          inputProps={{
-            step: 1,
-            min: 0,
-            max: 255,
-            type: 'number',
-          }}
+          min={Math.max(lowerThreshold + 1, 1)}
+          max={255}
+          step={DecodeDefaultArgs.thresholdStep}
           sx={{
             width: '100px',
           }}
+          variant="standard"
         />
 
         <Box sx={{ flex: 2 }} />
@@ -266,24 +255,18 @@ function ContrastSlider() {
         }}
       >
         <Box sx={{ flex: 2 }} />
-        <Input
-          value={contrast}
-          size="small"
-          onChange={(e) => {
-            const value = Number(e.target.value);
-            if (!isNaN(value)) {
-              setContrast(value);
-            }
+        <NumberInputControlled
+          realValue={contrast}
+          onSubmit={(value) => {
+            setContrast(value);
           }}
-          inputProps={{
-            step: EncodeDefaultArgs.contrastStep,
-            min: minContrast,
-            max: maxContrast,
-            type: 'number',
-          }}
+          min={minContrast}
+          max={maxContrast}
+          step={EncodeDefaultArgs.contrastStep}
           sx={{
             width: '100px',
           }}
+          variant="standard"
         />
 
         <Box sx={{ flex: 1 }} />

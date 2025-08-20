@@ -1,5 +1,5 @@
 import { TextField } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useDebounce } from '../utils/hooks/debounce';
 
 type NumberInputProps = {
@@ -36,4 +36,47 @@ export function NumberInput({ initValue, onChange, debounce = 200, min, max, ...
       {...rest}
     />
   );
+}
+
+type NumberInputControlledProps = {
+  realValue: number;
+  onSubmit: (value: number) => void;
+  min?: number;
+  max?: number;
+  debounce?: number;
+  [rest: string]: unknown;
+};
+
+export function NumberInputControlled({ min, max, onSubmit, realValue, debounce = 200, ...rest }: NumberInputControlledProps) {
+  const [isValid, setIsValid] = useState(true);
+  const [value, setValue] = useState(realValue.toString());
+  const timeoutRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    setValue(realValue.toString());
+  }, [realValue]);
+
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue = e.target.value;
+      setValue(newValue);
+
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+
+      timeoutRef.current = setTimeout(() => {
+        const parsedValue = parseFloat(newValue);
+        if (!isNaN(parsedValue) && (min === undefined || parsedValue >= min) && (max === undefined || parsedValue <= max)) {
+          setIsValid(true);
+          onSubmit(parsedValue);
+        } else {
+          setIsValid(false);
+        }
+      }, debounce);
+    },
+    [min, max, onSubmit, debounce]
+  );
+
+  return <TextField value={value} error={!isValid} onChange={handleChange} {...rest} />;
 }

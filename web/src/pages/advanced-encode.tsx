@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, FormLabel, Grid, Input, Link, Slider, Switch, TextField, Typography } from '@mui/material';
+import { Box, Button, FormControl, FormLabel, Grid, Link, Slider, Switch, TextField, Typography } from '@mui/material';
 import { InputContainer } from '../components/input-container';
 import { ImageLoaderDialog } from '../components/image-loader';
 import { useDesktopMode, useSmallScreen } from '../providers/layout';
@@ -6,7 +6,7 @@ import { HelpButton } from '../components/help-button';
 import { CanvasFallback } from '../components/canvas-fallback';
 import { PaletteEntries } from '../providers/theme';
 import { SubThemeManagerProvider } from '../providers/theme-provider';
-import { NumberInput } from '../components/number-input';
+import { NumberInput, NumberInputControlled } from '../components/number-input';
 import { FormatSelector } from '../components/format-selector';
 import type { ImageEncodeFormat } from '../services/image-encoder';
 import { routes, useCurrentRouteStore } from '../providers/routes';
@@ -295,43 +295,33 @@ function ImageArguments({ index, disabled }: ImageConfigProps & { disabled: bool
           gap: 1,
         }}
       >
-        <Input
-          value={config.lowerThreshold}
-          inputProps={{
-            step: AdvancedEncodeDefaultArgs.thresholdStep,
-            min: 0,
-            max: 255,
-            type: 'number',
+        <NumberInputControlled
+          realValue={config.lowerThreshold}
+          onSubmit={(value) => {
+            handleLowerThresholdChange(value);
           }}
+          min={0}
+          max={config.higherThreshold}
+          step={AdvancedEncodeDefaultArgs.thresholdStep}
           sx={{
             width: '80px',
           }}
-          onChange={(e) => {
-            const value = Number(e.target.value);
-            if (!isNaN(value)) {
-              handleLowerThresholdChange(value);
-            }
-          }}
           disabled={disabled}
+          variant="standard"
         />
-        <Input
-          value={config.higherThreshold}
-          inputProps={{
-            step: AdvancedEncodeDefaultArgs.thresholdStep,
-            min: 0,
-            max: 255,
-            type: 'number',
+        <NumberInputControlled
+          realValue={config.higherThreshold}
+          onSubmit={(value) => {
+            handleHigherThresholdChange(value);
           }}
+          min={config.lowerThreshold}
+          max={255}
+          step={AdvancedEncodeDefaultArgs.thresholdStep}
           sx={{
             width: '80px',
           }}
-          onChange={(e) => {
-            const value = Number(e.target.value);
-            if (!isNaN(value)) {
-              handleHigherThresholdChange(value);
-            }
-          }}
           disabled={disabled}
+          variant="standard"
         />
       </Box>
       <Box
@@ -363,24 +353,20 @@ function ImageArguments({ index, disabled }: ImageConfigProps & { disabled: bool
           gap: 1,
         }}
       >
-        <Input
-          value={config.contrast}
-          inputProps={{
-            step: AdvancedEncodeDefaultArgs.contrastStep,
-            min: minContrast,
-            max: maxContrast,
-            type: 'number',
+        <NumberInputControlled
+          realValue={config.contrast}
+          onSubmit={(value) => {
+            handleContrastChange(value);
           }}
+          onChange={handleContrastChange}
+          min={minContrast}
+          max={maxContrast}
+          step={AdvancedEncodeDefaultArgs.contrastStep}
           sx={{
             width: '80px',
           }}
-          onChange={(e) => {
-            const value = Number(e.target.value);
-            if (!isNaN(value)) {
-              handleContrastChange(value);
-            }
-          }}
           disabled={disabled}
+          variant="standard"
         />
         <Button
           size="small"
