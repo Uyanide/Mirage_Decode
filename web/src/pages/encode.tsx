@@ -744,7 +744,7 @@ function Output() {
         }}
         disabled={processing}
       ></FormatSelector>
-      <HelpButton message="非 JPEG 格式有较高地被社交平台强制压缩的风险" />
+      <HelpButton message="非 JPEG 格式有较高的被社交平台强制压缩的风险" />
     </Box>
   );
 }

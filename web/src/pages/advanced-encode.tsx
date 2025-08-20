@@ -674,7 +674,7 @@ function OutputBox() {
         title="色阶区间存在冲突！"
         content={[
           '建议避免输入图片的色阶端点之间发生重叠，否则显形效果可能不如预期。',
-          '例如 1-24 与 12-36 存在重叠, 建议调整为 0-24 与 25-49。',
+          '例如 0-24 与 12-36 存在重叠, 建议调整为 0-24 与 25-49。',
         ]}
       />
       <Button
@@ -816,7 +816,7 @@ function SaveBox() {
         }}
         disabled={processing}
       ></FormatSelector>
-      <HelpButton message="非 JPEG 格式有较高地被社交平台强制压缩的风险" />
+      <HelpButton message="非 JPEG 格式有较高的被社交平台强制压缩的风险" />
     </Box>
   );
 }

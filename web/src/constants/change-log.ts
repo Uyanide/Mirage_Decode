@@ -39,6 +39,6 @@ export const changeLog = [
   },
   {
     version: '2.0',
-    changes: ['使用 React 重写整个项目', '添加对多重隐写的支持'],
+    changes: ['使用 React 重写整个项目', '添加对复合光棱坦克的支持'],
   },
 ];

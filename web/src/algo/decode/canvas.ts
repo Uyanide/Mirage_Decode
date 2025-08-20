@@ -55,7 +55,7 @@ class DecodeCanvas extends PrismCanvas {
           if (currImage) {
             this.setImage(currImage.image);
           } else {
-            this.clear();
+            this.clearImage();
           }
         },
         { fireImmediately: true }
@@ -72,6 +72,13 @@ class DecodeCanvas extends PrismCanvas {
     this.adjust();
 
     this.putImageData(this.adjustedData);
+  }
+
+  clearImage() {
+    this.srcData.v = null;
+    this.decodedData.v = null;
+    this.adjustedData.v = null;
+    this.clear();
   }
 
   setPreset(metadata: string) {
