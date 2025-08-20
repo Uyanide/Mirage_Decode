@@ -54,6 +54,7 @@ export function NumberInputControlled({ min, max, onSubmit, realValue, debounce 
 
   useEffect(() => {
     setValue(realValue.toString());
+    setIsValid(true);
   }, [realValue]);
 
   const handleChange = useCallback(

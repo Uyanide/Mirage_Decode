@@ -86,7 +86,7 @@ function InfoBox() {
         😊
       </Typography> */}
       <Typography variant="body1">
-        请注意，由于渲染的复杂性，此页面<b>不提供</b>结果的实时预览 😥 更新参数请记得手动点击按钮重新生成 🙂
+        请注意，由于渲染的复杂性，此页面暂时<b>不提供</b>结果的实时预览 😥 更新参数后请记得手动点击按钮重新生成 🙂
       </Typography>
       <Typography variant="body1">
         另外，相较1.x版本，
@@ -358,7 +358,6 @@ function ImageArguments({ index, disabled }: ImageConfigProps & { disabled: bool
           onSubmit={(value) => {
             handleContrastChange(value);
           }}
-          onChange={handleContrastChange}
           min={minContrast}
           max={maxContrast}
           step={AdvancedEncodeDefaultArgs.contrastStep}
