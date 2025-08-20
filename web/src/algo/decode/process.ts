@@ -89,6 +89,16 @@ export function prismDecode(
   const data = imageData.data;
   const newData = newImageData.data;
 
+  if (higherThreshold <= lowerThreshold) {
+    for (let i = 0; i < newData.length; i += 4) {
+      newData[i] = lowerThreshold; // R
+      newData[i + 1] = lowerThreshold; // G
+      newData[i + 2] = lowerThreshold; // B
+      newData[i + 3] = data[i + 3]; // A
+    }
+    return;
+  }
+
   const scaleRatio = 255 / (higherThreshold - lowerThreshold);
   const scale = (v: number) => {
     return Math.max(Math.min((v - lowerThreshold) * scaleRatio, 255), 0);

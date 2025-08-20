@@ -60,6 +60,7 @@ export function PrismAdvancedEncode({ inputs, output }: PrismAdvancedEncodeConfi
 }
 
 function scale(v: number, l: number, h: number): number {
+  if (l >= h) return l;
   return Math.floor(Math.max(l, Math.min((v * (h - l)) / 255 + l, h)));
 }
 
