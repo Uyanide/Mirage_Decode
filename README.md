@@ -22,6 +22,32 @@
 
 一看就懂，不懂也能用 :)
 
+
+## 运行方法
+
+1. `git clone https://github.com/Uyanide/Mirage_Decode.git`
+2. `cd web`
+3. `yarn install`
+4. `yarn dev` 或 `yarn build`
+
+## 库 / 组件 / API
+
+- 核心
+  - React
+  - Vite
+- 框架
+  - Material UI
+  - Zustand
+- 图像处理
+  - WebCodec API
+  - Canvas API
+  - jpeg-js
+  - piexif.js
+  - pttjpeg
+- 其他
+  - file-saver
+  - ...
+
 # Q&A
 
 ### 0. 百度贴吧相关：
