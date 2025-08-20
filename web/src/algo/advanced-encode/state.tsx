@@ -53,11 +53,10 @@ export const useAdvancedEncodeConfigsStore = create<AdvancedEncodeConfigsStore>(
       const maxIndex = get().getMaxIndex();
       let l = AdvancedEncodeDefaultArgs.lowerThreshold;
       if (maxIndex >= 0) {
-        l = get().configs[maxIndex].higherThreshold;
+        l = get().configs[maxIndex].higherThreshold + 1;
       }
       let r = AdvancedEncodeDefaultArgs.higherThreshold - AdvancedEncodeDefaultArgs.lowerThreshold + l;
-      // l reaches max
-      if (l === 255) {
+      if (l >= 255) {
         l = AdvancedEncodeDefaultArgs.lowerThreshold;
         r = AdvancedEncodeDefaultArgs.higherThreshold;
       } else if (r > 255) {
