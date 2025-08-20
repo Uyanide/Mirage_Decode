@@ -76,8 +76,9 @@ type AdvancedEncodeDefaultArgsType = {
   height: number;
   maxSize: number;
   minSize: number;
-  lowerThreshold: number;
-  higherThreshold: number;
+  thresholdStart: number;
+  thresholdWidth: number;
+  thresholdGap: number;
   thresholdStep: number;
   contrast: number;
   contrastStep: number;
@@ -92,8 +93,9 @@ export const AdvancedEncodeDefaultArgs: AdvancedEncodeDefaultArgsType = {
   height: 1000,
   maxSize: 10000,
   minSize: 10,
-  lowerThreshold: 0,
-  higherThreshold: 24,
+  thresholdStart: 0,
+  thresholdWidth: 24,
+  thresholdGap: 5,
   thresholdStep: 1,
   contrast: 0,
   contrastStep: 5,

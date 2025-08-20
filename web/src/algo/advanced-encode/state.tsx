@@ -51,16 +51,17 @@ export const useAdvancedEncodeConfigsStore = create<AdvancedEncodeConfigsStore>(
 
     createConfig: () => {
       const maxIndex = get().getMaxIndex();
-      let l = AdvancedEncodeDefaultArgs.lowerThreshold;
+      let l = AdvancedEncodeDefaultArgs.thresholdStart;
       if (maxIndex >= 0) {
-        l = get().configs[maxIndex].higherThreshold + 1;
+        l = get().configs[maxIndex].higherThreshold + AdvancedEncodeDefaultArgs.thresholdGap;
       }
-      let r = AdvancedEncodeDefaultArgs.higherThreshold - AdvancedEncodeDefaultArgs.lowerThreshold + l;
-      if (l >= 255) {
-        l = AdvancedEncodeDefaultArgs.lowerThreshold;
-        r = AdvancedEncodeDefaultArgs.higherThreshold;
-      } else if (r > 255) {
+      let r = l + AdvancedEncodeDefaultArgs.thresholdWidth;
+      if (r > 255) {
         r = 255;
+      }
+      if (l >= r) {
+        l = AdvancedEncodeDefaultArgs.thresholdStart;
+        r = l + AdvancedEncodeDefaultArgs.thresholdWidth;
       }
       const nextIndex = get().getMaxIndex() + 1;
       prismAdvancedEncodeCanvas.createInputCanvas(nextIndex);
@@ -81,8 +82,8 @@ export const useAdvancedEncodeConfigsStore = create<AdvancedEncodeConfigsStore>(
       return (
         // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         config || {
-          lowerThreshold: AdvancedEncodeDefaultArgs.lowerThreshold,
-          higherThreshold: AdvancedEncodeDefaultArgs.higherThreshold,
+          lowerThreshold: AdvancedEncodeDefaultArgs.thresholdStart,
+          higherThreshold: AdvancedEncodeDefaultArgs.thresholdStart + AdvancedEncodeDefaultArgs.thresholdWidth,
           contrast: AdvancedEncodeDefaultArgs.contrast,
           isGray: AdvancedEncodeDefaultArgs.isGray,
           weight: AdvancedEncodeDefaultArgs.weight,
