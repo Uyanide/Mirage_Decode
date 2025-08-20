@@ -91,9 +91,9 @@ export function prismDecode(
 
   if (higherThreshold <= lowerThreshold) {
     for (let i = 0; i < newData.length; i += 4) {
-      newData[i] = lowerThreshold; // R
-      newData[i + 1] = lowerThreshold; // G
-      newData[i + 2] = lowerThreshold; // B
+      newData[i] = 0; // R
+      newData[i + 1] = 0; // G
+      newData[i + 2] = 0; // B
       newData[i + 3] = data[i + 3]; // A
     }
     return;

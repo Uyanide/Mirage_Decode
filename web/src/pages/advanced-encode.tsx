@@ -143,7 +143,7 @@ function ImageConfig({ index }: ImageConfigProps) {
           }}
         >
           <ImageInput index={index} hasImage={hasImage} />
-          <ImageArguments index={index} disabled={!hasImage} />
+          <ImageArguments index={index} disabled={false} />
         </Box>
       </InputContainer>
     </SubThemeManagerProvider>

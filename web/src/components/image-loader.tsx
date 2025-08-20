@@ -103,7 +103,7 @@ export function ImageLoader({ onconfirm, oncancel, defaultImage }: ImageLoaderPr
           }}
           disabled={loading}
         >
-          选择
+          选择文件
         </Button>
         <Button
           sx={{ flex: 1, height: itemHeight.medium }}
@@ -114,7 +114,7 @@ export function ImageLoader({ onconfirm, oncancel, defaultImage }: ImageLoaderPr
           }}
           disabled={loading}
         >
-          粘贴
+          粘贴图片
         </Button>
       </Box>
       <Box
@@ -163,7 +163,7 @@ export function ImageLoader({ onconfirm, oncancel, defaultImage }: ImageLoaderPr
           }}
           disabled={loading}
         >
-          加载示例图像
+          加载示例图片
         </Button>
       )}
       <DropArea

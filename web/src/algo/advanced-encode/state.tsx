@@ -50,13 +50,26 @@ export const useAdvancedEncodeConfigsStore = create<AdvancedEncodeConfigsStore>(
     },
 
     createConfig: () => {
+      const maxIndex = get().getMaxIndex();
+      let l = AdvancedEncodeDefaultArgs.lowerThreshold;
+      if (maxIndex >= 0) {
+        l = get().configs[maxIndex].higherThreshold;
+      }
+      let r = AdvancedEncodeDefaultArgs.higherThreshold - AdvancedEncodeDefaultArgs.lowerThreshold + l;
+      // l reaches max
+      if (l === 255) {
+        l = AdvancedEncodeDefaultArgs.lowerThreshold;
+        r = AdvancedEncodeDefaultArgs.higherThreshold;
+      } else if (r > 255) {
+        r = 255;
+      }
       const nextIndex = get().getMaxIndex() + 1;
       prismAdvancedEncodeCanvas.createInputCanvas(nextIndex);
       set((state) => {
         state.indexes.push(nextIndex);
         state.configs[nextIndex] = {
-          lowerThreshold: AdvancedEncodeDefaultArgs.lowerThreshold,
-          higherThreshold: AdvancedEncodeDefaultArgs.higherThreshold,
+          lowerThreshold: l,
+          higherThreshold: r,
           contrast: AdvancedEncodeDefaultArgs.contrast,
           isGray: AdvancedEncodeDefaultArgs.isGray,
           weight: AdvancedEncodeDefaultArgs.weight,
