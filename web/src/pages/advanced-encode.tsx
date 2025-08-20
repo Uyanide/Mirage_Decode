@@ -15,14 +15,14 @@ import {
   useAdvancedEncodeConfigsStore,
   useAdvancedImagesStore,
   useAdvancedImagesStoreInit,
-} from '../algo/advanced-encode/state';
+} from '../providers/advanced-encode/state';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { PrismImage } from '../models/image';
-import { prismAdvancedEncodeCanvas } from '../algo/advanced-encode/canvas';
+import { prismAdvancedEncodeCanvas } from '../providers/advanced-encode/canvas';
 import { AdvancedEncodeDefaultArgs, maxContrast, minContrast } from '../constants/default-arg';
 import { LoadingOverlay } from '../components/loading';
 import { useFormatWarningStore } from '../providers/format-warning';
-import { usePrismDecodeImagesStore } from '../algo/decode/state';
+import { usePrismDecodeImagesStore } from '../providers/decode/state';
 import { showErrorSnackbar, showSuccessSnackbar } from '../providers/snackbar';
 import { WarnDialog } from '../components/warn-dialog';
 

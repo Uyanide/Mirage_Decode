@@ -176,11 +176,11 @@ class ImageDecoderCanvasImpl extends ImageDecoderBase {
       // should help a bit :/
       try {
         ctx.imageSmoothingEnabled = false;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         (ctx as any).mozImageSmoothingEnabled = false;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         (ctx as any).webkitImageSmoothingEnabled = false;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-explicit-any
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         (ctx as any).msImageSmoothingEnabled = false;
       } catch (e: unknown) {
         console.warn('Failed to set image smoothing properties:', e);

@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ImageLoaderMulti } from '../components/image-loader-multi';
 import { DecodeDefaultArgs, defaultImages, EncodeDefaultArgs, maxContrast, minContrast } from '../constants/default-arg';
-import { usePrismDecodeImagesStore, usePrismDecodeStore, type PrismDecodeMethod } from '../algo/decode/state';
+import { usePrismDecodeImagesStore, usePrismDecodeStore, type PrismDecodeMethod } from '../providers/decode/state';
 import { PrismImage } from '../models/image';
 import { useSidebarStore } from '../providers/sidebar';
 import { Box, Button, MenuItem, Select, Slider, Typography } from '@mui/material';
@@ -13,7 +13,7 @@ import { LoadImageFileData } from '../services/image-loader';
 import { showErrorSnackbar, showSuccessSnackbar } from '../providers/snackbar';
 import { LoadingOverlay } from '../components/loading';
 import { useDesktopMode } from '../providers/layout';
-import { prismDecodeCanvas } from '../algo/decode/canvas';
+import { prismDecodeCanvas } from '../providers/decode/canvas';
 import { FormatSelector } from '../components/format-selector';
 import { NumberInputControlled } from '../components/number-input';
 

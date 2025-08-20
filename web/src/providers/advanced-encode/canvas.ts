@@ -1,9 +1,9 @@
 import type { PrismImage } from '../../models/image';
 import type { ImageEncodeFormat } from '../../services/image-encoder';
+import { ImageProcess, ImageUtils } from '../../services/image-process';
+import type { PrismAdvancedEncodeInputConfig } from '../../services/prism-advanced-encode';
 import { nullPtr, type Ptr } from '../../utils/general';
 import { PrismCanvas } from '../image-canvas';
-import { ImageUtils } from '../image-utils';
-import { PrismAdvancedEncode, type PrismAdvancedEncodeInputConfig } from './process';
 import { useAdvancedEncodeConfigsStore, useAdvancedImagesStore } from './state';
 
 class AdvancedEncodeInputCanvas extends PrismCanvas {
@@ -27,7 +27,7 @@ class AdvancedEncodeInputCanvas extends PrismCanvas {
     if (!this.srcData.v) {
       return;
     }
-    ImageUtils.resizeCover(width, height, this.srcData, this.resizedData);
+    ImageProcess.resizeCover(width, height, this.srcData, this.resizedData);
   }
 
   adjust() {
@@ -37,13 +37,13 @@ class AdvancedEncodeInputCanvas extends PrismCanvas {
     const config = useAdvancedEncodeConfigsStore.getState().getConfig(this.index);
     const temp1: Ptr<ImageData> = nullPtr();
     if (config.isGray) {
-      ImageUtils.toGray(this.resizedData, temp1);
+      ImageProcess.toGray(this.resizedData, temp1);
     } else {
       temp1.v = this.resizedData.v;
     }
     const temp2: Ptr<ImageData> = nullPtr();
     if (config.contrast !== 0) {
-      ImageUtils.adjustContrast(config.contrast, temp1, temp2);
+      ImageProcess.adjustContrast(config.contrast, temp1, temp2);
     } else {
       temp2.v = temp1.v;
     }
@@ -144,7 +144,7 @@ class AdvancedEncodeResultCanvas extends PrismCanvas {
       handleFailure('Failed to create output image data.');
       return;
     }
-    const success = PrismAdvancedEncode({ inputs: configs, output: this.resultData.v });
+    const success = ImageProcess.prismAdvancedEncode({ inputs: configs, output: this.resultData.v });
     if (!success) {
       handleFailure('Failed to encode image.');
       return;

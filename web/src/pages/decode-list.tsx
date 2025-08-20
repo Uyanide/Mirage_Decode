@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from '@mui/material';
-import { usePrismDecodeImagesStore } from '../algo/decode/state';
+import { usePrismDecodeImagesStore } from '../providers/decode/state';
 import { ImageDisplay } from '../components/image-display';
 import { routes, useCurrentRouteStore } from '../providers/routes';
 

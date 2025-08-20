@@ -1,10 +1,10 @@
 import type { PrismImage } from '../../models/image';
 import { usePrismDecodeImagesStore, usePrismDecodeStore } from './state';
 import { PrismCanvas } from '../image-canvas';
-import { decodePreset, prismDecode, type PrismDecodeConfig } from './process';
 import { nullPtr, type Ptr } from '../../utils/general';
-import { ImageUtils } from '../image-utils';
 import type { ImageEncodeFormat } from '../../services/image-encoder';
+import { ImageProcess, ImageUtils } from '../../services/image-process';
+import type { PrismDecodeConfig } from '../../services/prism-decode';
 
 class DecodeCanvas extends PrismCanvas {
   protected decodedData: Ptr<ImageData> = nullPtr();
@@ -90,7 +90,7 @@ class DecodeCanvas extends PrismCanvas {
       method: 'black', // doesn't matter
       contrast,
     };
-    decodePreset(metadata, config);
+    ImageProcess.decodePreset(metadata, config);
     this.setValues(config);
   }
 
@@ -113,7 +113,7 @@ class DecodeCanvas extends PrismCanvas {
       return;
     }
     const { lowerThreshold, higherThreshold, method, contrast } = usePrismDecodeStore.getState();
-    prismDecode(this.srcData.v, this.decodedData.v, {
+    ImageProcess.prismDecode(this.srcData.v, this.decodedData.v, {
       lowerThreshold,
       higherThreshold,
       method,
@@ -127,7 +127,7 @@ class DecodeCanvas extends PrismCanvas {
     // 'forceUpdate' cuz changing from other values to 50
     // also needs updating
     if (forceUpdate || contrast !== 0) {
-      ImageUtils.adjustContrast(contrast, this.decodedData, this.adjustedData);
+      ImageProcess.adjustContrast(contrast, this.decodedData, this.adjustedData);
     } else {
       this.adjustedData.v = this.decodedData.v;
     }

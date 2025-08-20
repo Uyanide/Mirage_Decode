@@ -2,9 +2,8 @@ import { nullPtr, type Ptr } from '../../utils/general';
 import { PrismCanvas } from '../image-canvas';
 import { usePrismEncodeImageStore, usePrismEncodeStore } from './state';
 import type { PrismImage } from '../../models/image';
-import { ImageUtils } from '../image-utils';
-import { encodePreset, prismEncode } from './process';
 import { type ImageEncodeFormat } from '../../services/image-encoder';
+import { ImageProcess } from '../../services/image-process';
 
 // srcData
 // resizedData
@@ -30,14 +29,14 @@ export class EncodeInputCanvas extends PrismCanvas {
       return;
     }
     const { maxSize } = usePrismEncodeStore.getState();
-    ImageUtils.resizeFit(maxSize, this.srcData, this.resizedData);
+    ImageProcess.resizeFit(maxSize, this.srcData, this.resizedData);
   }
 
   resizeCover(width: number, Height: number) {
     if (!this.srcData.v) {
       return;
     }
-    ImageUtils.resizeCover(width, Height, this.srcData, this.resizedData);
+    ImageProcess.resizeCover(width, Height, this.srcData, this.resizedData);
   }
 
   getSize() {
@@ -61,13 +60,13 @@ export class EncodeInputCanvas extends PrismCanvas {
     }
     const temp: Ptr<ImageData> = nullPtr();
     if (gray) {
-      ImageUtils.toGray(this.resizedData, temp);
+      ImageProcess.toGray(this.resizedData, temp);
     } else {
       temp.v = this.resizedData.v;
     }
     const temp2: Ptr<ImageData> = nullPtr();
     if (contrast !== 0) {
-      ImageUtils.adjustContrast(contrast, temp, temp2);
+      ImageProcess.adjustContrast(contrast, temp, temp2);
     } else {
       temp2.v = temp.v;
     }
@@ -263,7 +262,7 @@ export class EncodeResultCanvas extends PrismCanvas {
       isReverse,
     };
 
-    prismEncode(inner, cover, result, config);
+    ImageProcess.prismEncode(inner, cover, result, config);
     this.resultData.v = result;
     usePrismEncodeImageStore.getState().haveResult = true;
     this.putImageData(this.resultData);
@@ -276,7 +275,7 @@ export class EncodeResultCanvas extends PrismCanvas {
 
   encodeResultToFile(format: ImageEncodeFormat) {
     const { innerThreshold, innerContrast, isReverse } = usePrismEncodeStore.getState();
-    const metadata = encodePreset(innerThreshold, innerContrast, isReverse);
+    const metadata = ImageProcess.encodePreset(innerThreshold, innerContrast, isReverse);
     return this.encodeImageFile(this.resultData, format, metadata);
   }
 }

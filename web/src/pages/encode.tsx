@@ -19,19 +19,19 @@ import { HelpButton } from '../components/help-button';
 import { CanvasFallback } from '../components/canvas-fallback';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { zIndex } from '../constants/layout';
-import { isCover } from '../algo/encode/process';
-import { usePrismEncodeImageStore, usePrismEncodeStore } from '../algo/encode/state';
-import { prismEncodeCanvas } from '../algo/encode/canvas';
+import { usePrismEncodeImageStore, usePrismEncodeStore } from '../providers/encode/state';
+import { prismEncodeCanvas } from '../providers/encode/canvas';
 import { defaultImages, EncodeDefaultArgs, maxContrast, minContrast } from '../constants/default-arg';
 import type { ImageEncodeFormat } from '../services/image-encoder';
 import { showErrorSnackbar, showSuccessSnackbar } from '../providers/snackbar';
 import { useFormatWarningStore } from '../providers/format-warning';
-import { usePrismDecodeImagesStore } from '../algo/decode/state';
+import { usePrismDecodeImagesStore } from '../providers/decode/state';
 import { PrismImage } from '../models/image';
 import { routes, useCurrentRouteStore } from '../providers/routes';
 import { NumberInput, NumberInputControlled } from '../components/number-input';
 import { FormatSelector } from '../components/format-selector';
 import { WarnDialog } from '../components/warn-dialog';
+import { ImageProcess } from '../services/image-process';
 
 export default function EncodePage() {
   const desktop = useDesktopMode();
@@ -447,7 +447,7 @@ function BlendModeConfigDialog({ onConfirm, onCancel }: BlendModeConfigDialogPro
     ctx.imageSmoothingEnabled = false;
     for (let x = 0; x < canvas.width; x++) {
       for (let y = 0; y < canvas.height; y++) {
-        if (isCover(x, y, slope, gap, isRow)) {
+        if (ImageProcess.encodeIsCover(x, y, slope, gap, isRow)) {
           ctx.fillStyle = 'white';
         } else {
           ctx.fillStyle = 'black';
