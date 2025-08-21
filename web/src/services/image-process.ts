@@ -1,4 +1,7 @@
 import type { Ptr } from '../utils/general';
+import type { PrismAdvancedEncodeService } from './prism-advanced-encode';
+import type { PrismDecodeService } from './prism-decode';
+import type { PrismEncodeService } from './prism-encode';
 import { FallbackProcess } from './process/fallback/process';
 
 export type ToGrayAlgo = 'Lum' | 'Average';
@@ -28,6 +31,9 @@ export interface ImageCommonService {
   resizeFit: (maxSize: number, src: Ptr<ImageData>, tar: Ptr<ImageData>) => void;
 }
 
-export const ImageProcess = (() => {
-  return new FallbackProcess();
-})();
+export const ImageProcess: ImageCommonService & PrismEncodeService & PrismDecodeService & PrismAdvancedEncodeService =
+  new FallbackProcess();
+
+export function initImageProcess() {
+  return;
+}

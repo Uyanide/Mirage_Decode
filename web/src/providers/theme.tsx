@@ -156,8 +156,7 @@ function getInitialMode(): ThemeMode {
   return 'light';
 }
 
-function updateThemeMode(mode: ThemeMode | null = null) {
-  mode ??= getInitialMode();
+function updateThemeMode(mode: ThemeMode) {
   if (mode === 'dark') {
     if (!document.body.classList.contains('dark')) {
       document.body.classList.add('dark');
@@ -176,4 +175,9 @@ function updateThemeMode(mode: ThemeMode | null = null) {
   });
 }
 
-export { localThemeKey, updateThemeMode, useThemeStore };
+function useThemeModeInitializer() {
+  const initMode = getInitialMode();
+  updateThemeMode(initMode);
+}
+
+export { localThemeKey, useThemeModeInitializer, useThemeStore };

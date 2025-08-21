@@ -12,6 +12,7 @@ export async function initDecoderWorker() {
   if (worker) {
     return;
   }
+
   if (typeof Worker === 'undefined') {
     throw new Error('Web Workers are not supported in this environment');
   }

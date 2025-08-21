@@ -311,8 +311,8 @@ function MethodsInput() {
         }}
       >
         <MenuItem value="ltavg">临近平均</MenuItem>
-        <MenuItem value="lcopy">左侧复制</MenuItem>
-        <MenuItem value="tcopy">上方复制</MenuItem>
+        {/* <MenuItem value="lcopy">左侧复制</MenuItem>
+        <MenuItem value="tcopy">上方复制</MenuItem> */}
         <MenuItem value="transparent">置为透明</MenuItem>
         <MenuItem value="black">置为黑色</MenuItem>
         <MenuItem value="white">置为白色</MenuItem>
