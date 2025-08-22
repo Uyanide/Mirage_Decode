@@ -61,6 +61,17 @@ class DecodeCanvas extends PrismCanvas {
         { fireImmediately: true }
       )
     );
+
+    this.subscribe(
+      usePrismDecodeStore.subscribe(
+        (state) => state.iterations,
+        () => {
+          const { method } = usePrismDecodeStore.getState();
+          if (method !== 'ltavg') return; // only for 'ltavg' method
+          this.decode();
+        }
+      )
+    );
   }
 
   setImage(image: PrismImage) {
@@ -83,12 +94,13 @@ class DecodeCanvas extends PrismCanvas {
 
   setPreset(metadata: string) {
     console.log('Setting preset from string:', metadata);
-    const { lowerThreshold, higherThreshold, contrast } = usePrismDecodeStore.getState();
+    const { lowerThreshold, higherThreshold, contrast, iterations } = usePrismDecodeStore.getState();
     const config: PrismDecodeConfig = {
       lowerThreshold,
       higherThreshold,
       method: 'black', // doesn't matter
       contrast,
+      iterations,
     };
     ImageProcess.decodePreset(metadata, config);
     this.setValues(config);
@@ -112,12 +124,13 @@ class DecodeCanvas extends PrismCanvas {
       console.warn('No buffer available');
       return;
     }
-    const { lowerThreshold, higherThreshold, method, contrast } = usePrismDecodeStore.getState();
+    const { lowerThreshold, higherThreshold, method, contrast, iterations } = usePrismDecodeStore.getState();
     ImageProcess.prismDecode(this.srcData.v, this.decodedData.v, {
       lowerThreshold,
       higherThreshold,
       method,
       contrast,
+      iterations,
     });
     this.adjust();
   };

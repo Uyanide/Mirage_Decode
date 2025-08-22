@@ -14,6 +14,8 @@ type DecodeDefaultArgsType = {
   contrast: number;
   contrastStep: number;
   saveFormat: ImageEncodeFormat;
+  iterations: number;
+  maxIterations: number;
 };
 
 export const DecodeDefaultArgs: DecodeDefaultArgsType = {
@@ -25,6 +27,8 @@ export const DecodeDefaultArgs: DecodeDefaultArgsType = {
   contrast: 0,
   contrastStep: 5,
   saveFormat: 'PNG',
+  iterations: 16,
+  maxIterations: 100, // "100" iterations is like filling 200px gaps
 };
 
 type EncodeDefaultArgsType = {

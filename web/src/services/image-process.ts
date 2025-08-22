@@ -3,6 +3,7 @@ import type { PrismAdvancedEncodeService } from './prism-advanced-encode';
 import type { PrismDecodeService } from './prism-decode';
 import type { PrismEncodeService } from './prism-encode';
 import { FallbackProcess } from './process/fallback/process';
+import { WebGLProcess } from './process/webgl/process';
 
 export type ToGrayAlgo = 'Lum' | 'Average';
 
@@ -31,9 +32,14 @@ export interface ImageCommonService {
   resizeFit: (maxSize: number, src: Ptr<ImageData>, tar: Ptr<ImageData>) => void;
 }
 
-export const ImageProcess: ImageCommonService & PrismEncodeService & PrismDecodeService & PrismAdvancedEncodeService =
+export let ImageProcess: ImageCommonService & PrismEncodeService & PrismDecodeService & PrismAdvancedEncodeService =
   new FallbackProcess();
 
+export let isWebGLAvailable = false;
+
 export function initImageProcess() {
-  return;
+  const WebGLProcessInstance = new WebGLProcess();
+  WebGLProcessInstance.init();
+  ImageProcess = WebGLProcessInstance;
+  isWebGLAvailable = true;
 }

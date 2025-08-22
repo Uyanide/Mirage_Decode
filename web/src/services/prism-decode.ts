@@ -5,6 +5,7 @@ export type PrismDecodeConfig = {
   higherThreshold: number;
   method: PrismDecodeMethod;
   contrast: number;
+  iterations: number;
 };
 
 export interface PrismDecodeService {

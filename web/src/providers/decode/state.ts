@@ -13,12 +13,14 @@ type PrismDecodeState = {
   method: PrismDecodeMethod;
   contrast: number;
   saveFormat: ImageEncodeFormat;
+  iterations: number;
   setDoReadMetadata: (value: boolean) => void;
   setLowerThreshold: (value: number) => void;
   setHigherThreshold: (value: number) => void;
   setMethod: (value: PrismDecodeMethod) => void;
   setContrast: (value: number) => void;
   setSaveFormat: (value: ImageEncodeFormat) => void;
+  setIterations: (value: number) => void;
 };
 
 export const usePrismDecodeStore = create<PrismDecodeState>()(
@@ -29,6 +31,7 @@ export const usePrismDecodeStore = create<PrismDecodeState>()(
     method: DecodeDefaultArgs.method as PrismDecodeMethod,
     contrast: DecodeDefaultArgs.contrast,
     saveFormat: DecodeDefaultArgs.saveFormat,
+    iterations: DecodeDefaultArgs.iterations,
     setDoReadMetadata: (value: boolean) => {
       set({ doReadMetadata: value });
     },
@@ -53,6 +56,10 @@ export const usePrismDecodeStore = create<PrismDecodeState>()(
     },
     setSaveFormat: (value: ImageEncodeFormat) => {
       set({ saveFormat: value });
+    },
+    setIterations: (value: number) => {
+      if (value < 0 || value > DecodeDefaultArgs.maxIterations) return;
+      set({ iterations: value });
     },
   }))
 );

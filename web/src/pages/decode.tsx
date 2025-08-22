@@ -292,32 +292,67 @@ function MethodsInput() {
   const method = usePrismDecodeStore((state) => state.method);
   const setMethod = usePrismDecodeStore((state) => state.setMethod);
 
+  const iterations = usePrismDecodeStore((state) => state.iterations);
+  const setIterations = usePrismDecodeStore((state) => state.setIterations);
+
   return (
     <Box
       sx={{
         display: 'flex',
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
+        flexDirection: 'column',
         gap: 1,
       }}
     >
-      <Typography variant="subtitle1">3. 其他像素处理方式:</Typography>
-      <Select
-        value={method}
-        size="small"
-        onChange={(e) => {
-          setMethod(e.target.value as PrismDecodeMethod);
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 1,
         }}
       >
-        <MenuItem value="ltavg">临近平均</MenuItem>
-        {/* <MenuItem value="lcopy">左侧复制</MenuItem>
+        <Typography variant="subtitle1">3. 其他像素处理方式:</Typography>
+        <Select
+          value={method}
+          size="small"
+          onChange={(e) => {
+            setMethod(e.target.value as PrismDecodeMethod);
+          }}
+        >
+          <MenuItem value="ltavg">临近平均</MenuItem>
+          {/* <MenuItem value="lcopy">左侧复制</MenuItem>
         <MenuItem value="tcopy">上方复制</MenuItem> */}
-        <MenuItem value="transparent">置为透明</MenuItem>
-        <MenuItem value="black">置为黑色</MenuItem>
-        <MenuItem value="white">置为白色</MenuItem>
-      </Select>
-      <HelpButton message="此选项不会大幅影响显形质量" />
+          <MenuItem value="transparent">置为透明</MenuItem>
+          <MenuItem value="black">置为黑色</MenuItem>
+          <MenuItem value="white">置为白色</MenuItem>
+        </Select>
+        <HelpButton message="此选项不会大幅影响显形质量" />
+      </Box>
+      {method === 'ltavg' && (
+        <Box
+          sx={{
+            display: 'flex',
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 1,
+          }}
+        >
+          <Typography variant="subtitle1">4. 扩散迭代次数:</Typography>
+          <NumberInputControlled
+            realValue={iterations}
+            size="small"
+            onSubmit={setIterations}
+            min={0}
+            max={DecodeDefaultArgs.maxIterations}
+            step={1}
+            sx={{ width: '100px' }}
+            variant="standard"
+          />
+          <HelpButton message="当出现未填充的像素时可适当增大; 当处理速度过慢时可适当减小" />
+        </Box>
+      )}
     </Box>
   );
 }
