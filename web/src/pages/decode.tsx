@@ -89,7 +89,6 @@ export default function DecodePage() {
             ref={decodeCanvasRef}
             style={{
               width: '100%',
-              height: '100%',
               display: currImage ? 'block' : 'none',
             }}
           ></canvas>
@@ -99,6 +98,9 @@ export default function DecodePage() {
               action="加载示例图片"
               onClick={handleLoadDefault}
               disabled={loading}
+              styles={{
+                width: '100%',
+              }}
             ></CanvasFallback>
           )}
         </ImageLoaderMulti>

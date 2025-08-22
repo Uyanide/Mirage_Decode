@@ -25,6 +25,8 @@ import { useFormatWarningStore } from '../providers/format-warning';
 import { usePrismDecodeImagesStore } from '../providers/decode/state';
 import { showErrorSnackbar, showSuccessSnackbar } from '../providers/snackbar';
 import { WarnDialog } from '../components/warn-dialog';
+import { DropArea } from '../components/drop-area';
+import { LoadImageFileData } from '../services/image-loader';
 
 export default function AdvancesEncodePage() {
   const desktop = useDesktopMode();
@@ -174,6 +176,24 @@ function ImageInput({ index, hasImage }: ImageConfigProps & { hasImage: boolean 
     removeConfig(index);
   };
 
+  const handleDrop = useCallback(
+    (items: DataTransferItemList) => {
+      (async () => {
+        const files = await LoadImageFileData.fromDropItems(items, false);
+        if (files.length === 0) {
+          showErrorSnackbar('没有有效的图片');
+          return;
+        }
+        const img = await PrismImage.fromFileData(files[0]);
+        handleImageLoaded(img);
+      })().catch((e: unknown) => {
+        showErrorSnackbar('加载图片失败');
+        console.error(e);
+      });
+    },
+    [handleImageLoaded]
+  );
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -194,25 +214,28 @@ function ImageInput({ index, hasImage }: ImageConfigProps & { hasImage: boolean 
       }}
     >
       <ImageLoaderDialog onconfirm={handleImageLoaded} label="加载"></ImageLoaderDialog>
-      {!hasImage && (
-        <CanvasFallback
-          text="(･_･`)>"
-          aspectRatio="1"
-          styles={{
+      <DropArea onDrop={handleDrop}>
+        {!hasImage && (
+          <CanvasFallback
+            text="(･_･`)>"
+            aspectRatio="1"
+            styles={{
+              width: '100%',
+              objectFit: 'contain',
+            }}
+          ></CanvasFallback>
+        )}
+        <canvas
+          ref={canvasRef}
+          style={{
             width: '100%',
+            maxWidth: size,
+            maxHeight: size,
+            display: hasImage ? 'block' : 'none',
             objectFit: 'contain',
           }}
-        ></CanvasFallback>
-      )}
-      <canvas
-        ref={canvasRef}
-        style={{
-          maxWidth: size,
-          maxHeight: size,
-          display: hasImage ? 'block' : 'none',
-          objectFit: 'contain',
-        }}
-      ></canvas>
+        ></canvas>
+      </DropArea>
       <Button
         variant="outlined"
         size="small"

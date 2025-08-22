@@ -32,6 +32,8 @@ import { NumberInput, NumberInputControlled } from '../components/number-input';
 import { FormatSelector } from '../components/format-selector';
 import { WarnDialog } from '../components/warn-dialog';
 import { ImageProcess } from '../services/image-process';
+import { DropArea } from '../components/drop-area';
+import { LoadImageFileData } from '../services/image-loader';
 
 export default function EncodePage() {
   const desktop = useDesktopMode();
@@ -109,6 +111,24 @@ function ImageInput({ isCover }: ImageConfigProps) {
   const smallScreen = useSmallScreen();
   const size = smallScreen ? 120 : 200;
 
+  const handleDrop = useCallback(
+    (items: DataTransferItemList) => {
+      (async () => {
+        const files = await LoadImageFileData.fromDropItems(items, false);
+        if (files.length === 0) {
+          showErrorSnackbar('没有有效的图片');
+          return;
+        }
+        const img = await PrismImage.fromFileData(files[0]);
+        setImage(img);
+      })().catch((e: unknown) => {
+        showErrorSnackbar('加载图片失败');
+        console.error(e);
+      });
+    },
+    [setImage]
+  );
+
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) {
@@ -145,25 +165,28 @@ function ImageInput({ isCover }: ImageConfigProps) {
         defaultImage={isCover ? defaultImages.encodeCover : defaultImages.encodeInner}
         label="加载"
       ></ImageLoaderDialog>
-      {!image && (
-        <CanvasFallback
-          text="(･_･`)>"
-          aspectRatio="1"
-          styles={{
+      <DropArea onDrop={handleDrop}>
+        {!image && (
+          <CanvasFallback
+            text="(･_･`)>"
+            aspectRatio="1"
+            styles={{
+              width: '100%',
+              objectFit: 'contain',
+            }}
+          ></CanvasFallback>
+        )}
+        <canvas
+          ref={canvasRef}
+          style={{
             width: '100%',
+            maxWidth: size,
+            maxHeight: size,
+            display: image ? 'block' : 'none',
             objectFit: 'contain',
           }}
-        ></CanvasFallback>
-      )}
-      <canvas
-        ref={canvasRef}
-        style={{
-          maxWidth: size,
-          maxHeight: size,
-          display: image ? 'block' : 'none',
-          objectFit: 'contain',
-        }}
-      ></canvas>
+        ></canvas>
+      </DropArea>
     </Box>
   );
 }

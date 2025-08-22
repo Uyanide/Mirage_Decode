@@ -5,9 +5,10 @@ type DropAreaProps = {
   onDrop: (items: DataTransferItemList) => void;
   children?: React.ReactNode;
   disabled?: boolean;
+  styles?: React.CSSProperties;
 };
 
-export function DropArea({ onDrop, children, disabled }: DropAreaProps) {
+export function DropArea({ onDrop, children, disabled, styles }: DropAreaProps) {
   const areaRef = useRef<HTMLDivElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
 
@@ -57,7 +58,7 @@ export function DropArea({ onDrop, children, disabled }: DropAreaProps) {
   }, [onDrop, disabled]);
 
   return (
-    <Box ref={areaRef} sx={{ position: 'relative', width: '100%', height: '100%' }}>
+    <Box ref={areaRef} sx={{ position: 'relative', width: '100%', height: '100%', ...styles }}>
       {children}
       <Box
         sx={{
