@@ -43,6 +43,7 @@
   - Zustand
 - 图像处理
   - WebCodec API
+  - WebGL2 API
   - Canvas API
   - jpeg-js
   - piexif.js

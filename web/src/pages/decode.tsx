@@ -16,6 +16,7 @@ import { useDesktopMode } from '../providers/layout';
 import { prismDecodeCanvas } from '../providers/decode/canvas';
 import { FormatSelector } from '../components/format-selector';
 import { NumberInputControlled } from '../components/number-input';
+import { isWebGLAvailable } from '../services/image-process';
 
 export default function DecodePage() {
   const [loading, setLoading] = useState(false);
@@ -331,7 +332,7 @@ function MethodsInput() {
         </Select>
         <HelpButton message="此选项不会大幅影响显形质量" />
       </Box>
-      {method === 'ltavg' && (
+      {isWebGLAvailable && method === 'ltavg' && (
         <Box
           sx={{
             display: 'flex',
