@@ -24,7 +24,6 @@ type SidebarProps = {
 
 export function DraggableSidebar({ minWidth, children = null, hideFullscreenExcludes, show, setShow }: SidebarProps) {
   const [sidebarWidth, setSidebarWidth] = useState(300);
-  const hasDraggedRef = useRef(false);
 
   const sidebarRef = useRef<HTMLDivElement>(null);
   const sidebarToggleButtonRef = useRef<HTMLDivElement>(null);
@@ -69,17 +68,14 @@ export function DraggableSidebar({ minWidth, children = null, hideFullscreenExcl
       const initX = 'clientX' in event ? event.clientX : event.touches[0].clientX;
       const parentWidth = document.documentElement.getBoundingClientRect().width;
       const maxWidth = parentWidth * 0.9;
-      hasDraggedRef.current = false;
 
       const dragMouse = (e: MouseEvent) => {
-        hasDraggedRef.current = true;
         const offset = e.clientX - initX;
         const newWidth = Math.min(Math.max(sidebarWidth - offset, minWidth), maxWidth);
         setSidebarWidth(newWidth);
       };
 
       const dragTouch = (e: TouchEvent) => {
-        hasDraggedRef.current = true;
         const offset = e.touches[0].clientX - initX;
         const newWidth = Math.min(Math.max(sidebarWidth - offset, minWidth), maxWidth);
         setSidebarWidth(newWidth);
@@ -91,11 +87,6 @@ export function DraggableSidebar({ minWidth, children = null, hideFullscreenExcl
         document.removeEventListener('touchmove', dragTouch);
         document.removeEventListener('touchend', dragEnd);
         enableHorizontalScroll();
-        if (!hasDraggedRef.current) {
-          console.log('Sidebar clicked, hiding sidebar');
-          setShow(false);
-        }
-        hasDraggedRef.current = false;
       };
 
       document.addEventListener('mousemove', dragMouse);
@@ -106,10 +97,7 @@ export function DraggableSidebar({ minWidth, children = null, hideFullscreenExcl
     [sidebarWidth, minWidth, show, setShow]
   );
 
-  const handleSidebarClick = (e: React.MouseEvent) => {
-    if (sidebarToggleButtonRef.current?.contains(e.target as Node)) {
-      return;
-    }
+  const handleSidebarClick = () => {
     setShow(true);
   };
 
