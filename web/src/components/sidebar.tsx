@@ -29,15 +29,6 @@ export function DraggableSidebar({ minWidth, children = null, hideFullscreenExcl
   const sidebarRef = useRef<HTMLDivElement>(null);
   const sidebarToggleButtonRef = useRef<HTMLDivElement>(null);
 
-  const hideSidebar = useCallback(() => {
-    const sidebar = sidebarRef.current;
-    if (sidebar) {
-      sidebar.classList.remove('sidebarShow');
-      sidebar.classList.add('sidebarHide');
-    }
-    setShow(false);
-  }, [setShow]);
-
   const hideSidebarFullscreen = useCallback(
     (event: MouseEvent) => {
       if (!show) {
@@ -55,9 +46,9 @@ export function DraggableSidebar({ minWidth, children = null, hideFullscreenExcl
           }
         }
       }
-      hideSidebar();
+      setShow(false);
     },
-    [hideFullscreenExcludes, hideSidebar, show]
+    [hideFullscreenExcludes, show, setShow]
   );
 
   useEffect(() => {
@@ -67,19 +58,10 @@ export function DraggableSidebar({ minWidth, children = null, hideFullscreenExcl
     };
   }, [hideSidebarFullscreen]);
 
-  const showSidebar = useCallback(() => {
-    const sidebar = sidebarRef.current;
-    if (sidebar) {
-      sidebar.classList.remove('sidebarHide');
-      sidebar.classList.add('sidebarShow');
-    }
-    setShow(true);
-  }, [setShow]);
-
   const adjustSidebarWidth = useCallback(
     (event: React.MouseEvent | React.TouchEvent) => {
       if (!show) {
-        showSidebar();
+        setShow(true);
         return;
       }
 
@@ -110,7 +92,8 @@ export function DraggableSidebar({ minWidth, children = null, hideFullscreenExcl
         document.removeEventListener('touchend', dragEnd);
         enableHorizontalScroll();
         if (!hasDraggedRef.current) {
-          hideSidebar();
+          console.log('Sidebar clicked, hiding sidebar');
+          setShow(false);
         }
         hasDraggedRef.current = false;
       };
@@ -120,13 +103,14 @@ export function DraggableSidebar({ minWidth, children = null, hideFullscreenExcl
       document.addEventListener('touchmove', dragTouch);
       document.addEventListener('touchend', dragEnd);
     },
-    [sidebarWidth, minWidth, hideSidebar, showSidebar, show]
+    [sidebarWidth, minWidth, show, setShow]
   );
 
-  const handleSidebarClick = () => {
-    if (!show) {
-      showSidebar();
+  const handleSidebarClick = (e: React.MouseEvent) => {
+    if (sidebarToggleButtonRef.current?.contains(e.target as Node)) {
+      return;
     }
+    setShow(true);
   };
 
   const palette = useThemeStore((state) => state.palette);
@@ -151,7 +135,7 @@ export function DraggableSidebar({ minWidth, children = null, hideFullscreenExcl
         alignItems: 'center',
         backgroundColor: palette.SecondaryBackground,
         borderLeft: `5px solid ${palette.ElementBackground}`,
-        transition: 'transform 0.5s, background-color 0.7s, border-color 0.7s !important',
+        transition: 'transform 0.5s, background-color 0.5s, border-color 0.5s',
         transform: show ? 'translateX(0) ' : `translateX(${(sidebarWidth - 30).toString()}px)`,
       }}
     >
@@ -172,7 +156,7 @@ export function DraggableSidebar({ minWidth, children = null, hideFullscreenExcl
           borderRadius: '50%',
           cursor: 'pointer',
           zIndex: 101,
-          transition: 'background-color 0.7s, border-color 0.7s',
+          transition: 'background-color 0.5s, border-color 0.5s',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
