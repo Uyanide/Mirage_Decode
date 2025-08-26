@@ -43,9 +43,9 @@ void main() {
     if (u_slope == 0) {
         isCoverPixel = (u_isRow ? y : x) % (u_gap + 1) < u_gap;
     } else if (u_isRow) {
-        isCoverPixel = (x / u_slope + y) % (u_gap + 1) < u_gap;
-    } else {
         isCoverPixel = (y / u_slope + x) % (u_gap + 1) < u_gap;
+    } else {
+        isCoverPixel = (x / u_slope + y) % (u_gap + 1) < u_gap;
     }
 
     if (isCoverPixel) {
