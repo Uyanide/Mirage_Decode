@@ -101,6 +101,7 @@ export default function DecodePage() {
               disabled={loading}
               styles={{
                 width: '100%',
+                aspectRatio: '1.54',
               }}
             ></CanvasFallback>
           )}

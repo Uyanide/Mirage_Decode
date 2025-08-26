@@ -43,9 +43,9 @@ void main() {
     if (u_slope == 0) {
         isCoverPixel = (u_isRow ? y : x) % (u_gap + 1) < u_gap;
     } else if (u_isRow) {
-        isCoverPixel = (y / u_slope + x) % (u_gap + 1) < u_gap;
-    } else {
         isCoverPixel = (x / u_slope + y) % (u_gap + 1) < u_gap;
+    } else {
+        isCoverPixel = (y / u_slope + x) % (u_gap + 1) < u_gap;
     }
 
     if (isCoverPixel) {
@@ -131,6 +131,7 @@ export function WebGLEncodeProcess<TBase extends WebGLProcessConstructor>(Base: 
         u_texelSize: { value: [1 / width, 1 / height], type: 'Vec2' },
       });
 
+      this._gl.readBuffer(this._gl.COLOR_ATTACHMENT0);
       this._gl.readPixels(0, 0, width, height, this._gl.RGBA, this._gl.UNSIGNED_BYTE, resultData.data);
       this._gl.bindFramebuffer(this._gl.FRAMEBUFFER, null);
 

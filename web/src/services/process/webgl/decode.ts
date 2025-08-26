@@ -265,6 +265,7 @@ export function WebGLDecodeProcess<TBase extends WebGLProcessConstructor>(Base: 
         }
       }
 
+      gl.readBuffer(gl.COLOR_ATTACHMENT0);
       gl.readPixels(0, 0, newImageData.width, newImageData.height, gl.RGBA, gl.UNSIGNED_BYTE, newImageData.data);
       gl.bindFramebuffer(gl.FRAMEBUFFER, null);
 

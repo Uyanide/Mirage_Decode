@@ -57,7 +57,6 @@ void main() {
 }
 `;
 
-// export class WebGLCommonProcess extends WebGLHelper implements ImageCommonService {
 export function WebGLCommonProcess<TBase extends WebGLProcessConstructor>(Base: TBase) {
   return class extends Base implements ImageCommonService {
     _toGrayProgram: WebGLProgram | null = null;
