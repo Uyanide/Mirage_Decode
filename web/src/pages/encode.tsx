@@ -47,35 +47,24 @@ export default function EncodePage() {
         mx: 'auto',
       }}
     >
-      <ImageInputs />
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: desktop ? 'row' : 'column',
-          mt: 2,
-          gap: 2,
-        }}
-      >
-        <OutputCanvas />
-        <Operations />
-      </Box>
+      <Grid container spacing={2}>
+        <Grid size={desktop ? 6 : 12}>
+          <ImageConfig isCover={false} />
+        </Grid>
+
+        <Grid size={desktop ? 6 : 12}>
+          <ImageConfig isCover={true} />
+        </Grid>
+
+        <Grid size={desktop ? 6 : 12}>
+          <OutputCanvas />
+        </Grid>
+
+        <Grid size={desktop ? 6 : 12}>
+          <Operations />
+        </Grid>
+      </Grid>
     </Box>
-  );
-}
-
-function ImageInputs() {
-  const desktop = useDesktopMode();
-
-  return (
-    <Grid container spacing={2}>
-      <Grid size={desktop ? 6 : 12}>
-        <ImageConfig isCover={false} />
-      </Grid>
-
-      <Grid size={desktop ? 6 : 12}>
-        <ImageConfig isCover={true} />
-      </Grid>
-    </Grid>
   );
 }
 

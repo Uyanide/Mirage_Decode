@@ -4,7 +4,7 @@ import { DecodeDefaultArgs, defaultImages, EncodeDefaultArgs, maxContrast, minCo
 import { usePrismDecodeImagesStore, usePrismDecodeStore, type PrismDecodeMethod } from '../providers/decode/state';
 import { PrismImage } from '../models/image';
 import { useSidebarStore } from '../providers/sidebar';
-import { Box, Button, MenuItem, Select, Slider, Typography } from '@mui/material';
+import { Box, Button, Grid, MenuItem, Select, Slider, Typography } from '@mui/material';
 import { InputContainer } from '../components/input-container';
 import { HelpButton } from '../components/help-button';
 import type { ImageEncodeFormat } from '../services/image-encoder';
@@ -73,7 +73,7 @@ export default function DecodePage() {
   return (
     <>
       {loading && <LoadingOverlay />}
-      <Box
+      {/* <Box
         sx={{
           display: 'flex',
           flexDirection: desktop ? 'row' : 'column',
@@ -84,49 +84,62 @@ export default function DecodePage() {
           width: '100%',
           mx: 'auto',
         }}
+      > */}
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          maxWidth: desktop ? 'lg' : 'sm',
+          mx: 'auto',
+        }}
       >
-        <ImageLoaderMulti onLoad={handleImagesLoaded} defaultImage={defaultImages.decode} disabled={loading}>
-          <canvas
-            ref={decodeCanvasRef}
-            style={{
-              width: '100%',
-              display: currImage ? 'block' : 'none',
-            }}
-          ></canvas>
-          {!currImage && (
-            <CanvasFallback
-              text={loading ? '加载中...' : '只是一张画布'}
-              action="加载示例图片"
-              onClick={handleLoadDefault}
-              disabled={loading}
-              styles={{
+        <Grid size={desktop ? 6 : 12}>
+          <ImageLoaderMulti onLoad={handleImagesLoaded} defaultImage={defaultImages.decode} disabled={loading}>
+            <canvas
+              ref={decodeCanvasRef}
+              style={{
                 width: '100%',
-                aspectRatio: '1.54',
+                display: currImage ? 'block' : 'none',
               }}
-            ></CanvasFallback>
-          )}
-        </ImageLoaderMulti>
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 2,
-            width: '100%',
-          }}
-        >
-          <InputContainer>
-            <ThresholdSlider />
-            <Box sx={{ mt: 2 }} />
-            <ContrastSlider />
-          </InputContainer>
-          <InputContainer>
-            <MethodsInput />
-          </InputContainer>
-          <ImageSave />
-        </Box>
-      </Box>
+            ></canvas>
+            {!currImage && (
+              <CanvasFallback
+                text={loading ? '加载中...' : '只是一张画布'}
+                action="加载示例图片"
+                onClick={handleLoadDefault}
+                disabled={loading}
+                styles={{
+                  width: '100%',
+                  aspectRatio: '1.54',
+                }}
+              ></CanvasFallback>
+            )}
+          </ImageLoaderMulti>
+        </Grid>
+        <Grid size={desktop ? 6 : 12}>
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 2,
+              width: '100%',
+            }}
+          >
+            <InputContainer>
+              <ThresholdSlider />
+              <Box sx={{ mt: 2 }} />
+              <ContrastSlider />
+            </InputContainer>
+            <InputContainer>
+              <MethodsInput />
+            </InputContainer>
+            <ImageSave />
+          </Box>
+        </Grid>
+      </Grid>
+      {/* </Box> */}
     </>
   );
 }
