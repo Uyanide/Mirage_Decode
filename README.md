@@ -6,12 +6,19 @@
 
 -   **新版 - 自托管 - [prism.uyanide.com](https://prism.uyanide.com/)**
 
-备用链接;
+### 备用链接
 
 -   新版 - Cloudflare Pages 部署 - [mirage-decode.pages.dev](https://mirage-decode.pages.dev)
 -   旧版 - 自托管 - [prism-old.uyanide.com](https://prism-old.uyanide.com)
 -   旧版 - [单页面版本下载](https://api.uyanide.com/prism_page)
 -   <s>新版 - [单页面版本下载](https://www.bilibili.com/video/BV1GJ411x7h7/)</s> (目前并不存在这种东西 🥲)
+
+### 废弃链接
+
+-   Github Pages - uyanide.github.io/Mirage_Decode
+-   Vercel - mirage-decode.vercel.app
+
+以上两个链接均会(自动)跳转至 [prism.uyanide.com](https://prism.uyanide.com/), 已无必要继续使用
 
 ## 技术原理
 
