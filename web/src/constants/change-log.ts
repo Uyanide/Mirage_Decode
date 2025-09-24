@@ -41,4 +41,8 @@ export const changeLog = [
     version: '2.0',
     changes: ['使用 React 重写整个项目', '添加对复合光棱坦克的支持'],
   },
+  {
+    version: '2.1',
+    changes: ['部分使用 WebGL2 渲染图像', '优化显形效果'],
+  },
 ];
