@@ -1,3 +1,4 @@
+import { generateUUID } from '../utils/general';
 import type {
   ImageDecodeDataBase,
   ImageDecodeDataInit,
@@ -59,7 +60,7 @@ export async function decodeImage(fileData: Uint8Array): Promise<ImageData> {
     throw new Error('Image decoder worker is not initialized');
   }
   return new Promise((resolve, reject) => {
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     registerMessageHandler(id, (data: ImageDecodeDataBase) => {
       if (data.success) {
         const resultData = data as ImageDecodeDataResult;

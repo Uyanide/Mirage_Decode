@@ -5,6 +5,7 @@ import type {
   ImageEncodeWorkerData,
 } from './image-encoder.worker';
 import { useAvailableFormatsStore } from '../providers/format';
+import { generateUUID } from '../utils/general';
 
 export type ImageEncodeFormat = 'PNG' | 'JPEG';
 
@@ -73,7 +74,7 @@ export async function encodeImage(imageData: ImageData, format: ImageEncodeForma
     throw new Error('Image encoder worker is not initialized');
   }
   return new Promise((resolve, reject) => {
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     registerMessageHandler(id, (data: ImageEncodeDataBase) => {
       if (data.success) {
         const resultData = data as ImageEncodeDataResult;

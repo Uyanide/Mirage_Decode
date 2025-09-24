@@ -9,20 +9,11 @@ export const changeLog = [
   },
   {
     version: '1.2',
-    changes: [
-      '引入jpeg-js库部分源码，统一不同浏览器编码jpeg时的行为',
-      '引入piexif库部分源码，用于读取jpeg图片的元数据',
-      '支持jpeg图片在生成时写入参数以在显形时自动填写',
-    ],
+    changes: ['统一不同浏览器编码jpeg时的行为', '支持jpeg图片在生成时写入参数以在显形时自动填写'],
   },
   {
     version: '1.3',
-    changes: [
-      '引入png-metadata库部分源码，用于读取png图片的元数据',
-      '支持png图片在生成时写入参数以自动显形',
-      '添加表里图对比度调整功能',
-      '里图对比度可写入元数据',
-    ],
+    changes: ['支持png图片在生成时写入参数以自动显形', '添加表里图对比度调整功能', '里图对比度可写入元数据'],
   },
   {
     version: '1.4',
@@ -35,7 +26,7 @@ export const changeLog = [
   },
   {
     version: '1.5',
-    changes: ['使用cors代理，希望能解决跨域问题', '修复若干历史遗留 Bug'],
+    changes: ['使用代理以跨域问题', '修复若干历史遗留 Bug'],
   },
   {
     version: '2.0',
